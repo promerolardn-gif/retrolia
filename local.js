@@ -19,9 +19,10 @@ const snapCol=c=>({docs:[...cache.keys()].filter(p=>colDe(p)===c).sort().map(sna
 function avisar(p,remoto){ const c=colDe(p); oyentes.forEach(o=>{ if(o.col===c||o.doc===p) queueMicrotask(()=>{ try{ o.cb(o.doc?snapDoc(o.doc):snapCol(o.col)); }catch(e){ console.error(e); } }); });
   if(!remoto&&canal) canal.postMessage(p); }
 if(canal) canal.onmessage=async e=>{ const p=e.data; try{ const v=await tx("docs","readonly",s=>s.get(p)); if(v===undefined) cache.delete(p); else cache.set(p,v); avisar(p,true); }catch{} };
-let persistido=false;
+let persistido=false, silencio=false;
 async function escribir(p,v){ await cargar(); if(!persistido){ persistido=true; try{ navigator.storage&&navigator.storage.persist&&navigator.storage.persist(); }catch{} }
   if(v===undefined){ await tx("docs","readwrite",s=>s.delete(p)); cache.delete(p); } else { await tx("docs","readwrite",s=>s.put(v,p)); cache.set(p,v); }
+  if(!silencio&&p.startsWith("juegos/")){ try{ localStorage.setItem("retrolia.cambios",String((+localStorage.getItem("retrolia.cambios")||0)+1)); }catch{} }
   avisar(p); }
 function oir(o){ oyentes.add(o); cargar().then(()=>{ if(oyentes.has(o)) o.cb(o.doc?snapDoc(o.doc):snapCol(o.col)); },e=>o.ko&&o.ko(e)); return ()=>oyentes.delete(o); }
 const db={
@@ -83,7 +84,24 @@ const listo=(async()=>{ if(!("serviceWorker" in navigator)) return;
 const caps={db,assets,downloads,sample};
 window.claude={use:async n=>{ await listo; return caps[n]||null; }};
 window.RetroliaIA={cfg:iaCfg,guardar:c=>localStorage.setItem(IA_KEY,JSON.stringify(c)),modelos:c=>(c.prov||"gemini")==="gemini"?modelosGemini(c.key):modelosOpenAI(c),probar:()=>preguntar("Responde solo con la palabra: listo",[])};
-window.RetroliaDatos={importar:async j=>{ await cargar(); let n=0; for(const g of (j.juegos||[])){ if(!g||!g.id) continue; const {id,...d}=g; await escribir("juegos/"+id,clon(d)); n++; }
+// Copia completa en un solo archivo: "RETROLIA" + longitud de la cabecera (4 bytes) + cabecera JSON + archivos seguidos
+const MAGIA="RETROLIA";
+async function exportar(){ await cargar(); const d=await abrir;
+  const [ids,vals]=await new Promise((ok,ko)=>{ const t=d.transaction("blobs"), s=t.objectStore("blobs"), a=s.getAllKeys(), b=s.getAll(); t.oncomplete=()=>ok([a.result,b.result]); t.onerror=()=>ko(t.error); });
+  const docs={}; cache.forEach((v,k)=>{ docs[k]=v; });
+  const cab=new TextEncoder().encode(JSON.stringify({formato:"retrolia",v:1,exportado:new Date().toISOString(),docs,blobs:ids.map((id,i)=>({id,type:vals[i].type||"",size:vals[i].blob.size}))}));
+  const len=new Uint8Array(4); new DataView(len.buffer).setUint32(0,cab.length);
+  return {blob:new Blob([MAGIA,len,cab,...vals.map(v=>v.blob)],{type:"application/octet-stream"}),fichas:Object.keys(docs).filter(k=>k.startsWith("juegos/")).length,archivos:ids.length}; }
+async function restaurar(file){ if(await file.slice(0,8).text()!==MAGIA) throw err("formato");
+  const n=new DataView(await file.slice(8,12).arrayBuffer()).getUint32(0); let h; try{ h=JSON.parse(await file.slice(12,12+n).text()); }catch{ throw err("formato"); }
+  if(!h||h.formato!=="retrolia"||!h.docs) throw err("formato");
+  let off=12+n; const total=(h.blobs||[]).reduce((a,b)=>a+b.size,0); if(off+total>file.size) throw err("incompleta");
+  for(const b of (h.blobs||[])){ const buf=await file.slice(off,off+b.size).arrayBuffer(); off+=b.size;
+    try{ await tx("blobs","readwrite",s=>s.put({blob:new Blob([buf],{type:b.type}),type:b.type},b.id)); }catch(e){ throw err(e&&e.name==="QuotaExceededError"?"sin_espacio":"upstream_error"); } }
+  silencio=true; let fichas=0;
+  try{ for(const [p,v] of Object.entries(h.docs)){ await escribir(p,clon(v)); if(p.startsWith("juegos/")) fichas++; } } finally{ silencio=false; }
+  return {fichas,archivos:(h.blobs||[]).length}; }
+window.RetroliaDatos={exportar,restaurar,importar:async j=>{ await cargar(); let n=0; for(const g of (j.juegos||[])){ if(!g||!g.id) continue; const {id,...d}=g; await escribir("juegos/"+id,clon(d)); n++; }
   for(const t of (j.tareas||[])){ if(!t||!t.id) continue; const {id,...d}=t; await escribir("tareas/"+id,clon(d)); }
   if(j.ajustes) await escribir("ajustes/general",clon(j.ajustes)); return n; }};
 })();

@@ -272,6 +272,8 @@ table.xl{border-collapse:collapse;width:max-content;min-width:100%;font-size:13p
 html.cerrado .wrap,html.cerrado footer.pie{display:none}
 footer.pie{max-width:1240px;margin:0 auto;padding:0 16px 40px;color:var(--muted);font-size:12px;display:grid;gap:4px;text-align:center}
 .iaform{padding:22px}
+.aviso{max-width:1000px;margin:0 auto;width:100%;display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;justify-content:space-between;text-align:left;border:1px solid var(--warn);border-radius:var(--r);padding:12px 14px;background:color-mix(in srgb,var(--yellow) 14%,var(--surface))}
+.aviso>span:first-child{flex:1 1 240px;min-width:0}
 </style>
 
 <div class="wrap">
@@ -294,6 +296,7 @@ footer.pie{max-width:1240px;margin:0 auto;padding:0 16px 40px;color:var(--muted)
       <button class="console" data-plat="GBA"><div class="pad"><svg viewBox="0 0 160 90" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><path d="M48,12 H112 Q142,12 142,47 Q142,82 112,82 H48 Q18,82 18,47 Q18,12 48,12 Z" fill="#5c4aa8" stroke="#43357f" stroke-width="1"/><rect x="50" y="20" width="60" height="50" rx="3" fill="#2a2a30"/><rect x="55" y="25" width="50" height="38" fill="#9fb0a0"/><rect x="26.5" y="39.5" width="15" height="5" rx="1" fill="#2d2550"/><rect x="31.5" y="34.5" width="5" height="15" rx="1" fill="#2d2550"/><circle cx="122" cy="40" r="5.4" fill="#b9b2d6"/><circle cx="132" cy="50" r="5.4" fill="#b9b2d6"/><rect x="30" y="62" width="8" height="3.4" rx="1.7" fill="#2d2550"/><rect x="30" y="69" width="8" height="3.4" rx="1.7" fill="#2d2550"/></svg></div><div class="cn">GBA</div><div class="cs">Game Boy Advance</div><div class="cv" id="hGBA">—</div></button>
       <button class="console" data-plat="MD"><div class="pad"><svg viewBox="0 0 160 90" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><path d="M48,18 Q80,11 112,18 Q142,26 140,52 Q138,80 116,78 Q100,76 95,66 H65 Q60,76 44,78 Q22,80 20,52 Q18,26 48,18 Z" fill="#1c1c1e" stroke="#3a3a3e" stroke-width="1"/><circle cx="46" cy="46" r="14" fill="#2e2e33"/><rect x="37.0" y="43.0" width="18" height="6" rx="1" fill="#141416"/><rect x="43.0" y="37.0" width="6" height="18" rx="1" fill="#141416"/><rect x="73" y="42" width="14" height="5" rx="2.5" fill="#3a3a3f"/><circle cx="102" cy="54" r="5.6" fill="#2e2e33" stroke="#4a4a50" stroke-width="1"/><circle cx="115" cy="46" r="5.6" fill="#2e2e33" stroke="#4a4a50" stroke-width="1"/><circle cx="128" cy="38" r="5.6" fill="#2e2e33" stroke="#4a4a50" stroke-width="1"/></svg></div><div class="cn">Mega Drive</div><div class="cs">Sega Mega Drive · PAL</div><div class="cv" id="hMD">—</div></button>
     </div>
+    <div class="aviso" id="bkAviso" hidden><span id="bkAvisoT"></span><span class="row"><button type="button" class="btn" id="bkAvisoSi">Hacer copia ahora</button><button type="button" class="btn ghost" id="bkAvisoNo">Más tarde</button></span></div>
     <div class="tray" id="tray" aria-label="Bandeja de fotos">
       <div class="drop" id="trayDrop" role="button" tabindex="0"><b>Bandeja de fotos</b><span>Arrastra aquí las fotos de tus juegos, o toca para elegirlas. Cada foto crea su ficha: la IA reconoce el juego, la consola y la región, y luego decides si completas la ficha con IA o a mano.</span></div>
       <div class="row" style="justify-content:center"><button type="button" class="btn ghost" id="iaBtn">Configurar la IA</button><span class="status" id="iaEstado"></span></div>
@@ -391,9 +394,11 @@ footer.pie{max-width:1240px;margin:0 auto;padding:0 16px 40px;color:var(--muted)
       <p class="hint">Coste puesto en casa = (precio CIB de PriceCharting en € + envío) × (1 + arancel) × (1 + IVA) + gestión. El IVA se paga sobre el juego más el envío. Los videojuegos (partida 9504.50) no pagan arancel en la UE. La gestión depende del transportista: Correos cobra poco, DHL, UPS o FedEx bastante más.</p>
       <p class="hint">Los valores que pongas a mano en una ficha van en euros y sustituyen al cálculo.</p>
       <div class="about"><div class="lbl">Copia de seguridad</div>
-        <p class="hint">Descarga toda la colección, lista de deseos, piezas, precios pagados y tareas. El JSON es la copia de las fichas; el CSV se abre en Excel.</p>
-        <div class="row"><button class="btn" id="bkJson">Descargar copia completa (JSON)</button><button class="btn ghost" id="bkCsv">Descargar tabla (CSV)</button><button class="btn ghost" id="bkIn" type="button">Restaurar una copia (JSON)</button><input type="file" id="bkFile" accept=".json,application/json" hidden><span class="status" id="bkMsg"></span></div>
-        <p class="hint">Tu colección vive solo en este navegador. Si borras sus datos o cambias de dispositivo, se pierde: descarga una copia de vez en cuando. La copia guarda las fichas, no las fotos ni las ROM.</p>
+        <p class="hint">La copia completa es un solo archivo con todo: fichas, fotos, capturas, ROM guardadas y partidas. Guárdalo fuera del navegador (en Archivos, en iCloud o en un disco). Sirve también para pasar la colección a otro dispositivo. La clave de la IA no va en la copia.</p>
+        <div class="row"><button class="btn" id="bkTodo" type="button">Descargar copia completa</button><button class="btn ghost" id="bkIn" type="button">Restaurar una copia</button><input type="file" id="bkFile" hidden><span class="status" id="bkMsg" role="status"></span></div>
+        <p class="hint" id="bkUlt"></p>
+        <div class="row"><button class="btn ghost" id="bkJson">Solo las fichas (JSON)</button><button class="btn ghost" id="bkCsv">Tabla para Excel (CSV)</button></div>
+        <p class="hint">Tu colección vive solo en este navegador. Si borras sus datos o cambias de dispositivo, se pierde: descarga una copia completa de vez en cuando. Al restaurar, las fichas de la copia sustituyen a las que tengan el mismo identificador; el resto no se toca.</p>
       </div>
       <p class="hint">Niveles (sobre el valor mostrado): <b>A</b> desde 170 €, <b>B</b> de 50 a 169 €, <b>C</b> por debajo de 50 €.</p>
     </div>
@@ -576,7 +581,7 @@ function renderStats(){
   $("#cTengo").textContent=own.length; $("#cDeseo").textContent=wish.length||"";
   const openT=state.tasks.filter(t=>!t.hecho).length; $("#cPend").textContent=openT||"";
 }
-function renderHome(){ PLATS.forEach(p=>{const own=state.games.filter(g=>platOf(g)===p&&g.estado!=="deseo"); const el=$("#h"+p); if(el) el.textContent=own.length?`${own.length} juegos · ${eur(own.reduce((a,g)=>a+(valor(g)||0),0))}`:"Sin juegos todavía";}); renderTray(); }
+function renderHome(){ PLATS.forEach(p=>{const own=state.games.filter(g=>platOf(g)===p&&g.estado!=="deseo"); const el=$("#h"+p); if(el) el.textContent=own.length?`${own.length} juegos · ${eur(own.reduce((a,g)=>a+(valor(g)||0),0))}`:"Sin juegos todavía";}); renderTray(); bkPinta(); }
 function fillFilters(){
   const gens=[...new Set(pg().map(g=>g.genero))].sort(), eds=[...new Set(pg().map(g=>g.editora))].sort();
   const fill=(sel,arr,first)=>{const cur=sel.value; sel.innerHTML=`<option value="">${first}</option>`+arr.map(x=>`<option>${esc(x)}</option>`).join(""); sel.value=arr.includes(cur)?cur:"";};
@@ -1111,10 +1116,30 @@ $("#iaForm").onsubmit=async e=>{ e.preventDefault(); const m=$("#iaMsg"), c=iaLe
   try{ await IA.probar(); m.textContent="Guardado. La IA responde bien."; }
   catch(err){ m.textContent="Guardado, pero la prueba ha fallado: "+(err?.code==="upstream_error"?"no se ha podido conectar con el servicio (puede que no admita llamadas desde el navegador).":iaErr(err?.code)); } };
 iaPinta();
-// Restaurar una copia
+// Copia de seguridad completa y aviso de copia pendiente
+const bkInfo=()=>{ let f=null,c=0; try{ f=localStorage.getItem("retrolia.copia"); c=+localStorage.getItem("retrolia.cambios")||0; }catch{} return {f,c}; };
+function bkPinta(){ const {f,c}=bkInfo(), n=state.games.length, dias=f?Math.floor((Date.now()-new Date(f).getTime())/864e5):null;
+  $("#bkUlt").textContent=f?`Última copia completa: ${new Date(f).toLocaleDateString("es-ES")}${c?` · ${c} cambio${c>1?"s":""} desde entonces`:" · sin cambios desde entonces"}.`:"Todavía no has hecho ninguna copia completa en este navegador.";
+  let t=""; if(n){ if(!f&&n>=3) t=`Tienes ${n} fichas y ninguna copia de seguridad. Si se borran los datos de este navegador, se pierden.`;
+    else if(f&&c>=10) t=`Has hecho ${c} cambios desde la última copia de seguridad (${new Date(f).toLocaleDateString("es-ES")}).`;
+    else if(f&&c>=1&&dias>=14) t=`Tu última copia de seguridad es de hace ${dias} días y hay cambios sin guardar en ella.`; }
+  let callado=false; try{ callado=sessionStorage.getItem("retrolia.avisoNo")==="1"; }catch{}
+  $("#bkAvisoT").textContent=t; $("#bkAviso").hidden=!t||callado; }
+async function bkHacer(msg){ msg.textContent="Preparando la copia…";
+  try{ const r=await window.RetroliaDatos.exportar(); const dl=await window.claude.use("downloads"); await dl.save({filename:`retrolia-copia-${hoy()}.retrolia`,data:r.blob});
+    try{ localStorage.setItem("retrolia.copia",new Date().toISOString()); localStorage.setItem("retrolia.cambios","0"); }catch{}
+    msg.textContent=`Copia descargada: ${r.fichas} fichas y ${r.archivos} archivos (${kb(r.blob.size)}). Guárdala fuera del navegador.`; bkPinta(); }
+  catch{ msg.textContent="No se ha podido preparar la copia."; } }
+$("#bkTodo").onclick=()=>bkHacer($("#bkMsg"));
+$("#bkAvisoSi").onclick=()=>bkHacer($("#trayMsg"));
+$("#bkAvisoNo").onclick=()=>{ try{ sessionStorage.setItem("retrolia.avisoNo","1"); }catch{} $("#bkAviso").hidden=true; };
 $("#bkIn").onclick=()=>$("#bkFile").click();
-$("#bkFile").onchange=async e=>{ const f=e.target.files[0]; e.target.value=""; if(!f) return; const m=$("#bkMsg");
-  try{ const j=JSON.parse(await f.text()); if(!j||!Array.isArray(j.juegos)) throw 0; const n=await window.RetroliaDatos.importar(j); m.textContent=`Copia restaurada: ${n} fichas. Las fotos y las ROM no van en la copia.`; }
+$("#bkFile").onchange=async e=>{ const f=e.target.files[0]; e.target.value=""; if(!f) return; const m=$("#bkMsg"); m.textContent="Restaurando…";
+  try{ const r=await window.RetroliaDatos.restaurar(f); m.textContent=`Copia restaurada: ${r.fichas} fichas y ${r.archivos} archivos.`; bkPinta(); return; }
+  catch(err){ if(err?.code==="incompleta"){ m.textContent="El archivo de la copia está incompleto o dañado."; return; }
+    if(err?.code==="sin_espacio"){ m.textContent="Este navegador no tiene espacio suficiente para restaurar la copia."; return; }
+    if(err?.code!=="formato"){ m.textContent="No se ha podido restaurar la copia."; return; } }
+  try{ const j=JSON.parse(await f.text()); if(!j||!Array.isArray(j.juegos)) throw 0; const n=await window.RetroliaDatos.importar(j); m.textContent=`Copia de fichas restaurada: ${n} fichas, sin fotos ni ROM.`; bkPinta(); }
   catch{ m.textContent="Ese archivo no es una copia de Retrolia."; } };
 
 // Datos
