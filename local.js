@@ -89,14 +89,29 @@ window.RetroliaIA={cfg:iaCfg,guardar:c=>localStorage.setItem(IA_KEY,JSON.stringi
 let zipP=null;
 const cargarZip=()=>window.JSZip?Promise.resolve(window.JSZip):(zipP||(zipP=new Promise((ok,ko)=>{ const t=document.createElement("script"); t.src="jszip.min.js"; t.onload=()=>ok(window.JSZip); t.onerror=()=>{ zipP=null; ko(err("sin_zip")); }; document.head.append(t); })));
 const EXT={"image/jpeg":"jpg","image/png":"png","image/webp":"webp","application/json":"json"};
+const limpio=(t,def)=>String(t||"").replace(/[\/\\:*?"<>|\x00-\x1f]/g," ").replace(/\s+/g," ").trim().slice(0,90)||def;
+const idRuta=u=>{ const m=/blob\/([0-9a-f]{32})$/.exec(String(u||"")); return m&&m[1]; };
+const u8a64=u=>{ let t=""; for(let i=0;i<u.length;i+=0x8000) t+=String.fromCharCode.apply(null,u.subarray(i,i+0x8000)); return btoa(t); };
+const a64u8=t=>{ const b=atob(t), u=new Uint8Array(b.length); for(let i=0;i<b.length;i++) u[i]=b.charCodeAt(i); return u; };
+// Nombres legibles dentro del zip: fotos/Consola_Juego.jpg, capturas/Consola_Juego_captura 1.png, roms/Consola_Juego.sfc
+function nombresZip(tipos){ const nombres=new Map(), usados=new Set();
+  const pon=(id,carpeta,base,ext,rom)=>{ if(!id||!tipos.has(id)||nombres.has(id)) return; let n=`${carpeta}/${base}.${ext}`, k=2; while(usados.has(n.toLowerCase())) n=`${carpeta}/${base} (${k++}).${ext}`; usados.add(n.toLowerCase()); nombres.set(id,{archivo:n,rom}); };
+  [...cache.keys()].filter(p=>colDe(p)==="juegos").sort().forEach(p=>{ const g=cache.get(p)||{}, base=limpio(g.plataforma||"SNES","Sin consola")+"_"+limpio(g.titulo,"sin título");
+    [...new Set([g.foto,...(g.galeria||[])].map(idRuta).filter(Boolean))].forEach((id,i)=>pon(id,"fotos",i?`${base}_${i+1}`:base,EXT[tipos.get(id)]||"jpg"));
+    (g.capturas||[]).map(idRuta).filter(Boolean).forEach((id,i)=>pon(id,"capturas",`${base}_captura ${i+1}`,EXT[tipos.get(id)]||"png"));
+    [g.rom,...(g.roms||[])].filter(r=>r&&r.id).forEach(r=>{ const m=/\.([a-z0-9]{1,5})$/i.exec(r.name||""); pon(r.id,"roms",r.reg?`${base} (${limpio(r.reg,"")})`:base,m?m[1].toLowerCase():"bin",true); }); });
+  return nombres; }
 async function exportar(){ await cargar(); const JSZip=await cargarZip(), d=await abrir;
   const [ids,vals]=await new Promise((ok,ko)=>{ const t=d.transaction("blobs"), s=t.objectStore("blobs"), a=s.getAllKeys(), b=s.getAll(); t.oncomplete=()=>ok([a.result,b.result]); t.onerror=()=>ko(t.error); });
   const docs={}; cache.forEach((v,k)=>{ docs[k]=v; });
-  const zip=new JSZip(), blobs=[];
-  ids.forEach((id,i)=>{ const type=vals[i].type||"", archivo="archivos/"+id+"."+(EXT[type]||"bin"); blobs.push({id,type,size:vals[i].blob.size,archivo});
-    zip.file(archivo,vals[i].blob,{binary:true,compression:/^image\//.test(type)?"STORE":"DEFLATE"}); });
-  zip.file("retrolia.json",JSON.stringify({formato:"retrolia",v:2,exportado:new Date().toISOString(),docs,blobs},null,1));
-  zip.file("LEEME.txt","Copia de seguridad de Retrolia.\r\n\r\nPara recuperarla: en Retrolia, pulsa \"Restaurar una copia\" y elige este .zip tal cual, sin descomprimir.\r\nLa carpeta archivos/ contiene tus fotos y capturas (y las ROM guardadas, en formato interno).\r\nretrolia.json contiene las fichas.\r\n");
+  const tipos=new Map(ids.map((id,i)=>[id,vals[i].type||""])), nombres=nombresZip(tipos), zip=new JSZip(), blobs=[];
+  for(let i=0;i<ids.length;i++){ const id=ids[i], type=vals[i].type||"", blob=vals[i].blob, n=nombres.get(id);
+    if(n&&n.rom){ try{ const j=JSON.parse(await blob.text()); if(typeof j.b64!=="string") throw 0;
+        blobs.push({id,type,archivo:n.archivo,rom:{name:j.name||"",crc:j.crc||""}}); zip.file(n.archivo,a64u8(j.b64),{binary:true,compression:"DEFLATE"}); continue; }catch{} }
+    const archivo=n&&!n.rom?n.archivo:"otros/"+id+"."+(EXT[type]||"bin"); blobs.push({id,type,archivo});
+    zip.file(archivo,blob,{binary:true,compression:/^image\//.test(type)?"STORE":"DEFLATE"}); }
+  zip.file("retrolia.json",JSON.stringify({formato:"retrolia",v:3,exportado:new Date().toISOString(),docs,blobs},null,1));
+  zip.file("LEEME.txt","Copia de seguridad de Retrolia.\r\n\r\nPara recuperarla: en Retrolia, pulsa \"Restaurar una copia\" y elige este .zip tal cual, sin descomprimir.\r\n\r\nfotos/      las fotos de tus juegos, como Consola_Juego.jpg\r\ncapturas/   las capturas de pantalla guardadas en las fichas\r\nroms/       las ROM guardadas, en su formato original\r\nretrolia.json   las fichas y el índice que une cada archivo con su ficha\r\n\r\nNo cambies los nombres dentro del .zip si quieres poder restaurarlo.\r\n");
   const blob=await zip.generateAsync({type:"blob",compression:"DEFLATE",compressionOptions:{level:6}});
   return {blob,fichas:Object.keys(docs).filter(k=>k.startsWith("juegos/")).length,archivos:ids.length}; }
 async function guardarTodo(h,leer){ if(!h||h.formato!=="retrolia"||!h.docs) throw err("formato");
@@ -108,7 +123,8 @@ async function guardarTodo(h,leer){ if(!h||h.formato!=="retrolia"||!h.docs) thro
 async function restaurar(file){ const ini=new Uint8Array(await file.slice(0,8).arrayBuffer());
   if(ini[0]===0x50&&ini[1]===0x4b){ const JSZip=await cargarZip(); let zip; try{ zip=await JSZip.loadAsync(file); }catch{ throw err("incompleta"); }
     const j=zip.file("retrolia.json"); if(!j) throw err("formato"); let h; try{ h=JSON.parse(await j.async("string")); }catch{ throw err("formato"); }
-    return guardarTodo(h,async b=>{ const f=zip.file(b.archivo||""); if(!f) throw err("incompleta"); return f.async("arraybuffer"); }); }
+    return guardarTodo(h,async b=>{ const f=zip.file(b.archivo||""); if(!f) throw err("incompleta"); const buf=await f.async("arraybuffer");
+      return b.rom?new TextEncoder().encode(JSON.stringify({name:b.rom.name,crc:b.rom.crc,b64:u8a64(new Uint8Array(buf))})).buffer:buf; }); }
   if(new TextDecoder().decode(ini)!=="RETROLIA") throw err("formato");   // formato antiguo de un solo archivo .retrolia
   const n=new DataView(await file.slice(8,12).arrayBuffer()).getUint32(0); let h; try{ h=JSON.parse(await file.slice(12,12+n).text()); }catch{ throw err("formato"); }
   let off=12+n; const total=((h&&h.blobs)||[]).reduce((a,b)=>a+b.size,0); if(off+total>file.size) throw err("incompleta");
