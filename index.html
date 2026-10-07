@@ -300,6 +300,7 @@ footer.pie{max-width:1240px;margin:0 auto;padding:0 16px 40px;color:var(--muted)
     <div class="tray" id="tray" aria-label="Bandeja de fotos">
       <div class="drop" id="trayDrop" role="button" tabindex="0"><b>Bandeja de fotos</b><span>Arrastra aquí las fotos de tus juegos, o toca para elegirlas. Cada foto crea su ficha: la IA reconoce el juego, la consola y la región, y luego decides si completas la ficha con IA o a mano.</span></div>
       <div class="row" style="justify-content:center"><button type="button" class="btn ghost" id="iaBtn">Configurar la IA</button><span class="status" id="iaEstado"></span></div>
+      <div class="row" style="justify-content:center"><button type="button" class="btn ghost" id="bkTodo2">Descargar copia de seguridad</button><button type="button" class="btn ghost" id="bkIn2">Restaurar una copia</button></div>
       <input type="file" id="trayPick" multiple accept="image/*" hidden>
       <div class="status" id="trayMsg" role="status"></div>
       <div class="tlist" id="trayList"></div>
@@ -394,7 +395,7 @@ footer.pie{max-width:1240px;margin:0 auto;padding:0 16px 40px;color:var(--muted)
       <p class="hint">Coste puesto en casa = (precio CIB de PriceCharting en € + envío) × (1 + arancel) × (1 + IVA) + gestión. El IVA se paga sobre el juego más el envío. Los videojuegos (partida 9504.50) no pagan arancel en la UE. La gestión depende del transportista: Correos cobra poco, DHL, UPS o FedEx bastante más.</p>
       <p class="hint">Los valores que pongas a mano en una ficha van en euros y sustituyen al cálculo.</p>
       <div class="about"><div class="lbl">Copia de seguridad</div>
-        <p class="hint">La copia completa es un solo archivo con todo: fichas, fotos, capturas, ROM guardadas y partidas. Guárdalo fuera del navegador (en Archivos, en iCloud o en un disco). Sirve también para pasar la colección a otro dispositivo. La clave de la IA no va en la copia.</p>
+        <p class="hint">La copia completa es un archivo .zip con todo: fichas, fotos, capturas, ROM guardadas y partidas. Dentro puedes ver tus fotos en la carpeta «archivos». Guárdalo fuera del navegador (en Archivos, en iCloud o en un disco). Sirve también para pasar la colección a otro dispositivo. La clave de la IA no va en la copia.</p>
         <div class="row"><button class="btn" id="bkTodo" type="button">Descargar copia completa</button><button class="btn ghost" id="bkIn" type="button">Restaurar una copia</button><input type="file" id="bkFile" hidden><span class="status" id="bkMsg" role="status"></span></div>
         <p class="hint" id="bkUlt"></p>
         <div class="row"><button class="btn ghost" id="bkJson">Solo las fichas (JSON)</button><button class="btn ghost" id="bkCsv">Tabla para Excel (CSV)</button></div>
@@ -406,7 +407,7 @@ footer.pie{max-width:1240px;margin:0 auto;padding:0 16px 40px;color:var(--muted)
   </div>
 </div>
 
-<footer class="pie"><div>© 2026 Retrolia · Versión beta · Tu colección se guarda solo en este navegador.</div>
+<footer class="pie"><div>© 2026 Retrolia · Beta 0.3 · Tu colección se guarda solo en este navegador.</div>
 <div>Retrolia no incluye ni distribuye juegos: cada usuario carga sus propias copias. Emulación con JSNES (Apache 2.0) y Snes9x (uso no comercial). <a href="https://github.com/promerolardn-gif/retrolia/blob/main/LICENCIAS.md" target="_blank" rel="noopener">Licencias y avisos</a></div></footer>
 
 <div id="gate" hidden><form id="gateForm"><div class="brand"><div class="dots" aria-hidden="true"><i></i><i></i><i></i><i></i></div><h1>Retrolia</h1></div>
@@ -1117,24 +1118,24 @@ $("#iaForm").onsubmit=async e=>{ e.preventDefault(); const m=$("#iaMsg"), c=iaLe
   catch(err){ m.textContent="Guardado, pero la prueba ha fallado: "+(err?.code==="upstream_error"?"no se ha podido conectar con el servicio (puede que no admita llamadas desde el navegador).":iaErr(err?.code)); } };
 iaPinta();
 // Copia de seguridad completa y aviso de copia pendiente
-const bkInfo=()=>{ let f=null,c=0; try{ f=localStorage.getItem("retrolia.copia"); c=+localStorage.getItem("retrolia.cambios")||0; }catch{} return {f,c}; };
-function bkPinta(){ const {f,c}=bkInfo(), n=state.games.length, dias=f?Math.floor((Date.now()-new Date(f).getTime())/864e5):null;
-  $("#bkUlt").textContent=f?`Última copia completa: ${new Date(f).toLocaleDateString("es-ES")}${c?` · ${c} cambio${c>1?"s":""} desde entonces`:" · sin cambios desde entonces"}.`:"Todavía no has hecho ninguna copia completa en este navegador.";
-  let t=""; if(n){ if(!f&&n>=3) t=`Tienes ${n} fichas y ninguna copia de seguridad. Si se borran los datos de este navegador, se pierden.`;
-    else if(f&&c>=10) t=`Has hecho ${c} cambios desde la última copia de seguridad (${new Date(f).toLocaleDateString("es-ES")}).`;
-    else if(f&&c>=1&&dias>=14) t=`Tu última copia de seguridad es de hace ${dias} días y hay cambios sin guardar en ella.`; }
-  let callado=false; try{ callado=sessionStorage.getItem("retrolia.avisoNo")==="1"; }catch{}
-  $("#bkAvisoT").textContent=t; $("#bkAviso").hidden=!t||callado; }
+const CADA_FOTOS=50;
+const bkInfo=()=>{ let f=null,c=0,ft=0,pos=0; try{ f=localStorage.getItem("retrolia.copia"); c=+localStorage.getItem("retrolia.cambios")||0; ft=+localStorage.getItem("retrolia.fotos")||0; pos=+localStorage.getItem("retrolia.pospuesto")||0; }catch{} return {f,c,ft,pos}; };
+function bkPinta(){ const {f,c,ft,pos}=bkInfo();
+  $("#bkUlt").textContent=(f?`Última copia completa: ${new Date(f).toLocaleDateString("es-ES")}. Desde entonces: ${ft} foto${ft===1?"":"s"} nueva${ft===1?"":"s"} y ${c} cambio${c===1?"":"s"} en fichas.`:`Todavía no has hecho ninguna copia completa en este navegador (${ft} foto${ft===1?"":"s"} añadida${ft===1?"":"s"}).`)+` El aviso salta cada ${CADA_FOTOS} fotos nuevas.`;
+  const t=ft-pos>=CADA_FOTOS?(f?`Has añadido ${ft} fotos desde tu última copia de seguridad (${new Date(f).toLocaleDateString("es-ES")}).`:`Has añadido ${ft} fotos y todavía no tienes copia de seguridad. Si se borran los datos de este navegador, se pierden.`):"";
+  $("#bkAvisoT").textContent=t; $("#bkAviso").hidden=!t; }
 async function bkHacer(msg){ msg.textContent="Preparando la copia…";
-  try{ const r=await window.RetroliaDatos.exportar(); const dl=await window.claude.use("downloads"); await dl.save({filename:`retrolia-copia-${hoy()}.retrolia`,data:r.blob});
-    try{ localStorage.setItem("retrolia.copia",new Date().toISOString()); localStorage.setItem("retrolia.cambios","0"); }catch{}
+  try{ const r=await window.RetroliaDatos.exportar(); const dl=await window.claude.use("downloads"); await dl.save({filename:`retrolia-copia-${hoy()}.zip`,data:r.blob});
+    try{ localStorage.setItem("retrolia.copia",new Date().toISOString()); localStorage.setItem("retrolia.cambios","0"); localStorage.setItem("retrolia.fotos","0"); localStorage.removeItem("retrolia.pospuesto"); }catch{}
     msg.textContent=`Copia descargada: ${r.fichas} fichas y ${r.archivos} archivos (${kb(r.blob.size)}). Guárdala fuera del navegador.`; bkPinta(); }
-  catch{ msg.textContent="No se ha podido preparar la copia."; } }
+  catch(e){ msg.textContent=e?.code==="sin_zip"?"No se ha podido cargar el generador de copias. Recarga la página e inténtalo de nuevo.":"No se ha podido preparar la copia."; } }
 $("#bkTodo").onclick=()=>bkHacer($("#bkMsg"));
 $("#bkAvisoSi").onclick=()=>bkHacer($("#trayMsg"));
-$("#bkAvisoNo").onclick=()=>{ try{ sessionStorage.setItem("retrolia.avisoNo","1"); }catch{} $("#bkAviso").hidden=true; };
-$("#bkIn").onclick=()=>$("#bkFile").click();
-$("#bkFile").onchange=async e=>{ const f=e.target.files[0]; e.target.value=""; if(!f) return; const m=$("#bkMsg"); m.textContent="Restaurando…";
+$("#bkAvisoNo").onclick=()=>{ try{ localStorage.setItem("retrolia.pospuesto",String(bkInfo().ft)); }catch{} $("#bkAviso").hidden=true; };
+$("#bkTodo2").onclick=()=>bkHacer($("#trayMsg"));
+let bkDonde=null; $("#bkIn2").onclick=()=>{ bkDonde=$("#trayMsg"); $("#bkFile").click(); };
+$("#bkIn").onclick=()=>{ bkDonde=$("#bkMsg"); $("#bkFile").click(); };
+$("#bkFile").onchange=async e=>{ const f=e.target.files[0]; e.target.value=""; if(!f) return; const m=bkDonde||$("#bkMsg"); m.textContent="Restaurando…";
   try{ const r=await window.RetroliaDatos.restaurar(f); m.textContent=`Copia restaurada: ${r.fichas} fichas y ${r.archivos} archivos.`; bkPinta(); return; }
   catch(err){ if(err?.code==="incompleta"){ m.textContent="El archivo de la copia está incompleto o dañado."; return; }
     if(err?.code==="sin_espacio"){ m.textContent="Este navegador no tiene espacio suficiente para restaurar la copia."; return; }

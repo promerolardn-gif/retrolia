@@ -36,6 +36,7 @@ const nuevoId=()=>[...crypto.getRandomValues(new Uint8Array(16))].map(b=>b.toStr
 const assets={
   upload:async(blob,o)=>{ const id=nuevoId(), type=(o&&o.type)||blob.type||"application/octet-stream";
     try{ await tx("blobs","readwrite",s=>s.put({blob,type},id)); }catch(e){ throw err(e&&e.name==="QuotaExceededError"?"too_large":"upstream_error"); }
+    if(/^image\//.test(type)){ try{ localStorage.setItem("retrolia.fotos",String((+localStorage.getItem("retrolia.fotos")||0)+1)); }catch{} }
     return {id,url:"blob/"+id,sizeBytes:blob.size,contentType:type}; },
   delete:id=>tx("blobs","readwrite",s=>s.delete(id)),
   list:async()=>({assets:[],usage:null}) };
@@ -84,23 +85,34 @@ const listo=(async()=>{ if(!("serviceWorker" in navigator)) return;
 const caps={db,assets,downloads,sample};
 window.claude={use:async n=>{ await listo; return caps[n]||null; }};
 window.RetroliaIA={cfg:iaCfg,guardar:c=>localStorage.setItem(IA_KEY,JSON.stringify(c)),modelos:c=>(c.prov||"gemini")==="gemini"?modelosGemini(c.key):modelosOpenAI(c),probar:()=>preguntar("Responde solo con la palabra: listo",[])};
-// Copia completa en un solo archivo: "RETROLIA" + longitud de la cabecera (4 bytes) + cabecera JSON + archivos seguidos
-const MAGIA="RETROLIA";
-async function exportar(){ await cargar(); const d=await abrir;
+// Copia completa en un .zip: retrolia.json (fichas e índice) + carpeta archivos/ con fotos, capturas y ROM
+let zipP=null;
+const cargarZip=()=>window.JSZip?Promise.resolve(window.JSZip):(zipP||(zipP=new Promise((ok,ko)=>{ const t=document.createElement("script"); t.src="jszip.min.js"; t.onload=()=>ok(window.JSZip); t.onerror=()=>{ zipP=null; ko(err("sin_zip")); }; document.head.append(t); })));
+const EXT={"image/jpeg":"jpg","image/png":"png","image/webp":"webp","application/json":"json"};
+async function exportar(){ await cargar(); const JSZip=await cargarZip(), d=await abrir;
   const [ids,vals]=await new Promise((ok,ko)=>{ const t=d.transaction("blobs"), s=t.objectStore("blobs"), a=s.getAllKeys(), b=s.getAll(); t.oncomplete=()=>ok([a.result,b.result]); t.onerror=()=>ko(t.error); });
   const docs={}; cache.forEach((v,k)=>{ docs[k]=v; });
-  const cab=new TextEncoder().encode(JSON.stringify({formato:"retrolia",v:1,exportado:new Date().toISOString(),docs,blobs:ids.map((id,i)=>({id,type:vals[i].type||"",size:vals[i].blob.size}))}));
-  const len=new Uint8Array(4); new DataView(len.buffer).setUint32(0,cab.length);
-  return {blob:new Blob([MAGIA,len,cab,...vals.map(v=>v.blob)],{type:"application/octet-stream"}),fichas:Object.keys(docs).filter(k=>k.startsWith("juegos/")).length,archivos:ids.length}; }
-async function restaurar(file){ if(await file.slice(0,8).text()!==MAGIA) throw err("formato");
-  const n=new DataView(await file.slice(8,12).arrayBuffer()).getUint32(0); let h; try{ h=JSON.parse(await file.slice(12,12+n).text()); }catch{ throw err("formato"); }
-  if(!h||h.formato!=="retrolia"||!h.docs) throw err("formato");
-  let off=12+n; const total=(h.blobs||[]).reduce((a,b)=>a+b.size,0); if(off+total>file.size) throw err("incompleta");
-  for(const b of (h.blobs||[])){ const buf=await file.slice(off,off+b.size).arrayBuffer(); off+=b.size;
+  const zip=new JSZip(), blobs=[];
+  ids.forEach((id,i)=>{ const type=vals[i].type||"", archivo="archivos/"+id+"."+(EXT[type]||"bin"); blobs.push({id,type,size:vals[i].blob.size,archivo});
+    zip.file(archivo,vals[i].blob,{binary:true,compression:/^image\//.test(type)?"STORE":"DEFLATE"}); });
+  zip.file("retrolia.json",JSON.stringify({formato:"retrolia",v:2,exportado:new Date().toISOString(),docs,blobs},null,1));
+  zip.file("LEEME.txt","Copia de seguridad de Retrolia.\r\n\r\nPara recuperarla: en Retrolia, pulsa \"Restaurar una copia\" y elige este .zip tal cual, sin descomprimir.\r\nLa carpeta archivos/ contiene tus fotos y capturas (y las ROM guardadas, en formato interno).\r\nretrolia.json contiene las fichas.\r\n");
+  const blob=await zip.generateAsync({type:"blob",compression:"DEFLATE",compressionOptions:{level:6}});
+  return {blob,fichas:Object.keys(docs).filter(k=>k.startsWith("juegos/")).length,archivos:ids.length}; }
+async function guardarTodo(h,leer){ if(!h||h.formato!=="retrolia"||!h.docs) throw err("formato");
+  for(const b of (h.blobs||[])){ const buf=await leer(b);
     try{ await tx("blobs","readwrite",s=>s.put({blob:new Blob([buf],{type:b.type}),type:b.type},b.id)); }catch(e){ throw err(e&&e.name==="QuotaExceededError"?"sin_espacio":"upstream_error"); } }
   silencio=true; let fichas=0;
   try{ for(const [p,v] of Object.entries(h.docs)){ await escribir(p,clon(v)); if(p.startsWith("juegos/")) fichas++; } } finally{ silencio=false; }
   return {fichas,archivos:(h.blobs||[]).length}; }
+async function restaurar(file){ const ini=new Uint8Array(await file.slice(0,8).arrayBuffer());
+  if(ini[0]===0x50&&ini[1]===0x4b){ const JSZip=await cargarZip(); let zip; try{ zip=await JSZip.loadAsync(file); }catch{ throw err("incompleta"); }
+    const j=zip.file("retrolia.json"); if(!j) throw err("formato"); let h; try{ h=JSON.parse(await j.async("string")); }catch{ throw err("formato"); }
+    return guardarTodo(h,async b=>{ const f=zip.file(b.archivo||""); if(!f) throw err("incompleta"); return f.async("arraybuffer"); }); }
+  if(new TextDecoder().decode(ini)!=="RETROLIA") throw err("formato");   // formato antiguo de un solo archivo .retrolia
+  const n=new DataView(await file.slice(8,12).arrayBuffer()).getUint32(0); let h; try{ h=JSON.parse(await file.slice(12,12+n).text()); }catch{ throw err("formato"); }
+  let off=12+n; const total=((h&&h.blobs)||[]).reduce((a,b)=>a+b.size,0); if(off+total>file.size) throw err("incompleta");
+  return guardarTodo(h,async b=>{ const buf=await file.slice(off,off+b.size).arrayBuffer(); off+=b.size; return buf; }); }
 window.RetroliaDatos={exportar,restaurar,importar:async j=>{ await cargar(); let n=0; for(const g of (j.juegos||[])){ if(!g||!g.id) continue; const {id,...d}=g; await escribir("juegos/"+id,clon(d)); n++; }
   for(const t of (j.tareas||[])){ if(!t||!t.id) continue; const {id,...d}=t; await escribir("tareas/"+id,clon(d)); }
   if(j.ajustes) await escribir("ajustes/general",clon(j.ajustes)); return n; }};

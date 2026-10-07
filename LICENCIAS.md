@@ -12,3 +12,4 @@ Retrolia no incluye ni distribuye juegos ni BIOS. Cada usuario carga sus propias
 - Tipografías servidas por Google Fonts, cada una con su licencia abierta.
 
 Mientras Retrolia incluya Snes9x, no puede ofrecerse de forma comercial.
+- **JSZip** (copias de seguridad en .zip), versión 3.10.1. Licencia MIT. Texto en `licencias/jszip-LICENSE.md`. https://stuk.github.io/jszip/
