@@ -1,0 +1,1146 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Retrolia</title>
+<meta name="description" content="Cataloga tu colección de videojuegos a partir de fotos.">
+<meta name="robots" content="noindex">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cg transform='rotate(-20 16 16)'%3E%3Ccircle cx='10' cy='10' r='5' fill='%232C5DB3'/%3E%3Ccircle cx='22' cy='10' r='5' fill='%23C8352B'/%3E%3Ccircle cx='10' cy='22' r='5' fill='%232D8A4B'/%3E%3Ccircle cx='22' cy='22' r='5' fill='%23D9A514'/%3E%3C/g%3E%3C/svg%3E">
+<style>:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0}img{max-width:100%}</style>
+<script>
+// Código de acceso de la beta. Es una barrera sencilla: sin servidor no puede ser un control de acceso real.
+window.RL_GATE="143b670eb6aa76643578bf245681fc6900b38a0108a4d0588c32a88872212e27";
+try{ if(localStorage.getItem("retrolia.acceso")!==window.RL_GATE) document.documentElement.classList.add("cerrado"); }catch{ document.documentElement.classList.add("cerrado"); }
+</script>
+</head><body>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@500;700&family=Atkinson+Hyperlegible:wght@400;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Press+Start+2P&display=swap">
+<style>
+/* Layout: estantería de cajas (rejilla de portadas) con barra de resumen arriba y ficha en diálogo */
+:root{
+  --bg:#E8E6E1; --surface:#F7F6F3; --sunk:#DEDBD5; --ink:#1D1C21; --muted:#66636C; --line:#CFCBC4;
+  --accent:#584A97; --accent-ink:#FFFFFF;
+  --red:#C8352B; --yellow:#D9A514; --green:#2D8A4B; --blue:#2C5DB3;
+  --good:#1F7A3E; --bad:#B3261E; --warn:#9A6B00;
+  --f-display:"Familjen Grotesk","Helvetica Neue",Arial,sans-serif;
+  --f-body:"Atkinson Hyperlegible",system-ui,-apple-system,Segoe UI,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#17161A; --surface:#222127; --sunk:#1C1B20; --ink:#ECEAE5; --muted:#A29EA8; --line:#34323A;
+  --accent:#A99BEA; --accent-ink:#17161A; --red:#E0594F; --yellow:#E9BE3E; --green:#4FB172; --blue:#6690E0;
+  --good:#5CC27F; --bad:#F07B72; --warn:#E3B048; color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#17161A; --surface:#222127; --sunk:#1C1B20; --ink:#ECEAE5; --muted:#A29EA8; --line:#34323A;
+  --accent:#A99BEA; --accent-ink:#17161A; --red:#E0594F; --yellow:#E9BE3E; --green:#4FB172; --blue:#6690E0;
+  --good:#5CC27F; --bad:#F07B72; --warn:#E3B048; color-scheme:dark }
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.45}
+.wrap{max-width:1240px;margin:0 auto;padding-inline:16px;padding-block:20px 60px}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+header.top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px 24px;margin-bottom:18px}
+.brand{display:flex;align-items:center;gap:14px}
+.dots{display:grid;grid-template-columns:repeat(2,11px);gap:4px;transform:rotate(-20deg)}
+.dots i{width:11px;height:11px;border-radius:50%}
+.dots i:nth-child(1){background:var(--blue)} .dots i:nth-child(2){background:var(--red)}
+.dots i:nth-child(3){background:var(--green)} .dots i:nth-child(4){background:var(--yellow)}
+h1{font-family:var(--f-display);font-weight:700;font-size:clamp(26px,4vw,38px);letter-spacing:-.02em;margin:0;line-height:1}
+.sub{color:var(--muted);font-size:13px;margin-top:4px}
+
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;margin-bottom:18px}
+.stat{background:var(--surface);padding:12px 14px;min-width:0}
+.stat .k{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.stat .v{font-family:var(--f-mono);font-size:22px;font-weight:600;font-variant-numeric:tabular-nums;margin-top:2px}
+.stat .n{font-size:12px;color:var(--muted)}
+.pos{color:var(--good)} .neg{color:var(--bad)}
+
+nav.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:14px;overflow-x:auto}
+nav.tabs button{background:none;border:0;padding:10px 14px;cursor:pointer;color:var(--muted);font-weight:700;border-bottom:3px solid transparent;margin-bottom:-1px;white-space:nowrap}
+nav.tabs button[aria-selected="true"]{color:var(--ink);border-color:var(--accent)}
+nav.tabs .count{font-family:var(--f-mono);font-weight:400;font-size:12px;margin-left:4px;color:var(--muted)}
+
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:16px}
+.toolbar input[type=search]{flex:1 1 200px;min-width:0;padding:9px 12px;border:1px solid var(--line);border-radius:8px;background:var(--surface)}
+.toolbar select{padding:9px 10px;border:1px solid var(--line);border-radius:8px;background:var(--surface);max-width:100%}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 12px;cursor:pointer;font-size:13px}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:14px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;cursor:pointer;display:flex;flex-direction:column;text-align:left;padding:0;transition:transform .15s ease, box-shadow .15s ease}
+.card:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgb(0 0 0 / .12)}
+.card .ph{aspect-ratio:4/5;background:var(--sunk);display:flex;align-items:center;justify-content:center;position:relative}
+.card .ph img{width:100%;height:100%;object-fit:cover}
+.card .body{padding:10px 11px 12px;display:flex;flex-direction:column;gap:6px;flex:1}
+.card .t{font-family:var(--f-display);font-weight:700;font-size:15px;line-height:1.2;text-wrap:balance}
+.card .meta{display:flex;justify-content:space-between;align-items:center;gap:6px;margin-top:auto}
+.card .val{font-family:var(--f-mono);font-weight:600;font-variant-numeric:tabular-nums}
+.badge{position:absolute;top:8px;left:8px;display:flex;gap:4px;flex-wrap:wrap}
+.flag{font-size:11px;font-weight:700;padding:3px 7px;border-radius:5px;background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgb(0 0 0 / .25)}
+.flag.miss{background:var(--bad);color:#fff}
+.flag.q{background:var(--yellow);color:#1D1C21}
+.reg{font-size:11px;font-weight:700;letter-spacing:.04em;padding:2px 7px;border-radius:5px;white-space:nowrap}
+.reg.us{background:color-mix(in srgb,var(--accent) 18%,transparent);color:var(--accent)}
+.reg.jp{background:color-mix(in srgb,var(--red) 15%,transparent);color:var(--red)}
+.tier{font-family:var(--f-mono);font-size:11px;font-weight:600;padding:2px 6px;border-radius:5px;border:1px solid var(--line);color:var(--muted)}
+.tier.A{border-color:var(--yellow);color:var(--warn)}
+
+.empty{padding:40px 16px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:var(--r)}
+
+/* Pendientes */
+.todo{display:grid;gap:18px}
+.todo section h3{font-family:var(--f-display);font-size:18px;margin:0 0 8px}
+.task{display:flex;gap:10px;align-items:flex-start;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin-bottom:6px}
+.task input{margin-top:3px;width:18px;height:18px;accent-color:var(--accent)}
+.task .tt{font-weight:700}
+.task .td{color:var(--muted);font-size:13px}
+.task.done .tt{text-decoration:line-through;color:var(--muted)}
+.plist{display:flex;flex-wrap:wrap;gap:6px}
+.pitem{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:6px 10px;font-size:13px;cursor:pointer;text-align:left}
+.pitem b{font-weight:700}
+.pitem .st{font-family:var(--f-mono);font-size:11px;margin-left:6px}
+
+/* Ficha */
+dialog{border:0;padding:0;border-radius:14px;background:var(--surface);color:var(--ink);width:min(960px,calc(100% - 24px));max-height:calc(100% - 24px)}
+dialog::backdrop{background:rgb(0 0 0 / .55)}
+.sheet{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr)}
+@media (max-width:720px){.sheet{grid-template-columns:1fr}}
+.sheet .pic{background:var(--sunk);display:flex;align-items:flex-start;justify-content:center;padding:16px;min-height:260px}
+.sheet .pic img{max-height:70vh;object-fit:contain;border-radius:6px}
+.sheet .info{padding:20px 22px 22px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.sheet h2{font-family:var(--f-display);font-size:26px;line-height:1.1;margin:0;text-wrap:balance}
+.sheet .orig{color:var(--muted);margin-top:4px}
+.close{position:sticky;top:10px;display:block;margin:10px 10px -54px auto;z-index:6;border:0;background:var(--surface);border-radius:50%;width:44px;height:44px;cursor:pointer;font-size:26px;line-height:1;box-shadow:0 1px 4px rgb(0 0 0 / .3)}
+.kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px}
+.kv div{min-width:0}
+.kv .k{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.kv .v{font-family:var(--f-mono);font-variant-numeric:tabular-nums;font-weight:600;overflow-wrap:anywhere}
+.lbl{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:6px}
+.pieces{display:flex;flex-wrap:wrap;gap:6px}
+.pc{border:1px solid var(--line);border-radius:999px;padding:5px 11px;font-size:13px;cursor:pointer;background:var(--surface);display:inline-flex;gap:6px;align-items:center}
+.pc::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--muted)}
+.pc[data-s="tengo"]::before{background:var(--good)}
+.pc[data-s="falta"]{border-color:var(--bad)} .pc[data-s="falta"]::before{background:var(--bad)}
+.pc[data-s="?"]::before{background:var(--yellow)}
+.hint{font-size:12px;color:var(--muted)}
+form.edit{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+form.edit label{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--muted);min-width:0}
+form.edit input,form.edit textarea,form.edit select{padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);width:100%}
+form.edit .full{grid-column:1/-1}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.btn{background:var(--accent);color:var(--accent-ink);border:0;border-radius:8px;padding:9px 16px;font-weight:700;cursor:pointer}
+.btn.ghost{background:none;color:var(--ink);border:1px solid var(--line);text-decoration:none;display:inline-block}
+.status{font-size:13px;color:var(--muted)}
+a{color:var(--accent)}
+.settings{max-width:560px;display:grid;gap:12px}
+.about{border-top:1px solid var(--line);padding-top:12px;display:grid;gap:8px}
+.about p{margin:0;max-width:65ch}
+.about .score{font-family:var(--f-mono);font-weight:600;font-size:18px}
+.about .crit{font-size:13px;color:var(--muted)}
+.links{display:flex;flex-wrap:wrap;gap:8px}
+.caps{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.caps figure{margin:0;display:grid;gap:4px}
+.caps img{width:100%;aspect-ratio:8/7;object-fit:cover;image-rendering:pixelated;border-radius:6px;background:#000}
+.caps figcaption{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.pc .pv{font-family:var(--f-mono);font-size:11px;color:var(--muted)}
+.pc[data-s="falta"] .pv{color:var(--bad)}
+.pvals{margin-top:8px} .pvals summary{cursor:pointer;font-size:13px;color:var(--accent)}
+.pvgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin:10px 0}
+.pvgrid label{display:flex;flex-direction:column;gap:3px;font-size:12px;color:var(--muted);min-width:0}
+.pvgrid input{padding:6px 8px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);width:100%}
+.settings label{display:flex;flex-direction:column;gap:4px}
+.settings input{padding:9px 10px;border:1px solid var(--line);border-radius:8px;background:var(--surface);max-width:200px}
+/* Portada */
+.home{min-height:70vh;display:grid;grid-template-columns:minmax(0,1fr);align-content:center;gap:22px;text-align:center;padding-block:24px}
+.home h1{font-size:clamp(30px,6vw,52px)}
+.home .sub{font-size:15px}
+.consoles{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(200px,100%),1fr));gap:16px;max-width:1000px;margin:0 auto;width:100%}
+.console{border:1px solid var(--line);background:var(--surface);border-radius:16px;padding:28px 20px;cursor:pointer;display:grid;gap:10px;justify-items:center;transition:transform .15s ease, box-shadow .15s ease}
+.console:hover{transform:translateY(-3px);box-shadow:0 10px 26px rgb(0 0 0 / .14)}
+.console .cn{font-family:var(--f-display);font-weight:700;font-size:34px;letter-spacing:-.02em}
+.console .cs{color:var(--muted);font-size:13px}
+.console .cv{font-family:var(--f-mono);font-weight:600;font-size:18px}
+.nesmark{display:flex;gap:6px}.nesmark i{width:26px;height:10px;border-radius:3px;background:var(--red)}.nesmark i:nth-child(2){background:var(--ink)}
+.console .pad{width:min(150px,70%);aspect-ratio:16/9;display:grid;place-items:center}.console .pad svg{width:100%;height:100%;display:block;filter:drop-shadow(0 2px 3px rgb(0 0 0 / .18));transition:transform .2s ease}.console:hover .pad svg{transform:rotate(-3deg) scale(1.04)}@media (prefers-reduced-motion:reduce){.console:hover .pad svg{transform:none}}
+.back{background:none;border:1px solid var(--line);border-radius:8px;padding:7px 12px;cursor:pointer;font-weight:700}
+/* Galería */
+.gal{display:flex;flex-direction:column;gap:10px;width:100%;position:sticky;top:0}
+.gal .main{max-height:62vh;width:100%;object-fit:contain;border-radius:6px;background:var(--sunk)}
+.gal .thumbs{display:grid;grid-template-columns:repeat(auto-fill,minmax(58px,1fr));gap:6px;max-height:190px;overflow:auto}
+.gal .thumbs button{padding:0;border:2px solid transparent;border-radius:5px;background:none;cursor:pointer;aspect-ratio:3/4;overflow:hidden}
+.gal .thumbs button[aria-current="true"]{border-color:var(--accent)}
+.gal .thumbs img{width:100%;height:100%;object-fit:cover;display:block}
+.gal .gnav{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--muted)}
+.gal .gnav button{border:1px solid var(--line);background:var(--surface);border-radius:6px;padding:4px 10px;cursor:pointer}
+.cons .kv .v{font-family:var(--f-body)}
+.reg.eu{background:color-mix(in srgb,var(--green) 16%,transparent);color:var(--green)}
+/* Cartera */
+.port{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px 10px;margin-bottom:18px}
+.port .ph{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:10px}
+.port .big{font-family:var(--f-mono);font-size:30px;font-weight:600;font-variant-numeric:tabular-nums;line-height:1.1}
+.port .chg{font-family:var(--f-mono);font-size:14px;font-weight:600}
+.port .rng{display:flex;gap:4px}
+.port .rng button{border:1px solid var(--line);background:none;border-radius:6px;padding:4px 9px;font-size:12px;font-weight:700;cursor:pointer;color:var(--muted)}
+.port .rng button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.port .leg{display:flex;gap:14px;font-size:12px;color:var(--muted);margin-top:6px;flex-wrap:wrap}
+.port .leg i{display:inline-block;width:14px;height:0;border-top:2px solid var(--accent);vertical-align:middle;margin-right:5px}
+.port .leg i.inv{border-top:2px dashed var(--muted)}
+.port svg{width:100%;height:220px;display:block;margin-top:8px;overflow:visible}
+.port .tip{position:absolute;pointer-events:none;background:var(--ink);color:var(--bg);font-size:12px;padding:6px 8px;border-radius:6px;white-space:nowrap;font-family:var(--f-mono)}
+.port .note{font-size:12px;color:var(--muted);margin-top:4px}
+@media (prefers-reduced-motion:reduce){.card{transition:none}.card:hover{transform:none}}
+
+html,body{overflow-x:hidden}
+@media (max-width:720px){
+  .home{min-height:auto;padding-block:8px;gap:16px}
+  .console{padding:20px 16px}
+  .console .cn{font-size:28px}
+  dialog{width:100%;max-width:100%;height:100%;max-height:100%;border-radius:0;margin:0}
+  dialog .sheet{padding-bottom:84px}
+  .sheet .pic{padding-top:calc(env(safe-area-inset-top) + 16px)}
+  .sheet .pic img{max-height:50vh}
+  .close{position:fixed;margin:0;top:auto;right:auto;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom) + 16px);width:auto;height:auto;border-radius:999px;padding:12px 26px;font-size:16px;font-weight:700;background:var(--ink);color:var(--surface);box-shadow:0 4px 16px rgb(0 0 0 / .35);z-index:5}
+  .close::after{content:" Cerrar"}
+  .sheet .info{padding:18px 16px 22px}
+}
+@media (min-width:721px){
+  .close{transition:transform .4s cubic-bezier(.2,.8,.2,1),background .2s,color .2s}
+  .close:hover{transform:rotate(90deg) scale(1.1);background:var(--accent);color:var(--accent-ink)}
+  dialog[open] .close{animation:closeIn .55s cubic-bezier(.2,.8,.2,1)}
+}
+@keyframes closeIn{from{transform:rotate(-180deg) scale(.4);opacity:0}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){.close,.close:hover{transition:none;transform:none}dialog[open] .close{animation:none}}
+.back.float{position:fixed;top:calc(env(safe-area-inset-top,0px) + 10px);left:16px;z-index:20;background:var(--surface);box-shadow:0 3px 12px rgb(0 0 0 / .3)}
+.card .ph img[src=""],.sheet .pic img[src=""]{visibility:hidden}
+/* Jugar */
+.play{display:flex;flex-wrap:wrap;gap:8px 10px;align-items:center;border:1px solid var(--line);border-radius:8px;padding:10px 12px;background:var(--bg)}
+.play .hint{flex:1 1 180px;min-width:0;overflow-wrap:anywhere}
+.play{border-style:dashed}
+.play.drag{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,var(--bg))}
+.play .lock{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 11px;font-size:12px;cursor:pointer}
+.play .lock svg{width:15px;height:15px;flex:none}
+.play .lock[aria-pressed="true"]{border-color:var(--good);color:var(--good)}
+.play .mini{background:none;border:0;padding:0;color:var(--accent);cursor:pointer;font-size:12px;text-decoration:underline}
+#emuDlg{width:100%;max-width:100%;height:100%;max-height:100%;margin:0;border-radius:0;background:#18181b;color:#eae8e3;overflow:auto}
+#emuDlg .ebar{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 16px;padding-top:calc(env(safe-area-inset-top,0px) + 10px);background:#0b0b0d;border-bottom:1px solid #3b3b41}
+#emuDlg .et{font-family:var(--f-display);font-weight:700;font-size:17px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#emuDlg .ex{border:1px solid #55555c;background:none;color:inherit;border-radius:8px;padding:7px 14px;font-weight:700;cursor:pointer;white-space:nowrap}
+#emuDlg .ehost{outline:none}
+/* Excel */
+.xl-tb{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}
+.xlwrap{overflow:auto;border:1px solid var(--line);border-radius:var(--r);background:var(--surface);max-height:70vh}
+table.xl{border-collapse:collapse;width:max-content;min-width:100%;font-size:13px}
+.xl th,.xl td{padding:7px 10px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
+.xl th{position:sticky;top:0;background:var(--sunk);cursor:pointer;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);z-index:1;user-select:none}
+.xl th[aria-sort]{color:var(--ink)}
+.xl td.n,.xl th.n{text-align:right;font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.xl td.w{white-space:normal;min-width:220px}
+.xl td.mut{white-space:normal;min-width:220px;color:var(--muted)}
+.xl tbody tr{cursor:pointer}
+.xl tbody tr:hover{background:var(--sunk)}
+.xl tfoot td{position:sticky;bottom:0;background:var(--sunk);font-weight:700;border-bottom:0}
+
+/* Bandeja de fotos */
+.tray{max-width:1000px;margin:0 auto;width:100%;display:grid;gap:10px;text-align:left}
+.drop{border:2px dashed var(--line);border-radius:16px;background:var(--surface);padding:22px 20px;cursor:pointer;display:grid;gap:4px;justify-items:center;text-align:center;transition:border-color .15s ease,background .15s ease}
+.drop b{font-family:var(--f-display);font-size:20px}
+.drop span{color:var(--muted);font-size:14px;max-width:60ch}
+.drop:hover,.drop.drag{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 10%,var(--surface))}
+.tlist{display:grid;gap:8px}
+.titem{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:10px 12px}
+.titem img{width:56px;height:70px;object-fit:cover;border-radius:5px;background:var(--sunk);flex:none}
+.titem .tb{flex:1 1 200px;min-width:0;display:grid;gap:2px}
+.titem .tb .t{font-family:var(--f-display);font-weight:700;font-size:16px;overflow-wrap:anywhere}
+.titem .tb .m{font-size:13px;color:var(--muted)}
+.titem .ta{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.titem .ta .btn{padding:7px 12px;font-size:13px}
+.titem .del{background:none;border:0;color:var(--muted);cursor:pointer;font-size:12px;text-decoration:underline;padding:4px}
+.titem .del[data-sure]{color:var(--bad);font-weight:700}
+.titem.wait{border-style:dashed;color:var(--muted)}
+.dedit{border:1px solid var(--line);border-radius:8px;padding:8px 12px;background:var(--bg)}
+.dedit summary{cursor:pointer;font-weight:700;font-size:14px}
+.dedit form{margin-top:10px}
+@media (prefers-reduced-motion:reduce){.drop{transition:none}}
+
+/* Web: acceso, IA y pie */
+#gate{position:fixed;inset:0;z-index:100;background:var(--bg);display:grid;place-items:center;padding:16px}
+#gate form{display:grid;gap:12px;justify-items:center;text-align:center;max-width:340px;width:100%}
+#gate input{padding:11px 12px;border:1px solid var(--line);border-radius:8px;background:var(--surface);width:100%;text-align:center;font-size:16px}
+html.cerrado .wrap,html.cerrado footer.pie{display:none}
+footer.pie{max-width:1240px;margin:0 auto;padding:0 16px 40px;color:var(--muted);font-size:12px;display:grid;gap:4px;text-align:center}
+.iaform{padding:22px}
+</style>
+
+<div class="wrap">
+  <section class="home" id="home">
+    <div class="brand" style="justify-content:center"><div class="dots" aria-hidden="true"><i></i><i></i><i></i><i></i></div><h1>Retrolia</h1></div>
+    <div class="sub">Elige consola</div>
+    <div class="consoles">
+      <button class="console" data-plat="NES"><div class="pad"><svg viewBox="0 0 160 90" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><rect x="18" y="20" width="124" height="52" rx="4" fill="#d6d6d4" stroke="#9a9a98" stroke-width="1"/><rect x="24" y="28" width="112" height="36" rx="2" fill="#232323"/><rect x="34.25" y="42.75" width="19.5" height="6.5" rx="1" fill="#0e0e0e"/><rect x="40.75" y="36.25" width="6.5" height="19.5" rx="1" fill="#0e0e0e"/><rect x="62" y="37" width="30" height="20" rx="2" fill="#7d7d7d"/><rect x="65" y="48" width="10" height="4" rx="2" fill="#141414"/><rect x="79" y="48" width="10" height="4" rx="2" fill="#141414"/><rect x="96" y="38" width="16" height="16" rx="2" fill="#d6d6d4"/><rect x="116" y="38" width="16" height="16" rx="2" fill="#d6d6d4"/><circle cx="104" cy="46" r="5.8" fill="#c8202f"/><circle cx="124" cy="46" r="5.8" fill="#c8202f"/></svg></div><div class="cn">NES</div><div class="cs">NES PAL · NTSC-U · Famicom</div><div class="cv" id="hNES">—</div></button>
+      <button class="console" data-plat="SNES"><div class="pad"><svg viewBox="0 0 160 90" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><path d="M46,20 Q80,27 114,20 A28,28 0 0 1 114,76 Q80,69 46,76 A28,28 0 0 1 46,20 Z" fill="#d2d2d8" stroke="#a2a2aa" stroke-width="1"/><circle cx="46" cy="48" r="16" fill="#c0c0c7"/><rect x="35.8" y="44.6" width="20.4" height="6.8" rx="1" fill="#2b2b30"/><rect x="42.6" y="37.8" width="6.8" height="20.4" rx="1" fill="#2b2b30"/><rect x="64" y="40" width="32" height="16" rx="8" fill="#b4b4bc" transform="rotate(-18 80 48)"/><rect x="67" y="46" width="9" height="4" rx="2" fill="#55555d" transform="rotate(-28 71 48)"/><rect x="84" y="46" width="9" height="4" rx="2" fill="#55555d" transform="rotate(-28 88 48)"/><g transform="rotate(-18 114 48)"><circle cx="114" cy="48" r="18" fill="#9c98b4"/><circle cx="114" cy="37" r="5.6" fill="#3b5dbf"/><circle cx="125" cy="48" r="5.6" fill="#d0312d"/><circle cx="114" cy="59" r="5.6" fill="#e8b923"/><circle cx="103" cy="48" r="5.6" fill="#2e9a4a"/></g></svg></div><div class="cn">SNES</div><div class="cs">Super Famicom · SNES NTSC-U</div><div class="cv" id="hSNES">—</div></button>
+      <button class="console" data-plat="PS1"><div class="pad"><svg viewBox="0 0 160 90" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><path d="M44,20 H116 Q134,20 137,38 L143,70 Q145,84 134,85 Q125,86 120,74 L113,62 H47 L40,74 Q35,86 26,85 Q15,84 17,70 L23,38 Q26,20 44,20 Z" fill="#c4c4c4" stroke="#959595" stroke-width="1"/><circle cx="42" cy="40" r="12" fill="#b0b0b0"/><rect x="33.0" y="37.0" width="18" height="6" rx="1" fill="#7a7a7a"/><rect x="39.0" y="31.0" width="6" height="18" rx="1" fill="#7a7a7a"/><rect x="66" y="38" width="9" height="4" rx="1.5" fill="#6d6d6d"/><rect x="85" y="38" width="9" height="4" rx="1.5" fill="#6d6d6d"/><circle cx="118" cy="40" r="14" fill="#b0b0b0"/><circle cx="118" cy="31.5" r="4.2" fill="#6a6a6a"/><path d="M118,29.1 L120.3,33.1 L115.7,33.1 Z" fill="none" stroke="#3fbf8a" stroke-width="1.1" stroke-linejoin="round"/><circle cx="126.5" cy="40" r="4.2" fill="#6a6a6a"/><circle cx="126.5" cy="40" r="2.2" fill="none" stroke="#e8504f" stroke-width="1.1"/><circle cx="118" cy="48.5" r="4.2" fill="#6a6a6a"/><path d="M116,46.5 L120,50.5 M120,46.5 L116,50.5" stroke="#5b8fe0" stroke-width="1.1" stroke-linecap="round"/><circle cx="109.5" cy="40" r="4.2" fill="#6a6a6a"/><rect x="107.5" y="38" width="4" height="4" fill="none" stroke="#e58fc0" stroke-width="1.1"/></svg></div><div class="cn">PS1</div><div class="cs">PlayStation · PAL · NTSC-J</div><div class="cv" id="hPS1">—</div></button>
+      <button class="console" data-plat="PS2"><div class="pad"><svg viewBox="0 0 160 90" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><path d="M44,20 H116 Q134,20 137,38 L143,70 Q145,84 134,85 Q125,86 120,74 L113,62 H47 L40,74 Q35,86 26,85 Q15,84 17,70 L23,38 Q26,20 44,20 Z" fill="#1a1a1a" stroke="#3a3a3a" stroke-width="1"/><rect x="33.0" y="37.0" width="18" height="6" rx="1" fill="#3d3d3d"/><rect x="39.0" y="31.0" width="6" height="18" rx="1" fill="#3d3d3d"/><rect x="66" y="36" width="9" height="4" rx="1.5" fill="#444"/><rect x="85" y="36" width="9" height="4" rx="1.5" fill="#444"/><circle cx="80" cy="46" r="2" fill="#c0392b"/><circle cx="118" cy="31.5" r="4.2" fill="#2c2c2c"/><path d="M118,29.1 L120.3,33.1 L115.7,33.1 Z" fill="none" stroke="#3fbf8a" stroke-width="1.1" stroke-linejoin="round"/><circle cx="126.5" cy="40" r="4.2" fill="#2c2c2c"/><circle cx="126.5" cy="40" r="2.2" fill="none" stroke="#e8504f" stroke-width="1.1"/><circle cx="118" cy="48.5" r="4.2" fill="#2c2c2c"/><path d="M116,46.5 L120,50.5 M120,46.5 L116,50.5" stroke="#5b8fe0" stroke-width="1.1" stroke-linecap="round"/><circle cx="109.5" cy="40" r="4.2" fill="#2c2c2c"/><rect x="107.5" y="38" width="4" height="4" fill="none" stroke="#e58fc0" stroke-width="1.1"/><circle cx="64" cy="62" r="7.5" fill="#3a3a3a"/><circle cx="64" cy="62" r="5.3" fill="#121212"/><circle cx="96" cy="62" r="7.5" fill="#3a3a3a"/><circle cx="96" cy="62" r="5.3" fill="#121212"/></svg></div><div class="cn">PS2</div><div class="cs">PlayStation 2 · PAL</div><div class="cv" id="hPS2">—</div></button>
+      <button class="console" data-plat="PS4"><div class="pad"><svg viewBox="0 0 160 90" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><path d="M44,20 H116 Q134,20 137,38 L143,70 Q145,84 134,85 Q125,86 120,74 L113,62 H47 L40,74 Q35,86 26,85 Q15,84 17,70 L23,38 Q26,20 44,20 Z" fill="#232838" stroke="#3a4157" stroke-width="1"/><rect x="62" y="22" width="36" height="24" rx="4" fill="#2f3549" stroke="#454c63" stroke-width="1"/><rect x="68" y="22" width="24" height="2" rx="1" fill="#4aa3ff"/><rect x="33.0" y="37.0" width="18" height="6" rx="1" fill="#3a4157"/><rect x="39.0" y="31.0" width="6" height="18" rx="1" fill="#3a4157"/><circle cx="118" cy="31.5" r="4.2" fill="#30364a"/><path d="M118,29.1 L120.3,33.1 L115.7,33.1 Z" fill="none" stroke="#7fd9b5" stroke-width="1.1" stroke-linejoin="round"/><circle cx="126.5" cy="40" r="4.2" fill="#30364a"/><circle cx="126.5" cy="40" r="2.2" fill="none" stroke="#f08a89" stroke-width="1.1"/><circle cx="118" cy="48.5" r="4.2" fill="#30364a"/><path d="M116,46.5 L120,50.5 M120,46.5 L116,50.5" stroke="#8fb5f0" stroke-width="1.1" stroke-linecap="round"/><circle cx="109.5" cy="40" r="4.2" fill="#30364a"/><rect x="107.5" y="38" width="4" height="4" fill="none" stroke="#f0b3d4" stroke-width="1.1"/><circle cx="64" cy="62" r="7.5" fill="#3a4157"/><circle cx="64" cy="62" r="5.3" fill="#151925"/><circle cx="96" cy="62" r="7.5" fill="#3a4157"/><circle cx="96" cy="62" r="5.3" fill="#151925"/></svg></div><div class="cn">PS4</div><div class="cs">PlayStation 4</div><div class="cv" id="hPS4">—</div></button>
+      <button class="console" data-plat="PS5"><div class="pad"><svg viewBox="0 0 160 90" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><path d="M44,20 H116 Q134,20 137,38 L143,70 Q145,84 134,85 Q125,86 120,74 L113,62 H47 L40,74 Q35,86 26,85 Q15,84 17,70 L23,38 Q26,20 44,20 Z" fill="#f4f4f6" stroke="#c9c9d0" stroke-width="1"/><path d="M50,44 H110 L106,62 H54 Z" fill="#17171c"/><rect x="60" y="20" width="40" height="24" rx="5" fill="#f4f4f6" stroke="#c9c9d0" stroke-width="1"/><path d="M63,44 Q80,48 97,44" stroke="#4aa3ff" stroke-width="1.6" fill="none"/><rect x="31.75" y="39.25" width="16.5" height="5.5" rx="1" fill="#2a2a30"/><rect x="37.25" y="33.75" width="5.5" height="16.5" rx="1" fill="#2a2a30"/><circle cx="120" cy="34" r="4" fill="#2a2a30"/><path d="M120,31.6 L122.3,35.6 L117.7,35.6 Z" fill="none" stroke="#b9bcc6" stroke-width="1.1" stroke-linejoin="round"/><circle cx="128" cy="42" r="4" fill="#2a2a30"/><circle cx="128" cy="42" r="2.2" fill="none" stroke="#b9bcc6" stroke-width="1.1"/><circle cx="120" cy="50" r="4" fill="#2a2a30"/><path d="M118,48 L122,52 M122,48 L118,52" stroke="#b9bcc6" stroke-width="1.1" stroke-linecap="round"/><circle cx="112" cy="42" r="4" fill="#2a2a30"/><rect x="110" y="40" width="4" height="4" fill="none" stroke="#b9bcc6" stroke-width="1.1"/><circle cx="66" cy="60" r="7" fill="#2a2a30"/><circle cx="66" cy="60" r="4.8" fill="#0c0c10"/><circle cx="94" cy="60" r="7" fill="#2a2a30"/><circle cx="94" cy="60" r="4.8" fill="#0c0c10"/></svg></div><div class="cn">PS5</div><div class="cs">PlayStation 5</div><div class="cv" id="hPS5">—</div></button>
+      <button class="console" data-plat="PSP"><div class="pad"><svg viewBox="0 0 160 90" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><rect x="18" y="22" width="124" height="50" rx="24" fill="#161616" stroke="#3a3a3a" stroke-width="1"/><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff"/><stop offset=".5" stop-color="#fff" stop-opacity="0"/></linearGradient></defs><rect x="50" y="28" width="60" height="36" rx="2" fill="#2c3e50"/><rect x="50" y="28" width="60" height="36" rx="2" fill="url(#g)" opacity=".35"/><rect x="26.25" y="37.75" width="13.5" height="4.5" rx="1" fill="#3a3a3a"/><rect x="30.75" y="33.25" width="4.5" height="13.5" rx="1" fill="#3a3a3a"/><circle cx="33" cy="57" r="4" fill="#2b2b2b" stroke="#555" stroke-width="1"/><circle cx="127" cy="37.5" r="3.2" fill="#2b2b2b"/><path d="M127,35.1 L129.3,39.1 L124.7,39.1 Z" fill="none" stroke="#3fbf8a" stroke-width="0.9" stroke-linejoin="round"/><circle cx="133.5" cy="44" r="3.2" fill="#2b2b2b"/><circle cx="133.5" cy="44" r="2.2" fill="none" stroke="#e8504f" stroke-width="0.9"/><circle cx="127" cy="50.5" r="3.2" fill="#2b2b2b"/><path d="M125,48.5 L129,52.5 M129,48.5 L125,52.5" stroke="#5b8fe0" stroke-width="0.9" stroke-linecap="round"/><circle cx="120.5" cy="44" r="3.2" fill="#2b2b2b"/><rect x="118.5" y="42" width="4" height="4" fill="none" stroke="#e58fc0" stroke-width="0.9"/></svg></div><div class="cn">PSP</div><div class="cs">PlayStation Portable</div><div class="cv" id="hPSP">—</div></button>
+      <button class="console" data-plat="SWITCH"><div class="pad"><svg viewBox="0 0 160 90" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><path d="M34,14 H34 V76 H20 Q6,76 6,60 V30 Q6,14 20,14 Z" fill="#00b9de"/><circle cx="20" cy="32" r="6" fill="#222"/><circle cx="20" cy="32" r="3.8" fill="#0e0e0e"/><circle cx="20" cy="48" r="3" fill="#1d1d1d"/><circle cx="26" cy="54" r="3" fill="#1d1d1d"/><circle cx="20" cy="60" r="3" fill="#1d1d1d"/><circle cx="14" cy="54" r="3" fill="#1d1d1d"/><rect x="34" y="12" width="92" height="66" rx="3" fill="#2a2a2a"/><rect x="39" y="17" width="82" height="56" rx="2" fill="#3c4a57"/><path d="M126,14 H140 Q154,14 154,30 V60 Q154,76 140,76 H126 Z" fill="#ff4b56"/><circle cx="140" cy="30" r="3" fill="#1d1d1d"/><circle cx="146" cy="36" r="3" fill="#1d1d1d"/><circle cx="140" cy="42" r="3" fill="#1d1d1d"/><circle cx="134" cy="36" r="3" fill="#1d1d1d"/><circle cx="140" cy="58" r="6" fill="#222"/><circle cx="140" cy="58" r="3.8" fill="#0e0e0e"/></svg></div><div class="cn">Switch</div><div class="cs">Nintendo Switch</div><div class="cv" id="hSWITCH">—</div></button>
+      <button class="console" data-plat="SW2"><div class="pad"><svg viewBox="0 0 160 90" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><path d="M34,14 H34 V76 H20 Q6,76 6,60 V30 Q6,14 20,14 Z" fill="#26262a"/><rect x="32" y="18" width="2" height="54" fill="#00b9de"/><circle cx="20" cy="32" r="6" fill="#3a3a3a"/><circle cx="20" cy="32" r="3.8" fill="#0e0e0e"/><circle cx="20" cy="48" r="3" fill="#111"/><circle cx="26" cy="54" r="3" fill="#111"/><circle cx="20" cy="60" r="3" fill="#111"/><circle cx="14" cy="54" r="3" fill="#111"/><rect x="34" y="12" width="92" height="66" rx="3" fill="#1b1b1e"/><rect x="39" y="17" width="82" height="56" rx="2" fill="#3c4a57"/><path d="M126,14 H140 Q154,14 154,30 V60 Q154,76 140,76 H126 Z" fill="#26262a"/><rect x="126" y="18" width="2" height="54" fill="#ff4b56"/><circle cx="140" cy="30" r="3" fill="#111"/><circle cx="146" cy="36" r="3" fill="#111"/><circle cx="140" cy="42" r="3" fill="#111"/><circle cx="134" cy="36" r="3" fill="#111"/><circle cx="140" cy="58" r="6" fill="#3a3a3a"/><circle cx="140" cy="58" r="3.8" fill="#0e0e0e"/></svg></div><div class="cn">Switch 2</div><div class="cs">Nintendo Switch 2</div><div class="cv" id="hSW2">—</div></button>
+      <button class="console" data-plat="GC"><div class="pad"><svg viewBox="0 0 160 90" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><path d="M50,20 Q80,14 110,20 Q138,23 141,48 Q144,78 126,84 Q111,88 105,70 Q80,64 55,70 Q49,88 34,84 Q16,78 19,48 Q22,23 50,20 Z" fill="#4c3f9f" stroke="#3a2f80" stroke-width="1"/><path d="M41,28 h10 l7,7 v10 l-7,7 h-10 l-7,-7 v-10 Z" fill="#3a2f80"/><circle cx="46" cy="40" r="7.5" fill="#8a86a3"/><circle cx="46" cy="40" r="5.3" fill="#c3c0d6"/><rect x="54.3" y="62.1" width="11.399999999999999" height="3.8" rx="1" fill="#8a86a3"/><rect x="58.1" y="58.3" width="3.8" height="11.399999999999999" rx="1" fill="#8a86a3"/><circle cx="80" cy="46" r="2.4" fill="#8a86a3"/><circle cx="112" cy="42" r="9" fill="#26b36b"/><circle cx="99" cy="52" r="4.6" fill="#d93a3a"/><path d="M124,30 Q131,36 128,48" stroke="#c3c0d6" stroke-width="5" stroke-linecap="round" fill="none"/><path d="M102,30 Q109,25 118,27" stroke="#c3c0d6" stroke-width="5" stroke-linecap="round" fill="none"/><circle cx="114" cy="67" r="6.5" fill="#3a2f80"/><circle cx="114" cy="67" r="4.3" fill="#f2c230"/></svg></div><div class="cn">GameCube</div><div class="cs">Nintendo GameCube · PAL</div><div class="cv" id="hGC">—</div></button>
+      <button class="console" data-plat="DS"><div class="pad"><svg viewBox="0 0 160 90" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><rect x="36" y="2" width="88" height="42" rx="5" fill="#e9e9ee" stroke="#b8b8c2" stroke-width="1"/><rect x="53" y="7" width="54" height="33" rx="1" fill="#34404c"/><rect x="38" y="44" width="84" height="3" fill="#b8b8c2"/><rect x="36" y="47" width="88" height="41" rx="5" fill="#e9e9ee" stroke="#b8b8c2" stroke-width="1"/><rect x="58" y="51" width="44" height="32" rx="1" fill="#34404c"/><rect x="41.3" y="60.1" width="11.399999999999999" height="3.8" rx="1" fill="#404048"/><rect x="45.1" y="56.3" width="3.8" height="11.399999999999999" rx="1" fill="#404048"/><circle cx="113" cy="57" r="2.8" fill="#55555f"/><circle cx="118" cy="62" r="2.8" fill="#55555f"/><circle cx="113" cy="67" r="2.8" fill="#55555f"/><circle cx="108" cy="62" r="2.8" fill="#55555f"/></svg></div><div class="cn">DS</div><div class="cs">Nintendo DS</div><div class="cv" id="hDS">—</div></button>
+      <button class="console" data-plat="3DS"><div class="pad"><svg viewBox="0 0 160 90" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><rect x="34" y="2" width="92" height="42" rx="5" fill="#2b2f3a" stroke="#454b5a" stroke-width="1"/><rect x="46" y="7" width="68" height="33" rx="1" fill="#34404c"/><rect x="36" y="44" width="88" height="3" fill="#454b5a"/><rect x="34" y="47" width="92" height="41" rx="5" fill="#2b2f3a" stroke="#454b5a" stroke-width="1"/><rect x="58" y="51" width="44" height="32" rx="1" fill="#34404c"/><circle cx="46" cy="58" r="5" fill="#454b5a"/><circle cx="46" cy="58" r="3.2" fill="#1b1e25"/><rect x="41.2" y="72.4" width="9.600000000000001" height="3.2" rx="1" fill="#454b5a"/><rect x="44.4" y="69.2" width="3.2" height="9.600000000000001" rx="1" fill="#454b5a"/><circle cx="114" cy="58" r="2.7" fill="#c9cdd6"/><circle cx="119" cy="63" r="2.7" fill="#c9cdd6"/><circle cx="114" cy="68" r="2.7" fill="#c9cdd6"/><circle cx="109" cy="63" r="2.7" fill="#c9cdd6"/></svg></div><div class="cn">3DS</div><div class="cs">Nintendo 3DS</div><div class="cv" id="h3DS">—</div></button>
+      <button class="console" data-plat="GBA"><div class="pad"><svg viewBox="0 0 160 90" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><path d="M48,12 H112 Q142,12 142,47 Q142,82 112,82 H48 Q18,82 18,47 Q18,12 48,12 Z" fill="#5c4aa8" stroke="#43357f" stroke-width="1"/><rect x="50" y="20" width="60" height="50" rx="3" fill="#2a2a30"/><rect x="55" y="25" width="50" height="38" fill="#9fb0a0"/><rect x="26.5" y="39.5" width="15" height="5" rx="1" fill="#2d2550"/><rect x="31.5" y="34.5" width="5" height="15" rx="1" fill="#2d2550"/><circle cx="122" cy="40" r="5.4" fill="#b9b2d6"/><circle cx="132" cy="50" r="5.4" fill="#b9b2d6"/><rect x="30" y="62" width="8" height="3.4" rx="1.7" fill="#2d2550"/><rect x="30" y="69" width="8" height="3.4" rx="1.7" fill="#2d2550"/></svg></div><div class="cn">GBA</div><div class="cs">Game Boy Advance</div><div class="cv" id="hGBA">—</div></button>
+      <button class="console" data-plat="MD"><div class="pad"><svg viewBox="0 0 160 90" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><path d="M48,18 Q80,11 112,18 Q142,26 140,52 Q138,80 116,78 Q100,76 95,66 H65 Q60,76 44,78 Q22,80 20,52 Q18,26 48,18 Z" fill="#1c1c1e" stroke="#3a3a3e" stroke-width="1"/><circle cx="46" cy="46" r="14" fill="#2e2e33"/><rect x="37.0" y="43.0" width="18" height="6" rx="1" fill="#141416"/><rect x="43.0" y="37.0" width="6" height="18" rx="1" fill="#141416"/><rect x="73" y="42" width="14" height="5" rx="2.5" fill="#3a3a3f"/><circle cx="102" cy="54" r="5.6" fill="#2e2e33" stroke="#4a4a50" stroke-width="1"/><circle cx="115" cy="46" r="5.6" fill="#2e2e33" stroke="#4a4a50" stroke-width="1"/><circle cx="128" cy="38" r="5.6" fill="#2e2e33" stroke="#4a4a50" stroke-width="1"/></svg></div><div class="cn">Mega Drive</div><div class="cs">Sega Mega Drive · PAL</div><div class="cv" id="hMD">—</div></button>
+    </div>
+    <div class="tray" id="tray" aria-label="Bandeja de fotos">
+      <div class="drop" id="trayDrop" role="button" tabindex="0"><b>Bandeja de fotos</b><span>Arrastra aquí las fotos de tus juegos, o toca para elegirlas. Cada foto crea su ficha: la IA reconoce el juego, la consola y la región, y luego decides si completas la ficha con IA o a mano.</span></div>
+      <div class="row" style="justify-content:center"><button type="button" class="btn ghost" id="iaBtn">Configurar la IA</button><span class="status" id="iaEstado"></span></div>
+      <input type="file" id="trayPick" multiple accept="image/*" hidden>
+      <div class="status" id="trayMsg" role="status"></div>
+      <div class="tlist" id="trayList"></div>
+    </div>
+    <div class="status" id="hSync">Conectando con tus datos…</div>
+  </section>
+  <div id="platView" hidden>
+  <header class="top">
+    <div class="brand">
+      <button class="back" id="goHome" aria-label="Volver a elegir consola">← Consolas</button>
+      <div>
+        <h1 id="pTitle">Colección Super Nintendo</h1>
+        <div class="sub" id="pSub"></div>
+      </div>
+    </div>
+    <div class="status" id="sync">Conectando con tus datos…</div>
+  </header>
+
+  <section class="port" id="port" hidden aria-label="Evolución de la cartera">
+    <div class="ph">
+      <div><div class="lbl" id="pLbl">Cartera · valor de mercado</div><div class="big" id="pVal">—</div><div class="chg" id="pChg">&nbsp;</div></div>
+      <div class="rng" id="pRng"><button data-r="30">1M</button><button data-r="182">6M</button><button data-r="365">1A</button><button data-r="1825">5A</button><button data-r="0" aria-pressed="true">Todo</button></div>
+    </div>
+    <div style="position:relative" id="pWrap"><svg id="pSvg" role="img" aria-label="Gráfico del valor de la colección y lo invertido a lo largo del tiempo"></svg><div class="tip" id="pTip" hidden></div></div>
+    <div class="leg"><span><i></i>Valor de mercado</span><span><i class="inv"></i>Invertido (según fecha de obtención)</span></div>
+    <div class="note" id="pNote"></div>
+  </section>
+
+  <div class="stats" id="stats">
+    <div class="stat"><div class="k">Valor actual</div><div class="v" id="sValor">—</div><div class="n" id="sValorN">&nbsp;</div></div>
+    <div class="stat"><div class="k">Invertido</div><div class="v" id="sPagado">—</div><div class="n" id="sPagadoN">&nbsp;</div></div>
+    <div class="stat"><div class="k">Juegos</div><div class="v" id="sJuegos">—</div><div class="n" id="sJuegosN">&nbsp;</div></div>
+    <div class="stat"><div class="k">Piezas por revisar</div><div class="v" id="sPiezas">—</div><div class="n" id="sPiezasN">&nbsp;</div></div>
+  </div>
+
+  <nav class="tabs" role="tablist">
+    <button role="tab" data-tab="tengo" aria-selected="true">Colección<span class="count" id="cTengo"></span></button>
+    <button role="tab" data-tab="deseo" aria-selected="false">Lista de deseos<span class="count" id="cDeseo"></span></button>
+    <button role="tab" data-tab="pend" aria-selected="false">Pendientes<span class="count" id="cPend"></span></button>
+    <button role="tab" data-tab="excel" aria-selected="false">Excel</button>
+    <button role="tab" data-tab="ajustes" aria-selected="false">Ajustes</button>
+  </nav>
+
+  <section id="vGrid">
+    <div class="toolbar">
+      <button type="button" class="btn" id="addBtn">＋ Añadir juego</button>
+      <input type="search" id="q" placeholder="Buscar título, editora…" aria-label="Buscar">
+      <div class="chips" id="regChips"></div>
+      <select id="gen" aria-label="Género"><option value="">Todos los géneros</option></select>
+      <select id="ed" aria-label="Editora"><option value="">Todas las editoras</option></select>
+      <select id="sort" aria-label="Ordenar">
+        <option value="valor">Más valiosos</option>
+        <option value="gan">Mayor ganancia (€)</option>
+        <option value="var">Mayor revalorización (%)</option>
+        <option value="titulo">Título A–Z</option>
+        <option value="anio">Año de lanzamiento</option>
+        <option value="obt">Fecha de obtención</option>
+      </select>
+    </div>
+    <div class="grid" id="grid"></div>
+    <div class="empty" id="gridEmpty" hidden></div>
+  </section>
+
+  <section id="vPend" hidden>
+    <div class="todo">
+      <section><h3>Tareas generales</h3><div id="tasks"></div></section>
+      <section><h3>Piezas que faltan</h3><p class="hint">Toca un juego para abrir su ficha.</p><div class="plist" id="miss"></div></section>
+      <section><h3>Piezas sin comprobar</h3><p class="hint">Componentes de un 100% que aún no has confirmado.</p><div class="plist" id="unk"></div></section>
+      <section><h3>Sin precio pagado</h3><div class="plist" id="nopaid"></div></section>
+      <section><h3>Sin fecha de obtención</h3><div class="plist" id="nodate"></div></section>
+    </div>
+  </section>
+
+  <section id="vExcel" hidden>
+    <div class="xl-tb">
+      <button class="btn" id="xlDl">Descargar Excel (.xlsx)</button>
+      <span class="status" id="xlMsg"></span>
+    </div>
+    <p class="hint" style="margin:0 0 10px">Tabla de tu colección (sin lista de deseos), con los datos en vivo. Toca una cabecera para ordenar y una fila para abrir su ficha. El .xlsx incluye una hoja por consola, con la ganancia y la revalorización como fórmulas y una fila de totales.</p>
+    <div class="xlwrap"><table class="xl" id="xlTable"></table></div>
+  </section>
+
+  <section id="vAjustes" hidden>
+    <div class="settings">
+      <label for="fx">Tipo de cambio: 1 USD en EUR<input id="fx" type="number" step="0.01" min="0.5" max="1.5"></label>
+      <label for="envio">Envío a casa por juego (€)<input id="envio" type="number" step="0.5" min="0"></label>
+      <label for="iva">IVA de importación (%)<input id="iva" type="number" step="1" min="0"></label>
+      <label for="arancel">Arancel (%)<input id="arancel" type="number" step="0.1" min="0"></label>
+      <label for="gestion">Gestión aduanera del transportista (€)<input id="gestion" type="number" step="0.5" min="0"></label>
+      <div class="row"><button class="btn" id="saveFx">Guardar ajustes</button><span class="status" id="fxMsg"></span></div>
+      <p class="hint">Tu colección se valora a precio de mercado (CIB de PriceCharting × cambio). La lista de deseos, a coste puesto en casa:</p>
+      <p class="hint">Coste puesto en casa = (precio CIB de PriceCharting en € + envío) × (1 + arancel) × (1 + IVA) + gestión. El IVA se paga sobre el juego más el envío. Los videojuegos (partida 9504.50) no pagan arancel en la UE. La gestión depende del transportista: Correos cobra poco, DHL, UPS o FedEx bastante más.</p>
+      <p class="hint">Los valores que pongas a mano en una ficha van en euros y sustituyen al cálculo.</p>
+      <div class="about"><div class="lbl">Copia de seguridad</div>
+        <p class="hint">Descarga toda la colección, lista de deseos, piezas, precios pagados y tareas. El JSON es la copia de las fichas; el CSV se abre en Excel.</p>
+        <div class="row"><button class="btn" id="bkJson">Descargar copia completa (JSON)</button><button class="btn ghost" id="bkCsv">Descargar tabla (CSV)</button><button class="btn ghost" id="bkIn" type="button">Restaurar una copia (JSON)</button><input type="file" id="bkFile" accept=".json,application/json" hidden><span class="status" id="bkMsg"></span></div>
+        <p class="hint">Tu colección vive solo en este navegador. Si borras sus datos o cambias de dispositivo, se pierde: descarga una copia de vez en cuando. La copia guarda las fichas, no las fotos ni las ROM.</p>
+      </div>
+      <p class="hint">Niveles (sobre el valor mostrado): <b>A</b> desde 170 €, <b>B</b> de 50 a 169 €, <b>C</b> por debajo de 50 €.</p>
+    </div>
+  </section>
+  </div>
+</div>
+
+<footer class="pie"><div>© 2026 Retrolia · Versión beta · Tu colección se guarda solo en este navegador.</div>
+<div>Retrolia no incluye ni distribuye juegos: cada usuario carga sus propias copias. Emulación con JSNES (Apache 2.0) y Snes9x (uso no comercial). <a href="https://github.com/promerolardn-gif/retrolia/blob/main/LICENCIAS.md" target="_blank" rel="noopener">Licencias y avisos</a></div></footer>
+
+<div id="gate" hidden><form id="gateForm"><div class="brand"><div class="dots" aria-hidden="true"><i></i><i></i><i></i><i></i></div><h1>Retrolia</h1></div>
+  <div class="sub">Beta privada. Escribe el código de acceso que te han pasado.</div>
+  <input id="gateCode" type="password" autocomplete="off" aria-label="Código de acceso" placeholder="Código de acceso">
+  <button class="btn" type="submit">Entrar</button><div class="status" id="gateMsg" role="status"></div></form></div>
+
+<dialog id="iaDlg" aria-label="Configurar la IA" style="width:min(560px,calc(100% - 24px))">
+  <form class="edit iaform" id="iaForm">
+    <h2 class="full" style="font-family:var(--f-display);margin:0">Configurar la IA</h2>
+    <p class="hint full">Retrolia usa una IA para reconocer los juegos en tus fotos y completar las fichas. Funciona con tu propia clave, que se guarda solo en este navegador. Las fotos que pases por la bandeja se envían al proveedor que elijas, con sus condiciones de uso.</p>
+    <label class="full">Proveedor<select id="iaProv"><option value="gemini">Google Gemini</option><option value="openai">Otro compatible con OpenAI (OpenRouter, Mistral, Groq…)</option></select></label>
+    <label class="full">Clave de API<input id="iaKey" type="password" autocomplete="off" spellcheck="false"></label>
+    <label class="full" id="iaBaseL">Dirección del servicio<input id="iaBase" list="iaBases" placeholder="https://openrouter.ai/api/v1" spellcheck="false"><datalist id="iaBases"><option value="https://openrouter.ai/api/v1"><option value="https://api.mistral.ai/v1"><option value="https://api.groq.com/openai/v1"></datalist></label>
+    <label class="full">Modelo<input id="iaModel" list="iaModels" placeholder="Automático" spellcheck="false"><datalist id="iaModels"></datalist></label>
+    <p class="hint full" id="iaAyuda"></p>
+    <div class="row full"><button class="btn" type="submit">Guardar y probar</button><button class="btn ghost" type="button" id="iaLista">Ver modelos</button><button class="btn ghost" type="button" id="iaCerrar">Cerrar</button></div>
+    <div class="status full" id="iaMsg" role="status"></div>
+  </form>
+</dialog>
+
+<dialog id="dlg" aria-label="Ficha del juego">
+  <button class="close" id="dlgClose" aria-label="Cerrar">×</button>
+  <div class="sheet">
+    <div class="pic" id="dPic"><img id="dImg" alt=""></div>
+    <div class="info">
+      <div>
+        <div class="row" id="dTags"></div>
+        <h2 id="dTitle"></h2>
+        <div class="orig" id="dOrig"></div>
+      </div>
+      <div id="dPlay"></div>
+      <div id="dPort"></div>
+      <div class="kv" id="dKv"></div>
+      <div id="dCons"></div>
+      <div>
+        <div class="lbl">Qué lleva un 100% · toca una pieza para cambiar su estado</div>
+        <div class="pieces" id="dPieces"></div>
+        <div class="hint" style="margin-top:6px" id="dPiecesHint">Verde: lo tienes · Rojo: falta (su valor se resta) · Amarillo: sin comprobar</div>
+        <details class="pvals"><summary>Ajustar el valor de cada pieza</summary><div class="pvgrid" id="dPv"></div>
+          <div class="row"><button type="button" class="btn" id="savePv">Guardar valores</button><span class="status" id="pvMsg"></span></div>
+          <p class="hint">Cada pieza tiene un valor: si falta, se resta del precio completo. Cambia cualquier cifra y quedará fijada.</p></details>
+      </div>
+      <details class="dedit" id="dEdit"><summary>Editar los datos de la ficha</summary>
+        <form class="edit" id="eForm">
+          <label class="full">Título<input id="eTitulo" required maxlength="120"></label>
+          <label class="full">Título original<input id="eOriginal" maxlength="120"></label>
+          <label>Consola<select id="ePlat"></select></label>
+          <label>Región o edición<input id="eRegion" list="eRegs" maxlength="40"><datalist id="eRegs"></datalist></label>
+          <label>Editora<input id="eEditora" maxlength="60"></label>
+          <label>Género<input id="eGenero" maxlength="40"></label>
+          <label>Año<input id="eAnio" type="number" min="1970" max="2100"></label>
+          <div class="row full"><button class="btn" type="submit">Guardar datos</button><button class="btn ghost" type="button" id="eIA">Completar con IA</button><span class="status" id="eMsg" role="status"></span></div>
+          <p class="hint full">«Completar con IA» rellena editora, género, año, la reseña y un precio orientativo. La IA responde de memoria, sin consultar tiendas: revisa el precio antes de fiarte de él.</p>
+        </form>
+      </details>
+      <form class="edit" id="dForm">
+        <label>Precio pagado (€)<input id="fPagado" type="number" step="0.01" min="0"></label>
+        <label>Fecha de obtención<input id="fFecha" type="date"></label>
+        <label>Valor manual (€)<input id="fManual" type="number" step="0.01" min="0" placeholder="Opcional"></label>
+        <label>En la colección<select id="fEstado"><option value="tengo">Lo tengo</option><option value="deseo">Lista de deseos</option></select></label>
+        <label class="full">Notas<textarea id="fNotas" rows="2"></textarea></label>
+        <div class="row full"><button class="btn" type="submit">Guardar</button><span class="status" id="dMsg"></span></div>
+      </form>
+      <div id="dCaps"></div>
+      <div id="dInfo"></div>
+      <div class="hint" id="dSrc"></div>
+    </div>
+  </div>
+</dialog>
+
+<dialog id="addDlg" aria-label="Añadir juego" style="width:min(560px,calc(100% - 24px))">
+  <form class="edit" id="addForm" style="padding:22px">
+    <h2 class="full" style="font-family:var(--f-display);margin:0">Añadir juego</h2>
+    <label class="full">Título<input id="aTitulo" required maxlength="120"></label>
+    <label>Región o edición<input id="aRegion" list="aRegs" placeholder="PAL España, NTSC-U…"><datalist id="aRegs"></datalist></label>
+    <label>En la colección<select id="aEstado"><option value="tengo">Lo tengo</option><option value="deseo">Lista de deseos</option></select></label>
+    <label>Editora<input id="aEditora" maxlength="60"></label>
+    <label>Género<input id="aGenero" maxlength="40"></label>
+    <label>Año<input id="aAnio" type="number" min="1970" max="2100"></label>
+    <label>Precio pagado (€)<input id="aPagado" type="number" step="0.01" min="0"></label>
+    <label>Valor actual (€)<input id="aValor" type="number" step="0.01" min="0" placeholder="Opcional"></label>
+    <label>Fecha de obtención<input id="aFecha" type="date"></label>
+    <label class="full">Foto de la caja o el cartucho<input id="aFoto" type="file" accept="image/*"></label>
+    <div class="row full"><button class="btn" type="submit">Crear ficha</button><button class="btn ghost" type="button" id="addCancel">Cancelar</button><span class="status" id="addMsg"></span></div>
+  </form>
+</dialog>
+<dialog id="emuDlg" aria-label="Emulador">
+  <div class="ebar"><div class="et" id="emuTitle"></div><span class="status" id="emuMsg" style="flex:1;text-align:right;color:#a3a2a9"></span><button class="ex" id="emuShot" title="Guarda la imagen actual del juego en la ficha">Captura a la ficha</button><button class="ex" id="emuClose">Cerrar ✕</button></div>
+  <div class="ehost" id="emuHost-nes" tabindex="-1" hidden></div>
+  <div class="ehost" id="emuHost-snes" tabindex="-1" hidden></div>
+</dialog>
+<input type="file" id="romPick" hidden accept=".nes,.sfc,.smc,.swc,.fig,.zip,application/zip,application/octet-stream">
+
+
+<script>
+(()=>{ const g=document.getElementById("gate"); if(!document.documentElement.classList.contains("cerrado")) return; g.hidden=false; document.getElementById("gateCode").focus();
+  document.getElementById("gateForm").onsubmit=async e=>{ e.preventDefault(); const m=document.getElementById("gateMsg"), v=document.getElementById("gateCode").value.trim().toLowerCase();
+    try{ const d=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(v)); const h=[...new Uint8Array(d)].map(b=>b.toString(16).padStart(2,"0")).join("");
+      if(h===window.RL_GATE){ try{ localStorage.setItem("retrolia.acceso",h); }catch{} document.documentElement.classList.remove("cerrado"); g.hidden=true; window.dispatchEvent(new Event("resize")); }
+      else m.textContent="Ese código no es correcto."; }
+    catch{ m.textContent="Este navegador no puede comprobar el código."; } }; })();
+</script>
+<script src="local.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+(()=>{
+const $=s=>document.querySelector(s);
+const state={plat:null,gi:0,games:[],tasks:[],fx:0.85,envio:27.5,iva:21,gestion:10,arancel:0,tab:"tengo",reg:"",q:"",gen:"",ed:"",sort:"valor",cur:null,db:null};
+const eur=n=>n==null?"—":n.toLocaleString("es-ES",{maximumFractionDigits:0})+" €";
+const usd=n=>n==null?"—":"$"+n.toLocaleString("es-ES",{minimumFractionDigits:2,maximumFractionDigits:2});
+const pct=n=>n==null?"":(n>0?"+":"")+Math.round(n*100)+"%";
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const platOf=g=>g.plataforma||"SNES";
+const PLAT={SNES:{title:"Colección Super Nintendo",sub:"Super Famicom · SNES NTSC-U · tu colección a precio de mercado · la lista de deseos con coste puesto en casa",chips:[["","Todas"],["SNES NTSC-U","NTSC-U"],["Super Famicom","Super Famicom"]]},
+  NES:{title:"Colección NES",sub:"NES PAL España · PAL-B · NTSC-U · Famicom · a precio de mercado en España",chips:[["","Todas"],["NES PAL España","PAL España"],["NES PAL-B","PAL-B"],["NES NTSC-U","NTSC-U"],["Famicom","Famicom"]]},
+  PS1:{title:"Colección PlayStation",sys:"PS1",sub:"PAL · PAL España · NTSC-J · a precio de mercado",chips:[["","Todas"],["PS1 PAL","PAL"],["PS1 PAL España","PAL España"],["PS1 NTSC-J","NTSC-J"]]},
+  PS2:{title:"Colección PlayStation 2",sys:"PS2",sub:"PAL · PAL España · a precio de mercado",chips:[["","Todas"],["PS2 PAL","PAL"],["PS2 PAL España","PAL España"]]},
+  PS4:{title:"Colección PlayStation 4",sys:"PS4",sub:"A precio de mercado",chips:[["","Todas"]]},
+  PS5:{title:"Colección PlayStation 5",sys:"PS5",sub:"A precio de mercado",chips:[["","Todas"]]},
+  PSP:{title:"Colección PSP",sys:"PSP",sub:"PAL · PAL España · a precio de mercado",chips:[["","Todas"],["PSP PAL","PAL"],["PSP PAL España","PAL España"]]},
+  SWITCH:{title:"Colección Nintendo Switch",sys:"Switch",sub:"PAL · PAL España · a precio de mercado",chips:[["","Todas"],["Switch PAL","PAL"],["Switch PAL España","PAL España"]]},
+  DS:{title:"Colección Nintendo DS",sys:"Nintendo DS",sub:"PAL · PAL España · a precio de mercado",chips:[["","Todas"],["DS PAL","PAL"],["DS PAL España","PAL España"]]},
+  "3DS":{title:"Colección Nintendo 3DS",sys:"Nintendo 3DS",sub:"PAL · PAL España · a precio de mercado",chips:[["","Todas"],["3DS PAL","PAL"],["3DS PAL España","PAL España"]]},
+  GBA:{title:"Colección Game Boy Advance",sys:"Game Boy Advance",sub:"A precio de mercado",chips:[["","Todas"]]},
+  SW2:{title:"Colección Nintendo Switch 2",sys:"Switch 2",sub:"PAL España · a precio de mercado",chips:[["","Todas"]]},
+  GC:{title:"Colección GameCube",sys:"GameCube",sub:"PAL España · a precio de mercado",chips:[["","Todas"]]},
+  MD:{title:"Colección Mega Drive",sys:"Mega Drive",sub:"PAL · a precio de mercado",chips:[["","Todas"]]}};
+const PLATS=Object.keys(PLAT);
+const REGI={"SNES NTSC-U":["NTSC-U","us"],"Super Famicom":["SFC","jp"],"SNES PAL":["PAL","eu"],"NES PAL España":["PAL ESP","eu"],"NES PAL-B":["PAL-B","eu"],"NES PAL-A":["PAL-A","eu"],"NES NTSC-U":["NTSC-U","us"],"Famicom":["FC","jp"],"PS1 PAL":["PAL","eu"],"PS1 NTSC-J":["NTSC-J","jp"],"PS2 PAL":["PAL","eu"],"PS4 Japón":["JP","jp"],"PS5 PAL":["PAL","eu"],"PSP PAL":["PAL","eu"],"Switch PAL":["PAL","eu"],"DS PAL":["PAL","eu"],"GBA PAL":["PAL","eu"],"Mega Drive PAL":["PAL","eu"],"PS1 PAL España":["PAL ESP","eu"],"PS2 PAL España":["PAL ESP","eu"],"PSP PAL España":["PAL ESP","eu"],"DS PAL España":["PAL ESP","eu"],"GBA PAL España":["PAL ESP","eu"],"Switch PAL España":["PAL ESP","eu"],"Mega Drive PAL España":["PAL ESP","eu"],"Switch 2 PAL España":["PAL ESP","eu"],"GameCube PAL España":["PAL ESP","eu"],"GameCube PAL":["PAL","eu"],"3DS PAL":["PAL","eu"],"3DS PAL España":["PAL ESP","eu"],"Switch 2 PAL":["PAL","eu"]};
+const regI=r=>REGI[r]||[r||"?","jp"];
+const pg=()=>state.games.filter(g=>platOf(g)===state.plat);
+function mercado(g){ return g.cib==null?null:(g.eur?g.cib:g.cib*state.fx); }
+function piezaValor(g,p){ if(p.v!=null&&p.v!=="") return +p.v; if(g.cib==null) return 0;
+  const k=g.eur?1:state.fx, lo=(g.loose||0)*k, diff=Math.max(g.cib*k-lo,0), n=p.n||"";
+  const bx=g.box!=null?g.box*k:null, rest=bx!=null?Math.max(diff-bx,0):null;
+  if(n==="Cartucho"||n==="Disco"||n==="UMD"||n==="Juego"||n==="Disco del juego"||n==="Tarjeta llave de juego") return Math.round(lo);
+  if(n==="Caja") return Math.round(bx!=null?bx:diff*0.6);
+  if(n==="Manual") return Math.round(bx!=null?rest*0.625:diff*0.25);
+  const otras=(g.piezas||[]).filter(x=>!["Caja","Cartucho","Manual"].includes(x.n)).length||1;
+  return Math.round((bx!=null?rest*0.375:diff*0.15)/otras); }
+function faltaValor(g){ return (g.piezas||[]).filter(p=>p.s==="falta").reduce((a,p)=>a+piezaValor(g,p),0); }
+function valorPiezas(g){ const m=mercado(g); return m==null?null:Math.max(m-faltaValor(g),0); }
+function puesto(eurBase){ if(eurBase==null) return null; const base=eurBase+state.envio; return base*(1+state.arancel/100)*(1+state.iva/100)+state.gestion; }
+function valor(g){ if(g.valorManual!=null&&g.valorManual!=="") return +g.valorManual; return g.estado==="deseo"?((g.eur&&!g.importa)?mercado(g):puesto(mercado(g))):valorPiezas(g); }
+function variacion(g){ const v=valor(g); return (g.pagado!=null&&g.pagado!==""&&+g.pagado>0&&v!=null)?(v-g.pagado)/g.pagado:null; }
+const regalo=g=>g.pagado!=null&&g.pagado!==""&&+g.pagado<=0.01;
+function ganancia(g){ const v=valor(g); return (g.pagado!=null&&g.pagado!==""&&v!=null)?v-(+g.pagado):null; }
+const eurS=n=>n==null?"—":(n>=0?"+":"−")+eur(Math.abs(n));
+function tier(v){ return v==null?"–":v>=170?"A":v>=50?"B":"C"; }
+function pend(g){ const p=g.piezas||[]; return {miss:p.filter(x=>x.s==="falta"),unk:p.filter(x=>x.s==="?")}; }
+
+function renderStats(){
+  renderHome(); if(!state.plat) return;
+  const own=pg().filter(g=>g.estado!=="deseo"), wish=pg().filter(g=>g.estado==="deseo");
+  const tot=own.reduce((a,g)=>a+(valor(g)||0),0);
+  $("#sValor").textContent=eur(tot);
+  const byR={}; own.forEach(g=>{const k=regI(g.region)[0]; byR[k]=(byR[k]||0)+(valor(g)||0);});
+  $("#sValorN").textContent=Object.entries(byR).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`${k} ${eur(v)}`).join(" · ");
+  const withP=own.filter(g=>g.pagado!=null&&g.pagado!=="");
+  const paid=withP.reduce((a,g)=>a+ +g.pagado,0), paidVal=withP.reduce((a,g)=>a+(valor(g)||0),0);
+  $("#sPagado").textContent=withP.length?eur(paid):"—";
+  const v=paid?(paidVal-paid)/paid:null;
+  const nReg=withP.filter(regalo).length;
+  $("#sPagadoN").innerHTML=withP.length?`${withP.length} juego${withP.length>1?"s":""}${nReg?` (${nReg} regalo${nReg>1?"s":""})`:""} · valen ${eur(paidVal)} · ganancia <span class="${paidVal-paid>=0?"pos":"neg"}">${eurS(paidVal-paid)} (${pct(v)})</span>`:"Añade lo que pagaste en cada ficha";
+  $("#sJuegos").textContent=own.length;
+  const cR={}; own.forEach(g=>{const k=regI(g.region)[0]; cR[k]=(cR[k]||0)+1;});
+  $("#sJuegosN").textContent=Object.entries(cR).map(([k,n])=>`${n} ${k}`).join(" · ")+(wish.length?` · ${wish.length} deseados`:"");
+  let m=0,u=0; own.forEach(g=>{const p=pend(g);m+=p.miss.length;u+=p.unk.length});
+  $("#sPiezas").textContent=m+u;
+  $("#sPiezasN").textContent=`${m} faltan · ${u} sin comprobar`;
+  $("#cTengo").textContent=own.length; $("#cDeseo").textContent=wish.length||"";
+  const openT=state.tasks.filter(t=>!t.hecho).length; $("#cPend").textContent=openT||"";
+}
+function renderHome(){ PLATS.forEach(p=>{const own=state.games.filter(g=>platOf(g)===p&&g.estado!=="deseo"); const el=$("#h"+p); if(el) el.textContent=own.length?`${own.length} juegos · ${eur(own.reduce((a,g)=>a+(valor(g)||0),0))}`:"Sin juegos todavía";}); renderTray(); }
+function fillFilters(){
+  const gens=[...new Set(pg().map(g=>g.genero))].sort(), eds=[...new Set(pg().map(g=>g.editora))].sort();
+  const fill=(sel,arr,first)=>{const cur=sel.value; sel.innerHTML=`<option value="">${first}</option>`+arr.map(x=>`<option>${esc(x)}</option>`).join(""); sel.value=arr.includes(cur)?cur:"";};
+  fill($("#gen"),gens,"Todos los géneros"); fill($("#ed"),eds,"Todas las editoras");
+}
+function renderGrid(){
+  const want=state.tab==="deseo"?"deseo":"tengo";
+  const q=state.q.toLowerCase();
+  let list=pg().filter(g=>(g.estado||"tengo")===want)
+    .filter(g=>!state.reg||g.region===state.reg).filter(g=>!state.gen||g.genero===state.gen).filter(g=>!state.ed||g.editora===state.ed)
+    .filter(g=>!q||[g.titulo,g.original,g.editora,g.genero].join(" ").toLowerCase().includes(q));
+  const s=state.sort;
+  list.sort((a,b)=> s==="titulo"?a.titulo.localeCompare(b.titulo,"es"): s==="anio"?(a.anio-b.anio): s==="obt"?String(b.fechaObtencion||"").localeCompare(String(a.fechaObtencion||"")): s==="gan"?((ganancia(b)??-1e9)-(ganancia(a)??-1e9)): s==="var"?((regalo(b)?1e9:variacion(b)??-99)-(regalo(a)?1e9:variacion(a)??-99)) : ((valor(b)??-1)-(valor(a)??-1)));
+  const grid=$("#grid"), em=$("#gridEmpty");
+  if(!list.length){ grid.innerHTML=""; em.hidden=false;
+    em.textContent= want==="deseo" && !pg().some(g=>g.estado==="deseo") ? "Tu lista de deseos está vacía. Pulsa «Añadir juego» y elige «Lista de deseos»." : (pg().length?"Ningún juego coincide con estos filtros.":"Aún no hay juegos aquí. Pulsa «Añadir juego» para crear tu primera ficha.");
+    return; }
+  em.hidden=true;
+  grid.innerHTML=list.map(g=>{const v=valor(g),t=tier(v),p=pend(g),vr=variacion(g);
+    return `<button class="card" data-id="${g.id}">
+      <div class="ph"><img loading="lazy" src="${esc(g.foto)}" alt="Portada de ${esc(g.titulo)}">
+        <div class="badge">${p.miss.length?`<span class="flag miss">Falta ${p.miss.length}</span>`:""}${g.fotoDe==="Vendedor"?`<span class="flag q">Foto del vendedor</span>`:""}</div></div>
+      <div class="body"><div class="t">${esc(g.titulo)}</div>
+        <div class="meta"><span class="reg ${regI(g.region)[1]}">${esc(regI(g.region)[0])}</span><span class="tier ${t}">${t}</span></div>
+        <div class="meta"><span class="val">${eur(v)}</span>${regalo(g)?`<span class="pos" style="font-family:var(--f-mono);font-size:13px" title="Regalo: todo su valor es ganancia">${eurS(ganancia(g))} 🎁</span>`:vr!=null?`<span class="${vr>=0?"pos":"neg"}" style="font-family:var(--f-mono);font-size:13px" title="${eurS(ganancia(g))}">${pct(vr)}</span>`:""}</div>
+      </div></button>`}).join("");
+}
+function chip(g,extra){return `<button class="pitem" data-id="${g.id}"><b>${esc(g.titulo)}</b>${extra?` · ${extra}`:""}</button>`}
+function renderPend(){
+  const own=pg().filter(g=>g.estado!=="deseo");
+  $("#tasks").innerHTML=state.tasks.length?state.tasks.slice().sort((a,b)=>(a.orden||0)-(b.orden||0)).map(t=>`<label class="task ${t.hecho?"done":""}"><input type="checkbox" data-task="${t.id}" ${t.hecho?"checked":""}><span><span class="tt">${esc(t.titulo)}</span><br><span class="td">${esc(t.detalle||"")}</span></span></label>`).join(""):`<div class="empty">Sin tareas generales.</div>`;
+  const miss=own.filter(g=>pend(g).miss.length), unk=own.filter(g=>pend(g).unk.length);
+  $("#miss").innerHTML=miss.map(g=>chip(g,pend(g).miss.map(x=>esc(x.n)).join(", "))).join("")||`<span class="hint">Nada.</span>`;
+  $("#unk").innerHTML=unk.map(g=>chip(g,`<span class="st">${pend(g).unk.length}</span>`)).join("")||`<span class="hint">Todo comprobado.</span>`;
+  $("#nopaid").innerHTML=own.filter(g=>g.pagado==null||g.pagado==="").map(g=>chip(g)).join("")||`<span class="hint">Todos tienen precio.</span>`;
+  $("#nodate").innerHTML=own.filter(g=>!g.fechaObtencion).map(g=>chip(g)).join("")||`<span class="hint">Todos tienen fecha.</span>`;
+}
+// Cartera: historial
+state.hist=[]; state.rng=0; state.grng=0;
+const dayKey=d=>d.toISOString().slice(0,10);
+const tDay=f=>new Date(f+"T12:00:00").getTime();
+function carteraHoy(p){ const own=state.games.filter(g=>platOf(g)===p&&g.estado!=="deseo");
+  const vals={}; own.forEach(g=>{ const v=valor(g); if(v!=null) vals[g.id]=Math.round(v); });
+  return {valor:Math.round(own.reduce((a,g)=>a+(valor(g)||0),0)), invertido:Math.round(own.reduce((a,g)=>a+(g.pagado!=null&&g.pagado!==""?+g.pagado:0),0)*100)/100, juegos:own.length,
+    valorConPrecio:Math.round(own.filter(g=>g.pagado!=null&&g.pagado!=="").reduce((a,g)=>a+(valor(g)||0),0)), sinPrecio:own.filter(g=>g.pagado==null||g.pagado==="").length, vals}; }
+let snapT=null;
+function scheduleSnap(){ clearTimeout(snapT); snapT=setTimeout(async()=>{ if(!state.db||!state.games.length) return;
+  const hoy=dayKey(new Date());
+  for(const p of PLATS){ const c=carteraHoy(p); if(!c.juegos) continue; const id=`${p}-${hoy}`;
+    const ex=state.hist.find(h=>h.id===id); if(ex&&ex.valor===c.valor&&ex.invertido===c.invertido&&ex.juegos===c.juegos&&JSON.stringify(ex.vals||{})===JSON.stringify(c.vals)) continue;
+    try{ await state.db.doc("historial/"+id).set({plat:p,fecha:hoy,...c}); }catch{} } },2500); }
+function invertidoSerie(p){ const own=state.games.filter(g=>platOf(g)===p&&g.estado!=="deseo"&&g.pagado!=null&&g.pagado!=="");
+  const conF=own.filter(g=>g.fechaObtencion).sort((a,b)=>a.fechaObtencion.localeCompare(b.fechaObtencion));
+  let acc=0; const pts=conF.map(g=>{acc+=+g.pagado; return {t:tDay(g.fechaObtencion),v:acc};});
+  return {pts, sinFecha:own.length-conF.length}; }
+const baseAt=(arr,t)=>{let b=null; for(const x of arr){ if(x.t<=t) b=x.v; } return b;};
+// Dibuja un gráfico de escalones (valor + invertido) en el SVG con prefijo pf (p = cartera, g = ficha)
+function drawChart(pf,V,I,rng,H0){
+  const svg=$("#"+pf+"Svg"), tip=$("#"+pf+"Tip"); if(!svg) return {};
+  const td=tDay(dayKey(new Date())), now=Date.now();
+  const tMin0=Math.min(...V.map(x=>x.t),...(I.length?I.map(x=>x.t):[td])); const t0=rng?Math.max(tMin0,now-rng*864e5):tMin0;
+  const clip=arr=>{const b=baseAt(arr,t0); const r=arr.filter(x=>x.t>t0); return b!=null?[{t:t0,v:b},...r]:r;};
+  const Vc=clip(V), Ic=clip(I);
+  const W=svg.clientWidth||600, H=H0||220, L=56, R=12, T=10, B=24;
+  const all=[...Vc,...Ic]; const tA=Math.min(...all.map(x=>x.t)), tB=Math.max(td,...all.map(x=>x.t)); const span=Math.max(tB-tA,864e5*7);
+  const vmax=Math.max(...all.map(x=>x.v))*1.08||1, vmin=0;
+  const X=t=>L+(t-(tB-span))/span*(W-L-R), Y=v=>T+(1-(v-vmin)/(vmax-vmin))*(H-T-B);
+  const step=arr=>arr.map((x,i)=>i?`H${X(x.t).toFixed(1)}V${Y(x.v).toFixed(1)}`:`M${X(x.t).toFixed(1)},${Y(x.v).toFixed(1)}`).join("")+(arr.length?`H${X(tB).toFixed(1)}`:"");
+  const ticks=[0,.25,.5,.75,1].map(f=>vmin+f*(vmax-vmin));
+  const nx=Math.min(5,Math.max(2,Math.round((W-L)/140)));
+  const fmtD=t=>new Date(t).toLocaleDateString("es-ES",span>864e5*400?{month:"short",year:"2-digit"}:{day:"numeric",month:"short"});
+  const area=Vc.length?step(Vc)+`V${Y(0)}H${X(Vc[0].t).toFixed(1)}Z`:"";
+  svg.setAttribute("viewBox",`0 0 ${W} ${H}`); svg.style.height=H+"px";
+  svg.innerHTML=`${ticks.map(v=>`<line x1="${L}" x2="${W-R}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--line)" stroke-width="1"/><text x="${L-6}" y="${Y(v)+4}" text-anchor="end" font-size="11" fill="var(--muted)" font-family="var(--f-mono)">${Math.round(v).toLocaleString("es-ES")}</text>`).join("")}
+    ${Array.from({length:nx},(_,i)=>{const t=tB-span+span*i/(nx-1);return `<text x="${X(t)}" y="${H-6}" text-anchor="${i===0?"start":i===nx-1?"end":"middle"}" font-size="11" fill="var(--muted)">${fmtD(t)}</text>`}).join("")}
+    <path d="${area}" fill="var(--accent)" opacity=".10"/>
+    ${Ic.length?`<path d="${step(Ic)}" fill="none" stroke="var(--muted)" stroke-width="2" stroke-dasharray="5 4"/>`:""}
+    <path d="${step(Vc)}" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linejoin="round"/>
+    ${Vc.length?`<circle cx="${X(tB)}" cy="${Y(Vc[Vc.length-1].v)}" r="4" fill="var(--accent)" stroke="var(--surface)" stroke-width="2"/>`:""}
+    <line class="cx" y1="${T}" y2="${H-B}" stroke="var(--muted)" stroke-width="1" visibility="hidden"/>
+    <rect x="${L}" y="${T}" width="${W-L-R}" height="${H-T-B}" fill="transparent" class="hit"/>`;
+  const cx=svg.querySelector(".cx"), hit=svg.querySelector(".hit");
+  hit.onpointermove=e=>{ const r=svg.getBoundingClientRect(); const px=(e.clientX-r.left)*W/r.width; const t=(tB-span)+(px-L)/(W-L-R)*span;
+    const vv=baseAt(Vc,t), ii=baseAt(Ic,t); cx.setAttribute("x1",px); cx.setAttribute("x2",px); cx.setAttribute("visibility","visible");
+    tip.hidden=false; tip.innerHTML=`${new Date(t).toLocaleDateString("es-ES")}<br>Valor ${vv==null?"—":eur(vv)}${ii!=null?`<br>Invertido ${eur(ii)}`:""}${vv!=null&&ii!=null?`<br>Ganancia ${eurS(vv-ii)}`:""}`;
+    const left=Math.min(Math.max(e.clientX-r.left+10,0),r.width-150); tip.style.left=left+"px"; tip.style.top="8px"; };
+  hit.onpointerleave=()=>{ tip.hidden=true; cx.setAttribute("visibility","hidden"); };
+  return {Vc,Ic,td};
+}
+function renderPort(){ const box=$("#port"); if(!state.plat){ box.hidden=true; return; } box.hidden=false;
+  const p=state.plat, hoy=carteraHoy(p), td=tDay(dayKey(new Date()));
+  let S=state.hist.filter(h=>h.plat===p).map(h=>({t:tDay(h.fecha),v:h.valor})).sort((a,b)=>a.t-b.t).filter(x=>x.t<td);
+  const firstS=S.length?S[0].t:td;
+  const acq=state.games.filter(g=>platOf(g)===p&&g.estado!=="deseo"&&g.fechaObtencion).sort((a,b)=>a.fechaObtencion.localeCompare(b.fechaObtencion));
+  let accV=0; const Rc=[]; acq.forEach(g=>{ accV+=valor(g)||0; const t=tDay(g.fechaObtencion); if(t<firstS) Rc.push({t,v:Math.round(accV)}); });
+  const V=[...Rc,...S,{t:td,v:hoy.valor}];
+  const IS=invertidoSerie(p); const I=[...IS.pts,{t:td,v:hoy.invertido}];
+  const {Vc}=drawChart("p",V,I,state.rng,220);
+  $("#pLbl").textContent=`Cartera ${p} · valor de mercado`; $("#pVal").textContent=eur(hoy.valor);
+  const g=hoy.valorConPrecio-hoy.invertido; const v0=Vc?.[0]?.v;
+  const chgR=(v0!=null&&Vc.length>1&&Vc[0].t<td)?hoy.valor-v0:null;
+  $("#pChg").innerHTML=`<span class="${g>=0?"pos":"neg"}">${eurS(g)} (${hoy.invertido>0?pct(g/hoy.invertido):"—"})</span> <span style="color:var(--muted);font-weight:400">sobre ${eur(hoy.invertido)} invertidos${hoy.sinPrecio?` (sin contar ${hoy.sinPrecio} juego${hoy.sinPrecio>1?"s":""} sin precio pagado)`:""}</span>`+(chgR!=null?` · <span class="${chgR>=0?"pos":"neg"}">${eurS(chgR)}</span> <span style="color:var(--muted);font-weight:400">en el periodo</span>`:"");
+  $("#pNote").textContent=(Rc.length?"Hasta que haya historial guardado, la línea de valor se reconstruye con los precios actuales de los juegos que ya tenías en cada fecha. ":"")+"Desde hoy el valor real se guarda cada día que abres la página o cambian los precios. "+(IS.sinFecha?`${IS.sinFecha} juego${IS.sinFecha>1?"s":""} con precio pero sin fecha de obtención: cuentan desde hoy en la línea de invertido.`:"");
+}
+function renderGameChart(g){ const box=$("#dPort"); if(!box) return;
+  if(g.estado==="deseo"){ box.innerHTML=""; return; }
+  const td=tDay(dayKey(new Date())), v=valor(g);
+  if(v==null){ box.innerHTML=""; return; }
+  const t0=g.fechaObtencion?tDay(g.fechaObtencion):null;
+  let S=state.hist.filter(h=>h.plat===platOf(g)&&h.vals&&h.vals[g.id]!=null).map(h=>({t:tDay(h.fecha),v:h.vals[g.id]})).sort((a,b)=>a.t-b.t).filter(x=>x.t<td&&(t0==null||x.t>=t0));
+  const firstS=S.length?S[0].t:td;
+  const V=[...(t0!=null&&t0<firstS?[{t:t0,v:Math.round(v)}]:[]),...S,{t:td,v:Math.round(v)}];
+  const paid=g.pagado!=null&&g.pagado!==""?+g.pagado:null;
+  const I=paid!=null?[{t:t0??td,v:paid},{t:td,v:paid}]:[];
+  const gan=ganancia(g);
+  box.innerHTML=`<div class="port" style="margin:0"><div class="ph"><div><div class="lbl">Evolución de este juego</div>
+    <div class="big" style="font-size:24px">${eur(v)}</div>
+    <div class="chg">${gan!=null?`<span class="${gan>=0?"pos":"neg"}">${eurS(gan)}${regalo(g)?" (regalo)":paid>0?` (${pct(gan/paid)})`:""}</span> <span style="color:var(--muted);font-weight:400">${regalo(g)?"coste 0 €":`sobre ${eur(paid)} pagados`}</span>`:`<span style="color:var(--muted);font-weight:400">Añade el precio pagado para ver la ganancia</span>`}</div></div>
+    <div class="rng" id="gRng">${[[30,"1M"],[182,"6M"],[365,"1A"],[1825,"5A"],[0,"Todo"]].map(([r,l])=>`<button data-r="${r}" aria-pressed="${state.grng===r}">${l}</button>`).join("")}</div></div>
+    <div style="position:relative"><svg id="gSvg" role="img" aria-label="Gráfico del valor de ${esc(g.titulo)} y lo que pagaste"></svg><div class="tip" id="gTip" hidden></div></div>
+    <div class="leg"><span><i></i>Valor de mercado</span>${paid!=null?`<span><i class="inv"></i>Pagado</span>`:""}</div>
+    <div class="note">${t0==null?"Sin fecha de obtención: la línea empieza hoy. ":""}${S.length?"":"Antes del primer registro diario, la línea usa el precio actual. "}El valor de este juego se guarda cada día a partir de hoy.</div></div>`;
+  requestAnimationFrame(()=>drawChart("g",V,I,state.grng,170));
+  $("#gRng").onclick=e=>{const b=e.target.closest("button"); if(!b) return; state.grng=+b.dataset.r; renderGameChart(g);};
+}
+$("#pRng").onclick=e=>{const b=e.target.closest("button"); if(!b) return; state.rng=+b.dataset.r; document.querySelectorAll("#pRng button").forEach(x=>x.setAttribute("aria-pressed",x===b)); renderPort();};
+window.addEventListener("resize",()=>{ if(state.plat) renderPort(); });
+function render(){ renderStats(); scheduleSnap(); if(state.plat) renderPort(); if(!state.plat){ if(state.cur) fillDialog(state.cur,true); return; } if(state.games.length) $("#sync").textContent=`${pg().length} juegos · sincronizado`; renderGrid(); if(state.tab==="pend") renderPend(); if(state.tab==="excel") renderExcel(); if(state.cur) fillDialog(state.cur,true); }
+
+function showTab(t){ state.tab=t;
+  document.querySelectorAll("nav.tabs button").forEach(b=>b.setAttribute("aria-selected",b.dataset.tab===t));
+  $("#vGrid").hidden=!(t==="tengo"||t==="deseo"); $("#vPend").hidden=t!=="pend"; $("#vExcel").hidden=t!=="excel"; $("#vAjustes").hidden=t!=="ajustes";
+  if(t==="pend") renderPend(); else if(t==="excel") renderExcel(); else if(t!=="ajustes") renderGrid();
+}
+document.querySelectorAll("nav.tabs button").forEach(b=>b.onclick=()=>showTab(b.dataset.tab));
+function setPlat(p){ state.plat=p; state.reg=""; state.gen=""; state.ed=""; state.q=""; $("#q").value="";
+  $("#home").hidden=!!p; $("#platView").hidden=!p;
+  if(p){ const C=PLAT[p]; $("#pTitle").textContent=C.title; $("#pSub").textContent=C.sub; document.title=C.title;
+    $("#regChips").innerHTML=C.chips.map(([v,l],i)=>`<button class="chip" data-reg="${esc(v)}" aria-pressed="${i===0}">${esc(l)}</button>`).join("");
+    fillFilters(); showTab(state.tab==="ajustes"?"tengo":state.tab); render(); }
+  else document.title="Retrolia";
+  try{ localStorage.setItem("plat",p||""); }catch{}
+  window.scrollTo(0,0); }
+document.querySelectorAll(".console").forEach(b=>b.onclick=()=>setPlat(b.dataset.plat));
+$("#goHome").onclick=()=>setPlat(null);
+window.addEventListener("scroll",()=>$("#goHome").classList.toggle("float",!!state.plat&&window.scrollY>150),{passive:true});
+$("#q").oninput=e=>{state.q=e.target.value;renderGrid()};
+$("#gen").onchange=e=>{state.gen=e.target.value;renderGrid()};
+$("#ed").onchange=e=>{state.ed=e.target.value;renderGrid()};
+$("#sort").onchange=e=>{state.sort=e.target.value;renderGrid()};
+$("#regChips").onclick=e=>{const b=e.target.closest(".chip"); if(!b) return; state.reg=b.dataset.reg; document.querySelectorAll("#regChips .chip").forEach(c=>c.setAttribute("aria-pressed",c===b)); renderGrid();};
+document.addEventListener("click",e=>{const c=e.target.closest("[data-id]"); if(c&&!e.target.closest("dialog")) openG(c.dataset.id);});
+
+// Ficha
+const dlg=$("#dlg"); let pieceDraft=null;
+function openG(id){ state.cur=id; pieceDraft=null; fillDialog(id,false); $("#dMsg").textContent=""; dlg.showModal(); }
+$("#dlgClose").onclick=()=>dlg.close(); dlg.addEventListener("close",()=>{state.cur=null});
+dlg.addEventListener("click",e=>{ if(e.target===dlg) dlg.close(); });
+function fillDialog(id,live){
+  const g=state.games.find(x=>x.id===id); if(!g) return;
+  const v=valor(g), vr=variacion(g);
+  const gal=g.galeria||[];
+  if(gal.length>1){ if(!live) state.gi=0; state.gi=Math.min(state.gi,gal.length-1);
+    $("#dPic").innerHTML=`<div class="gal"><img class="main" src="${esc(gal[state.gi])}" alt="Foto ${state.gi+1} de ${gal.length} de ${esc(g.titulo)}">
+      <div class="gnav"><button type="button" data-gs="-1" aria-label="Foto anterior">‹</button><span>${state.gi+1} / ${gal.length}</span><button type="button" data-gs="1" aria-label="Foto siguiente">›</button></div>
+      <div class="thumbs">${gal.map((u,i)=>`<button type="button" data-gi="${i}" aria-current="${i===state.gi}" aria-label="Ver foto ${i+1}"><img loading="lazy" src="${esc(u)}" alt=""></button>`).join("")}</div></div>`; }
+  else $("#dPic").innerHTML=`<img id="dImg" src="${esc(g.foto)}" alt="Portada de ${esc(g.titulo)}">`;
+  $("#dTitle").textContent=g.titulo; $("#dOrig").textContent=g.original||"";
+  $("#dTags").innerHTML=`<span class="reg ${regI(g.region)[1]}">${esc(g.region)}</span><span class="tier ${tier(v)}">Nivel ${tier(v)}</span>${g.bandeja?`<span class="flag q">En la bandeja</span>`:""}${g.fotoDe==="Vendedor"?`<span class="flag q">Foto del vendedor</span>`:""}`;
+  $("#dKv").innerHTML=[["Editora",g.editora],["Año",g.anio],["Género",g.genero],["Valor actual",eur(v)+(g.valorManual!=null&&g.valorManual!==""?" (manual)":"")],
+    ["Pagado",regalo(g)?"Regalo":g.pagado!=null&&g.pagado!==""?eur(+g.pagado):"—"],["Ganancia",regalo(g)?`<span class="pos">${eurS(ganancia(g))} (regalo)</span>`:vr==null?"—":`<span class="${vr>=0?"pos":"neg"}">${eurS(ganancia(g))} · ${pct(vr)}</span>`],
+    ...(platOf(g)==="SNES"?[[g.estado==="deseo"?"Mercado EE. UU. (CIB)":"Traerlo a casa",eur(g.estado==="deseo"?mercado(g):puesto(mercado(g)))]]:[]),...(g.eur&&g.estado==="deseo"&&g.importa?[["Coste puesto en casa",eur(puesto(mercado(g)))]]:[]),...(g.eur?[[g.importa?"Completo (precio en origen)":"Completo (mercado EU)",eur(g.cib)],["Cartucho suelto",eur(g.loose)]]:[["Suelto",usd(g.loose)],["Completo (CIB)",usd(g.cib)],["Precintado",usd(g.nuevo)]]),
+    ["Obtenido",g.fechaObtencion?new Date(g.fechaObtencion).toLocaleDateString("es-ES"):"—"],...(g.estado==="deseo"?[["Captura del anuncio",g.fechaFoto||"—"]]:[]),["Archivo",g.archivo||"—"]]
+    .map(([k,x])=>`<div><div class="k">${k}</div><div class="v">${typeof x==="string"&&x.includes("<span")?x:esc(x)}</div></div>`).join("");
+  renderPlay(g);
+  if(!live||!document.activeElement?.closest("#dEdit")){ $("#eTitulo").value=g.titulo||""; $("#eOriginal").value=g.original||""; $("#eRegion").value=g.region||""; $("#eEditora").value=g.editora||""; $("#eGenero").value=g.genero||""; $("#eAnio").value=g.anio||"";
+    $("#ePlat").innerHTML=(PLAT[platOf(g)]?"":`<option value="?">Sin identificar</option>`)+PLATS.map(p=>`<option value="${p}">${esc(PLAT[p].sys||p)}</option>`).join(""); $("#ePlat").value=PLAT[platOf(g)]?platOf(g):"?";
+    $("#eRegs").innerHTML=Object.keys(REGI).map(r=>`<option value="${esc(r)}">`).join(""); }
+  if(!live||!document.activeElement?.closest("#dPort")) renderGameChart(g);
+  const K=g.conservacion;
+  $("#dCons").innerHTML=K?`<div class="cons"><div class="lbl">Estado de conservación</div><div class="kv"><div><div class="k">Caja</div><div class="v">${esc(K.caja||"—")}</div></div><div><div class="k">Manual</div><div class="v">${esc(K.manual||"—")}</div></div><div><div class="k">Cartucho / disco</div><div class="v">${esc(K.cartucho||"—")}</div></div></div>${K.nota?`<p class="hint" style="margin:6px 0 0">${esc(K.nota)}</p>`:""}</div>`:"";
+  const pcs=pieceDraft||g.piezas||[];
+  const own=g.estado!=="deseo";
+  $("#dPieces").innerHTML=pcs.map((p,i)=>`<button type="button" class="pc" data-i="${i}" data-s="${esc(p.s)}">${esc(p.n)}${own&&g.cib!=null?` <span class="pv">${p.s==="falta"?"−":""}${Math.round(piezaValor(g,p))} €</span>`:""}</button>`).join("");
+  const fv=faltaValor({...g,piezas:pcs});
+  const hasMan=g.valorManual!=null&&g.valorManual!=="";
+  $("#dPiecesHint").innerHTML=own&&hasMan&&fv>0?`<span style="color:var(--warn)">Tienes un valor manual (${eur(+g.valorManual)}): las piezas que faltan no restan. Para que resten, borra el valor manual.</span>`:own&&fv>0?`Completo valdría <b>${eur(mercado(g))}</b>; le restan <b>${eur(fv)}</b> por las piezas que faltan.`:"Verde: lo tienes · Rojo: falta (su valor se resta) · Amarillo: sin comprobar";
+  if(!live||!document.activeElement?.closest("#dPv")) $("#dPv").innerHTML=pcs.map((p,i)=>`<label>${esc(p.n)}<input type="number" min="0" step="1" data-pv="${i}" value="${p.v!=null&&p.v!==""?p.v:""}" placeholder="${Math.round(piezaValor(g,{n:p.n}))}"></label>`).join("");
+  const C=g.capturas||[]; const sys=platOf(g)==="NES"?(g.region==="Famicom"?"Famicom":"NES"):platOf(g)==="SNES"?(g.region==="Super Famicom"?"Super Famicom":"SNES"):(PLAT[platOf(g)]?.sys||platOf(g)); const qi=encodeURIComponent(`${g.titulo} ${sys} screenshots`);
+  $("#dCaps").innerHTML=`<div class="about"><div class="lbl">Capturas</div>${C.length?`<div class="caps">${C.map((c,i)=>{const lb=(g.capLabels||[])[i]||(i===0?"Pantalla de título":"En juego"); return `<figure><img loading="lazy" src="${esc(c)}" alt="${esc(lb)} de ${esc(g.titulo)}"><figcaption>${esc(lb)}</figcaption></figure>`;}).join("")}</div>`:""}
+    <div class="links"><a class="btn ghost" href="https://www.google.com/search?tbm=isch&q=${qi}" target="_blank" rel="noopener">Ver más capturas</a></div></div>`;
+  const I=g.info; const dash=x=>(x&&x!=="-")?x:null;
+  $("#dInfo").innerHTML=I?`<div class="about"><div class="lbl">Sobre el juego</div>
+    <p>${esc(I.resumen)}</p>
+    ${dash(I.curiosidad)?`<p class="crit"><b>Curiosidad:</b> ${esc(I.curiosidad)}</p>`:""}
+    <div class="kv">
+      <div><div class="k">Desarrolladora</div><div class="v">${esc(dash(I.desarrolladora)||"—")}</div></div>
+      <div><div class="k">Música</div><div class="v">${esc(dash(I.compositor)||"—")}</div></div>
+      <div><div class="k">Salida Japón</div><div class="v">${esc(dash(I.lanzJP)||"—")}</div></div>
+      <div><div class="k">Salida EE. UU.</div><div class="v">${esc(dash(I.lanzNA)||"—")}</div></div>
+      ${dash(I.lanzEU)?`<div><div class="k">Salida Europa</div><div class="v">${esc(I.lanzEU)}</div></div>`:""}
+      <div><div class="k">Famitsu</div><div class="v score">${esc(dash(I.famitsu)||"—")}</div></div>
+    </div>
+    ${dash(I.criticas)?`<div class="crit"><b>Prensa de la época:</b> ${esc(I.criticas)}</div>`:""}
+    <div class="links">${I.wiki?`<a class="btn ghost" href="${esc(I.wiki)}" target="_blank" rel="noopener">Wikipedia</a>`:""}${I.gamefaqs?`<a class="btn ghost" href="${esc(I.gamefaqs)}" target="_blank" rel="noopener">GameFAQs · opiniones y guías</a>`:""}</div>
+    <div class="crit">Fuente: ${esc(I.origen||"")}</div></div>`:"";
+  const q=encodeURIComponent(`${g.titulo} ${platOf(g)==="NES"?(g.region==="Famicom"?"Famicom":"NES"):platOf(g)==="SNES"?(g.region==="Super Famicom"?"SFC":"SNES"):(PLAT[platOf(g)]?.sys||platOf(g))} OST soundtrack`);
+  const bso=g.bso||`https://www.youtube.com/results?search_query=${q}`;
+  $("#dSrc").innerHTML=(g.notas?`<div style="margin-bottom:6px">${esc(g.notas)}</div>`:"")+`<div class="row" style="margin-bottom:6px"><a class="btn ghost" href="${esc(bso)}" target="_blank" rel="noopener">▶ Escuchar la banda sonora en YouTube</a></div>`+(g.eur?`<details><summary>Precio: estimación de mercado europeo · confianza ${esc(g.confianza||"—")}</summary><ul>${(g.evidencia||[]).map(x=>`<li>${esc(x)}</li>`).join("")}</ul>${g.notaPrecio?`<p>${esc(g.notaPrecio)}</p>`:""}<p>Son sobre todo precios pedidos en tiendas, Wallapop, Milanuncios y eBay; si conoces el precio real, cámbialo en «Ajustar el valor de cada pieza» o en «Valor manual».</p></details>`:(g.fuente?`Precio: <a href="${esc(g.fuente)}" target="_blank" rel="noopener">PriceCharting</a>`:""));
+  if(!live||document.activeElement?.closest("#dForm")==null){
+    $("#fPagado").value=g.pagado??""; $("#fFecha").value=g.fechaObtencion||""; $("#fManual").value=g.valorManual??"";
+    $("#fEstado").value=g.estado||"tengo"; $("#fNotas").value=g.notas||"";
+  }
+}
+$("#dPic").onclick=e=>{const g=state.games.find(x=>x.id===state.cur); if(!g||!g.galeria) return; const n=g.galeria.length;
+  const t=e.target.closest("[data-gi]"), s=e.target.closest("[data-gs]");
+  if(t) state.gi=+t.dataset.gi; else if(s) state.gi=(state.gi+ +s.dataset.gs+n)%n; else return; fillDialog(g.id,true);};
+dlg.addEventListener("keydown",e=>{ if(!["ArrowLeft","ArrowRight"].includes(e.key)||e.target.closest("input,textarea,select")) return; const g=state.games.find(x=>x.id===state.cur); if(!g?.galeria||g.galeria.length<2) return; const n=g.galeria.length; state.gi=(state.gi+(e.key==="ArrowRight"?1:-1)+n)%n; fillDialog(g.id,true); });
+$("#dPieces").onclick=async e=>{const b=e.target.closest(".pc"); if(!b) return;
+  const g=state.games.find(x=>x.id===state.cur); const cyc={"tengo":"falta","falta":"?","?":"tengo"};
+  const arr=(g.piezas||[]).map(p=>({...p})); arr[+b.dataset.i].s=cyc[arr[+b.dataset.i].s]||"tengo";
+  pieceDraft=arr; fillDialog(g.id,true); await save(g.id,{piezas:arr});
+};
+$("#savePv").onclick=async()=>{const g=state.games.find(x=>x.id===state.cur); if(!g) return;
+  const arr=(pieceDraft||g.piezas||[]).map(p=>({...p}));
+  document.querySelectorAll("#dPv input").forEach(inp=>{const i=+inp.dataset.pv; if(inp.value==="") delete arr[i].v; else arr[i].v=+inp.value;});
+  pieceDraft=arr; $("#pvMsg").textContent="Guardando…";
+  try{ await state.db.doc("juegos/"+g.id).update({piezas:arr}); $("#pvMsg").textContent="Guardado"; }catch{ $("#pvMsg").textContent="No se pudo guardar."; }
+  fillDialog(g.id,true);};
+$("#dForm").onsubmit=async e=>{e.preventDefault(); const id=state.cur; const num=x=>x.value===""?null:+x.value;
+  await save(id,{pagado:num($("#fPagado")),fechaObtencion:$("#fFecha").value||"",valorManual:num($("#fManual")),
+    estado:$("#fEstado").value,notas:$("#fNotas").value});
+};
+async function save(id,patch){
+  const msg=$("#dMsg");
+  if(!state.db){ msg.textContent="No se puede guardar: esta vista no tiene acceso a los datos."; return; }
+  msg.textContent="Guardando…";
+  try{ await state.db.doc("juegos/"+id).update(patch); msg.textContent="Guardado"; }
+  catch(err){ msg.textContent= err?.code==="invalid_argument"?"Solo lectura: no tienes permiso para editar.":"No se pudo guardar. Inténtalo de nuevo."; }
+}
+$("#tasks").onchange=async e=>{const id=e.target.dataset.task; if(!id||!state.db) return;
+  try{ await state.db.doc("tareas/"+id).update({hecho:e.target.checked}); }catch{ e.target.checked=!e.target.checked; }};
+$("#saveFx").onclick=async()=>{const d={fx:+$("#fx").value,envio:+$("#envio").value,iva:+$("#iva").value,arancel:+$("#arancel").value,gestion:+$("#gestion").value};
+  if(!(d.fx>0)||Object.values(d).some(x=>isNaN(x)||x<0)){ $("#fxMsg").textContent="Revisa los números: ninguno puede estar vacío ni ser negativo."; return; }
+  try{ await state.db.doc("ajustes/general").set(d); $("#fxMsg").textContent="Guardado"; }catch{ $("#fxMsg").textContent="No se pudo guardar."; }};
+function fillSettings(){ ["fx","envio","iva","arancel","gestion"].forEach(k=>{ if(document.activeElement?.id!==k) $("#"+k).value=state[k]; }); }
+
+// Excel: tabla en la web y exportación .xlsx (solo colecciones, sin deseos)
+state.xlSort={k:"id",dir:1};
+function xlData(p){
+  return state.games.filter(g=>platOf(g)===p&&g.estado!=="deseo").map(g=>{
+    const mk=mercado(g), v=valor(g), pag=(g.pagado!=null&&g.pagado!=="")?+g.pagado:null, K=g.conservacion;
+    const r={id:g.id,titulo:g.titulo||"",orig:g.original||"",region:g.region||"",editora:g.editora||"",anio:g.anio||"",genero:g.genero||"",
+      fecha:g.fechaObtencion||"",pagado:pag,mercado:mk==null?null:Math.round(mk),
+      faltan:(g.piezas||[]).filter(x=>x.s==="falta").map(x=>x.n).join(", "),
+      manual:(g.valorManual!=null&&g.valorManual!=="")?+g.valorManual:null,valor:v==null?null:Math.round(v),
+      cons:K?[K.caja&&"Caja: "+K.caja,K.manual&&"Manual: "+K.manual,K.cartucho&&"Cartucho: "+K.cartucho].filter(Boolean).join(" · "):"",
+      notas:g.notas||""};
+    r.gan=(r.pagado!=null&&r.valor!=null)?r.valor-r.pagado:null;
+    r.regalo=r.pagado!=null&&r.pagado<=0.01;
+    r.rev=(r.gan!=null&&r.pagado>0.01)?r.gan/r.pagado:null;
+    return r; });
+}
+const XL_COLS=[["id","ID"],["titulo","Título","w"],["orig","Título original","w"],["region","Región"],["editora","Editora"],["anio","Año","n"],["genero","Género"],
+  ["fecha","Obtenido"],["pagado","Pagado","n"],["mercado","Completo (mercado)","n"],["faltan","Piezas que faltan"],["manual","Valor manual","n"],["valor","Valor actual","n"],
+  ["gan","Ganancia","n"],["rev","Revalorización","n"],["cons","Conservación","mut"],["notas","Notas","mut"]];
+function xlCell(r,k){
+  const v=r[k]; if(k==="pagado") return r.regalo?"Regalo":(v==null?"—":eur(v));
+  if(k==="rev") return r.regalo?"Regalo":(v==null?"—":pct(v));
+  if(k==="mercado"||k==="manual"||k==="valor") return v==null?"—":eur(v);
+  if(k==="gan") return v==null?"—":eurS(v);
+  if(k==="fecha") return v?new Date(v).toLocaleDateString("es-ES"):"—";
+  return v===""||v==null?"—":String(v); }
+function xlSortRows(rows){ const {k,dir}=state.xlSort;
+  return rows.slice().sort((a,b)=>{ let x=a[k],y=b[k];
+    if(k==="rev"){ x=a.regalo?1e9:x; y=b.regalo?1e9:y; }
+    const nx=x==null||x==="", ny=y==null||y==="";
+    if(nx||ny) return nx&&ny?0:nx?1:-1;
+    if(typeof x==="number"&&typeof y==="number") return (x-y)*dir;
+    return String(x).localeCompare(String(y),"es",{numeric:true})*dir; }); }
+function renderExcel(){ const t=$("#xlTable"); if(!t||!state.plat) return;
+  const rows=xlSortRows(xlData(state.plat));
+  const tot=rows.reduce((a,r)=>{ a.mercado+=r.mercado||0; a.valor+=r.valor||0; if(r.pagado!=null){ a.pagado+=r.pagado; a.gan+=r.gan||0; } return a; },{mercado:0,valor:0,pagado:0,gan:0});
+  const {k:sk,dir}=state.xlSort;
+  t.innerHTML=`<thead><tr>${XL_COLS.map(([k,l,c])=>`<th data-k="${k}" class="${c==="n"?"n":""}" ${k===sk?`aria-sort="${dir>0?"ascending":"descending"}"`:""}>${l}${k===sk?(dir>0?" ▲":" ▼"):""}</th>`).join("")}</tr></thead>
+    <tbody>${rows.map(r=>`<tr data-id="${esc(r.id)}">${XL_COLS.map(([k,,c])=>`<td class="${c||""}${k==="gan"||k==="rev"?(r.gan!=null&&r.gan>=0?" pos":r.gan!=null?" neg":""):""}">${esc(xlCell(r,k))}</td>`).join("")}</tr>`).join("")}</tbody>
+    <tfoot><tr>${XL_COLS.map(([k,,c])=>`<td class="${c==="n"?"n":""}">${k==="titulo"?`TOTAL · ${rows.length} juegos`:k==="pagado"?eur(tot.pagado):k==="mercado"?eur(tot.mercado):k==="valor"?eur(tot.valor):k==="gan"?eurS(tot.gan):k==="rev"?(tot.pagado>0?pct(tot.gan/tot.pagado):""):""}</td>`).join("")}</tr></tfoot>`;
+  if(!rows.length) t.innerHTML=`<tbody><tr><td>Todavía no hay juegos en esta colección.</td></tr></tbody>`;
+}
+$("#xlTable").onclick=e=>{ const th=e.target.closest("th[data-k]"); if(!th) return; const k=th.dataset.k;
+  state.xlSort= state.xlSort.k===k?{k,dir:-state.xlSort.dir}:{k,dir:(["pagado","mercado","manual","valor","gan","rev","anio"].includes(k)?-1:1)}; renderExcel(); };
+function xlSheet(p){ const XL=window.XLSX; const rows=xlData(p).sort((a,b)=>String(a.id).localeCompare(String(b.id),"es",{numeric:true}));
+  if(!rows.length) return null;
+  const eurF='#,##0 "€"', eur2='#,##0.00 "€"';
+  const head=["ID","Título","Título original","Región","Editora","Año","Género","Obtenido","Pagado (€)","Completo mercado (€)","Piezas que faltan","Valor manual (€)","Valor actual (€)","Ganancia (€)","Revalorización","Conservación","Notas"];
+  const aoa=[head]; const last=rows.length+1;
+  rows.forEach((r,i)=>{ const n=i+2;
+    const ganV=r.gan==null?"":r.gan, revV=r.pagado==null?"":(r.regalo?"Regalo":(r.rev==null?"":r.rev));
+    aoa.push([r.id,r.titulo,r.orig,r.region,r.editora,r.anio===""?null:+r.anio,r.genero,
+      r.fecha?{t:"d",v:new Date(r.fecha+"T12:00:00"),z:"dd/mm/yyyy"}:null,
+      r.pagado==null?null:{t:"n",v:r.pagado,z:eur2},
+      r.mercado==null?null:{t:"n",v:r.mercado,z:eurF},
+      r.faltan,
+      r.manual==null?null:{t:"n",v:r.manual,z:eur2},
+      r.valor==null?null:{t:"n",v:r.valor,z:eurF},
+      {f:`IF(I${n}="","",M${n}-I${n})`,t:typeof ganV==="number"?"n":"s",v:ganV,z:eurF},
+      {f:`IF(I${n}="","",IF(I${n}<=0.01,"Regalo",N${n}/I${n}))`,t:typeof revV==="number"?"n":"s",v:revV,z:"0%"},
+      r.cons,r.notas]); });
+  const sum=k=>rows.reduce((a,r)=>a+(r[k]||0),0), sumP=rows.reduce((a,r)=>a+(r.pagado||0),0), sumG=rows.reduce((a,r)=>a+(r.gan||0),0);
+  aoa.push(["TOTAL",`${rows.length} juegos`,null,null,null,null,null,null,
+    {f:`SUM(I2:I${last})`,t:"n",v:sumP,z:eur2},{f:`SUM(J2:J${last})`,t:"n",v:sum("mercado"),z:eurF},null,null,
+    {f:`SUM(M2:M${last})`,t:"n",v:sum("valor"),z:eurF},{f:`SUM(N2:N${last})`,t:"n",v:sumG,z:eurF},
+    {f:`IF(I${last+1}>0,N${last+1}/I${last+1},"")`,t:sumP>0?"n":"s",v:sumP>0?sumG/sumP:"",z:"0%"},null,null]);
+  const ws=XL.utils.aoa_to_sheet(aoa,{cellDates:true});
+  ws["!cols"]=[7,38,30,16,20,7,16,12,12,14,26,12,12,12,14,40,50].map(w=>({wch:w}));
+  ws["!autofilter"]={ref:`A1:Q${last}`};
+  return ws; }
+$("#xlDl").onclick=async()=>{ const m=$("#xlMsg"); const XL=window.XLSX;
+  if(!XL){ m.textContent="No se pudo cargar el generador de Excel. Usa la copia CSV de Ajustes."; return; }
+  const dl=await window.claude?.use?.("downloads");
+  if(!dl){ m.textContent="Esta vista no permite descargar archivos."; return; }
+  try{ const wb=XL.utils.book_new(); let n=0;
+    for(const p of PLATS){ const ws=xlSheet(p); if(ws){ XL.utils.book_append_sheet(wb,ws,p); n++; } }
+    if(!n){ m.textContent="Todavía no hay juegos que exportar."; return; }
+    const buf=XL.write(wb,{bookType:"xlsx",type:"array",cellDates:true});
+    m.textContent="Preparando…";
+    await dl.save({filename:`coleccion-retro-${hoy()}.xlsx`,data:new Blob([buf])}); m.textContent="Excel descargado"; }
+  catch(e){ m.textContent= e?.code==="declined"?"Descarga cancelada.":"No se pudo generar el Excel."; } };
+
+window.EMU_SNES_CORE="snes-core.js";
+// Jugar: emulador dentro de la web, con la ROM guardada en el repositorio privado de la colección
+const emuSys=g=>platOf(g)==="NES"?"nes":platOf(g)==="SNES"?"snes":null;
+const emu={js:null,api:{},msg:"",busy:false,game:null,sramT:null,lock:true};
+try{ if(localStorage.getItem("romLock")==="0") emu.lock=false; }catch{}
+const LOCK_SVG=c=>`<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="10" height="7" rx="1.5"/><path d="${c?"M5.5 7V4.8a2.5 2.5 0 0 1 5 0V7":"M5.5 7V4.8a2.5 2.5 0 0 1 4.9-.7"}"/></svg>`;
+const b64e=u8=>{let t="";for(let i=0;i<u8.length;i+=0x8000)t+=String.fromCharCode.apply(null,u8.subarray(i,i+0x8000));return btoa(t)};
+const b64d=t=>{const b=atob(t),u=new Uint8Array(b.length);for(let i=0;i<b.length;i++)u[i]=b.charCodeAt(i);return u};
+const kb=n=>n>=1048576?(n/1048576).toLocaleString("es-ES",{maximumFractionDigits:1})+" MB":Math.round(n/1024)+" KB";
+function playMsg(t){ emu.msg=t||""; const m=$("#playMsg"); if(m) m.textContent=emu.msg; }
+function renderPlay(g){ const box=$("#dPlay"), sys=emuSys(g); if(!box) return;
+  if(!sys){ box.innerHTML=""; return; }
+  const R=g.rom&&g.rom.id?g.rom:null;
+  const ext=sys==="nes"?".nes":".sfc, .smc";
+  box.innerHTML=`<div class="play" id="playBox"><button type="button" class="btn" id="bPlay">▶ Jugar</button>
+    <span class="hint">${R?`ROM guardada: ${esc(R.name||"")} · ${kb(R.bytes||0)}${R.crc?` · CRC ${esc(R.crc)}`:""}. Arrastra aquí otra para jugar con ella.`:`Arrastra aquí la ROM de tu copia (${ext} o .zip) o pulsa Jugar para elegirla.`}</span>
+    <button type="button" class="lock" id="bLock" aria-pressed="${emu.lock}" title="${emu.lock?"Candado cerrado: la ROM que cargues se guarda en este navegador":"Candado abierto: la ROM que cargues no se guarda"}">${LOCK_SVG(emu.lock)}${emu.lock?"Se guarda en este navegador":"No se guarda"}</button>
+    ${R?`<button type="button" class="mini" id="bRomChg">Cambiar ROM</button><button type="button" class="mini" id="bRomDel">Quitar ROM</button>`:""}
+    <span class="status" id="playMsg" style="flex-basis:100%">${esc(emu.msg)}</span></div>`; }
+$("#dPlay").onclick=e=>{ const g=state.games.find(x=>x.id===state.cur); if(!g||emu.busy) return;
+  if(e.target.closest("#bPlay")){ if(g.rom&&g.rom.id) play(g,null); else { emu.game=g.id; $("#romPick").click(); } }
+  else if(e.target.closest("#bRomChg")){ emu.game=g.id; $("#romPick").click(); }
+  else if(e.target.closest("#bRomDel")) quitarRom(g);
+  else if(e.target.closest("#bLock")){ emu.lock=!emu.lock; try{ localStorage.setItem("romLock",emu.lock?"1":"0"); }catch{} renderPlay(g); } };
+["dragenter","dragover"].forEach(ev=>$("#dPlay").addEventListener(ev,e=>{ if(!$("#playBox")) return; e.preventDefault(); $("#playBox").classList.add("drag"); }));
+$("#dPlay").addEventListener("dragleave",e=>{ if(!e.relatedTarget||!$("#dPlay").contains(e.relatedTarget)) $("#playBox")?.classList.remove("drag"); });
+$("#dPlay").addEventListener("drop",e=>{ if(!$("#playBox")) return; e.preventDefault(); $("#playBox").classList.remove("drag");
+  const f=e.dataTransfer?.files?.[0], g=state.games.find(x=>x.id===state.cur); if(f&&g&&!emu.busy) play(g,f); });
+dlg.addEventListener("dragover",e=>e.preventDefault()); dlg.addEventListener("drop",e=>e.preventDefault());
+$("#romPick").onchange=e=>{ const f=e.target.files[0]; e.target.value=""; const g=state.games.find(x=>x.id===emu.game); if(f&&g) play(g,f); };
+function loadScript(src){ return new Promise((ok,ko)=>{ const t=document.createElement("script"); t.src=src; t.onload=()=>ok(); t.onerror=()=>ko(new Error("carga")); document.head.append(t); }); }
+async function play(g,file){ const sys=emuSys(g); if(!sys||emu.busy) return; emu.busy=true; playMsg("Preparando el emulador…");
+  try{
+    if(!window.EMU){ try{ await (emu.js||(emu.js=loadScript("emu.js"))); }catch{ emu.js=null; playMsg("No se ha podido cargar el emulador. Recarga la página e inténtalo de nuevo."); return; } }
+    let data,name;
+    if(file){ data=await file.arrayBuffer(); name=file.name; }
+    else{ try{ const res=await fetch("blob/"+g.rom.id); if(!res.ok) throw 0; const j=await res.json(); data=b64d(j.b64).buffer; name=j.name||g.rom.name||"rom"; }
+      catch{ playMsg("No se ha podido leer la ROM guardada. Pulsa «Cambiar ROM» y elige el archivo otra vez."); return; } }
+    let sram=null; if(state.db){ try{ const d=await state.db.doc("partidas/"+g.id).get(); if(d.exists) sram=d.data().sram||null; }catch{} }
+    ["nes","snes"].forEach(k=>{ $("#emuHost-"+k).hidden=k!==sys; if(emu.api[k]) emu.api[k].visible=false; });
+    const host=$("#emuHost-"+sys), api=emu.api[sys]||(emu.api[sys]=window.EMU.mount(sys,host));
+    emu.cur={id:g.id,sys}; $("#emuMsg").textContent="";
+    api.sram=sram; api.onSram=enc=>guardarPartida(g.id,enc);
+    api.onLoaded=file&&emu.lock?(u8,meta)=>guardarRom(g.id,u8,meta):null;
+    $("#emuTitle").textContent=g.titulo; const D=$("#emuDlg"); if(!D.open) D.showModal(); api.visible=true; host.focus(); api.layout&&api.layout();
+    playMsg(file&&!emu.lock?"Candado abierto: esta ROM no se ha guardado.":"");
+    await api.openFile(data,name);
+  } finally{ emu.busy=false; } }
+function cerrarEmu(){ Object.values(emu.api).forEach(a=>{ a.visible=false; try{ a.pause(); }catch{} }); }
+$("#emuClose").onclick=()=>$("#emuDlg").close();
+$("#emuDlg").addEventListener("close",cerrarEmu);
+$("#emuShot").onclick=async()=>{ const m=$("#emuMsg"), c=emu.cur, api=c&&emu.api[c.sys], g=c&&state.games.find(x=>x.id===c.id); if(!api||!g||!api.snapshot) return;
+  const assets=await window.claude?.use?.("assets");
+  if(!assets||!state.db){ m.textContent="Esta vista no permite guardar capturas."; return; }
+  m.textContent="Guardando captura…";
+  try{ const blob=await new Promise(ok=>api.snapshot().toBlob(ok,"image/png")); const up=await assets.upload(blob,{type:"image/png"});
+    const caps=[...(g.capturas||[])], labels=caps.map((_,i)=>(g.capLabels||[])[i]||"");
+    caps.push("blob/"+up.id); labels.push("Captura del "+new Date().toLocaleDateString("es-ES"));
+    await state.db.doc("juegos/"+g.id).update({capturas:caps,capLabels:labels});
+    m.textContent="Captura guardada en la ficha ("+caps.length+")"; }
+  catch{ m.textContent="No se ha podido guardar la captura."; } };
+function guardarPartida(id,enc){ if(!state.db) return; clearTimeout(emu.sramT);
+  emu.sramT=setTimeout(async()=>{ try{ await state.db.doc("partidas/"+id).set({sram:enc,fecha:new Date().toISOString()}); }catch{} },800); }
+async function guardarRom(id,u8,meta){ const g=state.games.find(x=>x.id===id); if(!g) return;
+  if(g.rom&&g.rom.crc===meta.crc&&g.rom.bytes===u8.length) return;
+  const assets=await window.claude?.use?.("assets");
+  if(!assets||!state.db){ playMsg("La ROM funciona, pero esta vista no permite guardarla en el repositorio."); return; }
+  playMsg("Guardando la ROM en tu repositorio…");
+  try{ const up=await assets.upload(new Blob([JSON.stringify({name:meta.name,crc:meta.crc,b64:b64e(u8)})],{type:"application/json"}),{type:"application/json"});
+    const old=g.rom&&g.rom.id;
+    await state.db.doc("juegos/"+id).update({rom:{id:up.id,name:meta.name,crc:meta.crc,bytes:u8.length}});
+    if(old&&old!==up.id){ try{ await assets.delete(old); }catch{} }
+    playMsg("ROM guardada en tu repositorio."); }
+  catch(err){ playMsg(err?.code==="too_large"?"La ROM es demasiado grande para el repositorio (máximo unos 14 MB).":"No se ha podido guardar la ROM en el repositorio. Puedes jugar igualmente."); } }
+async function quitarRom(g){ if(!state.db||!g.rom) return; emu.busy=true; playMsg("Quitando la ROM…");
+  try{ const assets=await window.claude?.use?.("assets"); const old=g.rom.id;
+    await state.db.doc("juegos/"+g.id).update({rom:null});
+    if(assets&&old){ try{ await assets.delete(old); }catch{} }
+    playMsg("ROM quitada del repositorio."); }
+  catch{ playMsg("No se ha podido quitar la ROM."); }
+  finally{ emu.busy=false; } }
+
+// Añadir juego a mano
+$("#addBtn").onclick=()=>{ if(!state.plat) return; $("#addForm").reset(); $("#addMsg").textContent=""; $("#aEstado").value=state.tab==="deseo"?"deseo":"tengo";
+  $("#aRegs").innerHTML=PLAT[state.plat].chips.filter(c=>c[0]).map(c=>`<option value="${esc(c[0])}">`).join(""); $("#addDlg").showModal(); };
+$("#addCancel").onclick=()=>$("#addDlg").close();
+$("#addForm").onsubmit=async e=>{ e.preventDefault(); const m=$("#addMsg");
+  if(!state.db){ m.textContent="Esta vista no tiene acceso a los datos."; return; }
+  const num=x=>x.value===""?null:+x.value, p=state.plat, disco=["PS1","PS2","PS4","PS5","GC","PSP"].includes(p);
+  m.textContent="Creando la ficha…";
+  try{ let foto=""; const f=$("#aFoto").files[0];
+    if(f){ const assets=await window.claude?.use?.("assets"); if(!assets){ m.textContent="Esta vista no permite subir fotos. Crea la ficha sin foto."; return; }
+      const im=await createImageBitmap(f), k=Math.min(1,1400/Math.max(im.width,im.height)), c=document.createElement("canvas"); c.width=Math.round(im.width*k); c.height=Math.round(im.height*k);
+      c.getContext("2d").drawImage(im,0,0,c.width,c.height); const blob=await new Promise(ok=>c.toBlob(ok,"image/jpeg",.86));
+      foto="blob/"+(await assets.upload(blob,{type:"image/jpeg"})).id; }
+    const id=p.toLowerCase().replace(/[^a-z0-9]/g,"")+"_"+Date.now().toString(36);
+    await state.db.doc("juegos/"+id).set({plataforma:p,titulo:$("#aTitulo").value.trim(),original:"",region:$("#aRegion").value.trim()||p,estado:$("#aEstado").value,
+      editora:$("#aEditora").value.trim(),genero:$("#aGenero").value.trim(),anio:num($("#aAnio"))||0,pagado:num($("#aPagado")),valorManual:num($("#aValor")),
+      fechaObtencion:$("#aFecha").value||"",foto,eur:true,cib:null,loose:null,notas:"",
+      piezas:[{n:"Caja",s:"?"},{n:"Manual",s:"?"},{n:disco?"Disco":"Cartucho",s:"?"}]});
+    $("#addDlg").close(); }
+  catch(err){ m.textContent=err?.code==="too_large"?"La foto es demasiado grande.":"No se ha podido crear la ficha. Inténtalo de nuevo."; } };
+
+// Bandeja de fotos: cada foto crea una ficha; la IA la identifica y después se completa con IA o a mano
+const tray={q:[],busy:new Set(),run:false,sure:null};
+const PLAT_IA="NES (NES o Famicom), SNES (Super Nintendo o Super Famicom), PS1, PS2, PS4, PS5, PSP, SWITCH, SW2 (Switch 2), GC (GameCube), DS, 3DS, GBA, MD (Mega Drive)";
+const iaErr=c=>c==="no_key"?"Falta la clave de IA. Pulsa «Configurar la IA» en la portada.":c==="bad_key"?"El proveedor de IA ha rechazado la clave o el modelo. Revísalos en «Configurar la IA».":c==="not_granted"?"No has dado permiso para usar la IA en esta página.":c==="rate_limited"||c==="queue_overflow"?"Demasiadas consultas seguidas. Espera un momento y vuelve a intentarlo.":c==="refused"?"La IA no ha querido responder a esta consulta.":c==="image_rejected"?"La IA no ha podido leer la foto.":"La IA no ha respondido. Inténtalo de nuevo.";
+const txt=(x,n)=>String(x??"").trim().slice(0,n||120);
+async function fotoBlob(f){ const im=await createImageBitmap(f), k=Math.min(1,1400/Math.max(im.width,im.height)), c=document.createElement("canvas"); c.width=Math.round(im.width*k); c.height=Math.round(im.height*k);
+  c.getContext("2d").drawImage(im,0,0,c.width,c.height); return await new Promise(ok=>c.toBlob(ok,"image/jpeg",.86)); }
+function trayMsg(t){ $("#trayMsg").textContent=t||""; }
+function renderTray(){ const box=$("#trayList"); if(!box) return;
+  const items=state.games.filter(g=>g.bandeja).sort((a,b)=>String(b.bandeja).localeCompare(String(a.bandeja)));
+  box.innerHTML=tray.q.map(x=>`<div class="titem wait"><div class="tb"><div class="t">${esc(x.name)}</div><div class="m">${esc(x.st)}</div></div></div>`).join("")+
+    items.map(g=>{ const ok=!!PLAT[platOf(g)], b=tray.busy.has(g.id);
+      return `<div class="titem" data-t="${esc(g.id)}"><img src="${esc(g.foto)}" alt=""><div class="tb"><div class="t">${esc(g.titulo||"Sin título")}</div>
+        <div class="m">${ok?esc([PLAT[platOf(g)].sys||platOf(g),g.region,g.anio||""].filter(Boolean).join(" · ")):"Sin identificar: elige la consola a mano"}${g.iaDuda?" · la IA no está segura, compruébalo":""}</div>
+        <div class="m">${b?"Completando con IA…":"Elige cómo completar esta ficha"}</div></div>
+        <div class="ta"><button type="button" class="btn" data-a="ia" ${b||!ok?"disabled":""}>Completar con IA</button><button type="button" class="btn ghost" data-a="mano">Rellenar a mano</button><button type="button" class="del" data-a="del" ${tray.sure===g.id?"data-sure":""}>${tray.sure===g.id?"¿Borrar la ficha? Pulsa otra vez":"Borrar"}</button></div></div>`; }).join(""); }
+async function trayAdd(files){ const fs=[...files].filter(f=>/^image\//.test(f.type)||/\.(jpe?g|png|webp|heic|gif)$/i.test(f.name)); if(!fs.length){ trayMsg("Solo se admiten fotos."); return; }
+  if(!state.db){ trayMsg("Esta vista no tiene acceso a los datos: no se pueden crear fichas."); return; }
+  fs.forEach(f=>tray.q.push({f,name:f.name,st:"En cola"})); renderTray(); if(tray.run) return; tray.run=true;
+  const assets=await window.claude?.use?.("assets"), sample=await window.claude?.use?.("sample");
+  let n=0, sinIA=!sample;
+  if(!assets){ tray.q=[]; tray.run=false; renderTray(); trayMsg("Esta vista no permite subir fotos."); return; }
+  while(tray.q.length){ const x=tray.q[0]; const st=t=>{ x.st=t; renderTray(); };
+    try{ st("Preparando la foto…"); let blob; try{ blob=await fotoBlob(x.f); }catch{ throw {code:"foto"}; }
+      st("Subiendo la foto…"); const foto="blob/"+(await assets.upload(blob,{type:"image/jpeg"})).id;
+      let d={};
+      if(!sinIA){ st("La IA está mirando la foto…");
+        try{ d=await sample.json(`Eres un experto en coleccionismo de videojuegos. En la foto hay un videojuego (caja, cartucho, disco o varias piezas). Identifícalo y responde SOLO con un objeto JSON con estas claves:
+"titulo": el título tal como aparece en esa edición (en alfabeto latino); "" si no lo reconoces.
+"original": el título original en japonés u otro idioma si es distinto; si no, "".
+"plataforma": uno de estos códigos: ${PLAT_IA}; "?" si no lo sabes.
+"region": si encaja, uno de: ${Object.keys(REGI).join(", ")}; si no, un texto corto del mismo estilo (por ejemplo "PS4 PAL").
+"editora": la editora de esa edición. "genero": género en español, una o dos palabras. "anio": año de lanzamiento de esa edición, número.
+"piezas": lista de lo que se ve en la foto, usando solo estas palabras: "Caja", "Manual", "Cartucho", "Disco".
+"seguro": true si estás seguro del juego y de la región, false si dudas.`,{images:[blob],cache:false})||{}; }
+        catch(e){ if(["no_key","bad_key","not_granted","images_unavailable"].includes(e?.code)) sinIA=true; d={}; } }
+      const p=PLAT[d.plataforma]?d.plataforma:"?", disco=["PS1","PS2","PS4","PS5","GC","PSP"].includes(p), ve=Array.isArray(d.piezas)?d.piezas:[];
+      const id=(p==="?"?"foto":p.toLowerCase().replace(/[^a-z0-9]/g,""))+"_"+Date.now().toString(36);
+      await state.db.doc("juegos/"+id).set({plataforma:p,titulo:txt(d.titulo)||x.name.replace(/\.[^.]+$/,""),original:txt(d.original),region:txt(d.region,40)||(p==="?"?"":p),estado:"tengo",
+        editora:txt(d.editora,60),genero:txt(d.genero,40),anio:+d.anio||0,pagado:null,valorManual:null,fechaObtencion:"",foto,eur:true,cib:null,loose:null,notas:"",
+        bandeja:new Date().toISOString(),iaDuda:!!d.titulo&&d.seguro===false,
+        piezas:["Caja","Manual",disco?"Disco":"Cartucho"].map(k=>({n:k,s:ve.includes(k)?"tengo":"?"}))});
+      n++; }
+    catch(e){ trayMsg(e?.code==="foto"?`No se ha podido leer «${x.name}». Prueba con JPG o PNG.`:e?.code==="too_large"?`«${x.name}» es demasiado grande.`:`No se ha podido crear la ficha de «${x.name}».`); }
+    tray.q.shift(); renderTray(); }
+  tray.run=false; if(n) trayMsg(`${n} ficha${n>1?"s":""} creada${n>1?"s":""}.`+(sinIA?" La IA no está configurada o ha rechazado la clave: pulsa «Configurar la IA», o elige la consola y rellena los datos a mano.":"")); }
+async function completarIA(id,out){ const g=state.games.find(x=>x.id===id); if(!g||tray.busy.has(id)) return; const say=t=>{ if(out) out.textContent=t; else trayMsg(t); };
+  const sample=await window.claude?.use?.("sample"); if(!sample||!state.db){ say("La IA no está disponible. Rellena la ficha a mano."); return; }
+  if(!window.RetroliaIA.cfg().key){ say(iaErr("no_key")); return; }
+  tray.busy.add(id); renderTray(); say(`Completando «${g.titulo}» con IA…`);
+  try{ const d=await sample.json(`Eres un experto en coleccionismo de videojuegos. Ficha: título "${g.titulo}"${g.original?`, título original "${g.original}"`:""}, consola ${PLAT[platOf(g)]?.sys||platOf(g)}, región o edición "${g.region||""}".
+Responde SOLO con un objeto JSON en español con estas claves (usa "" o null si no lo sabes; no inventes):
+"original", "editora", "desarrolladora", "genero" (una o dos palabras), "anio" (número, de esta edición), "compositor",
+"lanzJP", "lanzNA", "lanzEU" (fechas de salida como texto), "famitsu" (nota tipo "34/40" o ""),
+"resumen" (3 o 4 frases sobre el juego), "curiosidad" (una frase), "criticas" (una frase sobre cómo lo recibió la prensa de la época),
+"cib" (precio orientativo en euros de esta edición completa con caja y manual en el mercado de segunda mano, número o null), "loose" (precio orientativo en euros del cartucho o disco suelto, número o null).`,{modelTier:"default"})||{};
+    const num=v=>(+v>0&&isFinite(+v))?Math.round(+v):null, t=(v,n)=>txt(v,n||400)||"-";
+    const patch={bandeja:null,iaDuda:null,info:{resumen:txt(d.resumen,900),curiosidad:t(d.curiosidad),desarrolladora:t(d.desarrolladora,80),compositor:t(d.compositor,80),lanzJP:t(d.lanzJP,40),lanzNA:t(d.lanzNA,40),lanzEU:t(d.lanzEU,40),famitsu:t(d.famitsu,20),criticas:t(d.criticas),origen:"Texto generado por IA, de memoria. Compruébalo antes de darlo por bueno."}};
+    if(!g.original&&txt(d.original)) patch.original=txt(d.original); if(!g.editora&&txt(d.editora)) patch.editora=txt(d.editora,60); if(!g.genero&&txt(d.genero)) patch.genero=txt(d.genero,40); if(!g.anio&&+d.anio) patch.anio=+d.anio;
+    if(g.cib==null&&num(d.cib)!=null){ patch.eur=true; patch.cib=num(d.cib); patch.loose=num(d.loose); patch.confianza="baja"; patch.evidencia=[]; patch.notaPrecio="Precio orientativo dado por la IA de memoria, sin consultar tiendas ni ventas recientes."; }
+    await state.db.doc("juegos/"+id).update(patch); say(`«${g.titulo}» completada con IA. Revisa el precio: es orientativo.`); }
+  catch(e){ say(e?.code?iaErr(e.code):"No se ha podido guardar la ficha."); }
+  finally{ tray.busy.delete(id); renderTray(); } }
+$("#trayDrop").onclick=()=>$("#trayPick").click();
+$("#trayDrop").onkeydown=e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); $("#trayPick").click(); } };
+$("#trayPick").onchange=e=>{ const fs=[...e.target.files]; e.target.value=""; if(fs.length) trayAdd(fs); };
+["dragenter","dragover"].forEach(ev=>$("#home").addEventListener(ev,e=>{ e.preventDefault(); $("#trayDrop").classList.add("drag"); }));
+$("#home").addEventListener("dragleave",e=>{ if(!e.relatedTarget||!$("#home").contains(e.relatedTarget)) $("#trayDrop").classList.remove("drag"); });
+$("#home").addEventListener("drop",e=>{ e.preventDefault(); $("#trayDrop").classList.remove("drag"); if(e.dataTransfer?.files?.length) trayAdd(e.dataTransfer.files); });
+$("#trayList").onclick=async e=>{ const b=e.target.closest("[data-a]"), it=e.target.closest("[data-t]"); if(!b||!it) return; const id=it.dataset.t, a=b.dataset.a;
+  if(a!=="del"&&tray.sure){ tray.sure=null; }
+  if(a==="ia") completarIA(id);
+  else if(a==="mano"){ openG(id); $("#dEdit").open=true; $("#eTitulo").focus(); }
+  else if(a==="del"){ if(tray.sure!==id){ tray.sure=id; renderTray(); return; } tray.sure=null; const g=state.games.find(x=>x.id===id);
+    try{ await state.db.doc("juegos/"+id).delete(); const m=/^blob\/([0-9a-f]{32})$/.exec(g?.foto||""); if(m){ const assets=await window.claude?.use?.("assets"); try{ await assets?.delete(m[1]); }catch{} } trayMsg("Ficha borrada."); }
+    catch{ trayMsg("No se ha podido borrar la ficha."); } } };
+$("#eForm").onsubmit=async e=>{ e.preventDefault(); const id=state.cur, m=$("#eMsg"); if(!state.db||!id){ m.textContent="Esta vista no tiene acceso a los datos."; return; }
+  const p=$("#ePlat").value; if(!PLAT[p]){ m.textContent="Elige la consola."; return; }
+  m.textContent="Guardando…";
+  try{ await state.db.doc("juegos/"+id).update({titulo:$("#eTitulo").value.trim(),original:$("#eOriginal").value.trim(),plataforma:p,region:$("#eRegion").value.trim()||p,editora:$("#eEditora").value.trim(),genero:$("#eGenero").value.trim(),anio:+$("#eAnio").value||0,bandeja:null,iaDuda:null});
+    m.textContent="Guardado"; }
+  catch{ m.textContent="No se pudo guardar. Inténtalo de nuevo."; } };
+$("#eIA").onclick=()=>{ const g=state.games.find(x=>x.id===state.cur); if(!g) return; if(!PLAT[platOf(g)]){ $("#eMsg").textContent="Elige la consola y guarda antes de completar con IA."; return; } completarIA(g.id,$("#eMsg")); };
+
+// Configurar la IA (clave propia, guardada en este navegador)
+const IA=window.RetroliaIA;
+function iaPinta(){ const c=IA.cfg(); $("#iaEstado").textContent=c.key?`IA configurada (${c.prov==="openai"?"servicio compatible":"Google Gemini"})`:"IA sin configurar: las fichas se crean sin identificar"; }
+function iaVista(){ const g=$("#iaProv").value==="gemini"; $("#iaBaseL").hidden=g; $("#iaModel").placeholder=g?"Automático":"Nombre del modelo (con visión)";
+  $("#iaAyuda").innerHTML=g?'La clave se crea en <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">Google AI Studio</a>. Deja el modelo en automático y Retrolia elige uno.':'Pega la dirección del servicio y elige un modelo que admita imágenes. Pulsa «Ver modelos» para cargar la lista.'; }
+const iaLee=()=>({prov:$("#iaProv").value,key:$("#iaKey").value.trim(),base:$("#iaBase").value.trim(),model:$("#iaModel").value.trim()});
+$("#iaBtn").onclick=()=>{ const c=IA.cfg(); $("#iaProv").value=c.prov||"gemini"; $("#iaKey").value=c.key||""; $("#iaBase").value=c.base||""; $("#iaModel").value=c.model||""; $("#iaMsg").textContent=""; iaVista(); $("#iaDlg").showModal(); };
+$("#iaProv").onchange=iaVista; $("#iaCerrar").onclick=()=>$("#iaDlg").close();
+$("#iaLista").onclick=async()=>{ const m=$("#iaMsg"), c=iaLee(); if(!c.key||(c.prov==="openai"&&!c.base)){ m.textContent="Pon antes la clave"+(c.prov==="openai"?" y la dirección del servicio.":"."); return; }
+  m.textContent="Cargando modelos…"; try{ const l=await IA.modelos(c); $("#iaModels").innerHTML=l.map(x=>`<option value="${esc(x)}">`).join(""); m.textContent=l.length?`${l.length} modelos disponibles. Escribe en «Modelo» para elegir uno.`:"El servicio no ha devuelto modelos."; }
+  catch(e){ m.textContent=e?.code==="bad_key"?"El servicio ha rechazado la clave.":"No se ha podido cargar la lista de modelos."; } };
+$("#iaForm").onsubmit=async e=>{ e.preventDefault(); const m=$("#iaMsg"), c=iaLee();
+  if(!c.key){ IA.guardar({}); iaPinta(); m.textContent="Clave borrada. La IA queda sin configurar."; return; }
+  if(c.prov==="openai"&&(!c.base||!c.model)){ m.textContent="Con este tipo de servicio hacen falta la dirección y el modelo."; return; }
+  IA.guardar(c); iaPinta(); m.textContent="Guardado. Probando…";
+  try{ await IA.probar(); m.textContent="Guardado. La IA responde bien."; }
+  catch(err){ m.textContent="Guardado, pero la prueba ha fallado: "+(err?.code==="upstream_error"?"no se ha podido conectar con el servicio (puede que no admita llamadas desde el navegador).":iaErr(err?.code)); } };
+iaPinta();
+// Restaurar una copia
+$("#bkIn").onclick=()=>$("#bkFile").click();
+$("#bkFile").onchange=async e=>{ const f=e.target.files[0]; e.target.value=""; if(!f) return; const m=$("#bkMsg");
+  try{ const j=JSON.parse(await f.text()); if(!j||!Array.isArray(j.juegos)) throw 0; const n=await window.RetroliaDatos.importar(j); m.textContent=`Copia restaurada: ${n} fichas. Las fotos y las ROM no van en la copia.`; }
+  catch{ m.textContent="Ese archivo no es una copia de Retrolia."; } };
+
+// Datos
+(async()=>{
+  const db=await window.claude?.use?.("db");
+  if(!db){ $("#sync").textContent="Sin acceso a los datos en esta vista"; $("#hSync").textContent="Sin acceso a los datos en esta vista. Abre la página desde Claude con tu cuenta."; $("#gridEmpty").hidden=false; $("#gridEmpty").textContent="No se han podido cargar los juegos en esta vista. Abre la página desde Claude con tu cuenta."; return; }
+  state.db=db;
+  db.collection("juegos").onSnapshot(s=>{ state.games=s.docs.map(d=>({id:d.id,...d.data()})); $("#sync").textContent=`${pg().length} juegos · sincronizado`; $("#hSync").textContent=""; if(state.plat) fillFilters(); render(); },
+    ()=>{ $("#sync").textContent="Conexión perdida con los datos"; $("#hSync").textContent="Conexión perdida con los datos"; });
+  db.collection("historial").onSnapshot(s=>{ state.hist=s.docs.map(d=>({id:d.id,...d.data()})); if(state.plat) renderPort(); if(state.cur){ const g=state.games.find(x=>x.id===state.cur); if(g) renderGameChart(g); } },()=>{});
+  db.collection("tareas").onSnapshot(s=>{ state.tasks=s.docs.map(d=>({id:d.id,...d.data()})); renderStats(); if(state.tab==="pend") renderPend(); },()=>{});
+  db.doc("ajustes/general").onSnapshot(d=>{ if(d.exists){ const x=d.data(); ["fx","envio","iva","arancel","gestion"].forEach(k=>{ if(x[k]!=null&&!isNaN(+x[k])) state[k]=+x[k]; }); } fillSettings(); render(); },()=>{});
+})();
+$("#gridEmpty").hidden=false; $("#gridEmpty").textContent="Cargando tu colección…";
+async function descargar(nombre,datos){ const m=$("#bkMsg"); const dl=await window.claude?.use?.("downloads");
+  if(!dl){ m.textContent="Esta vista no permite descargar archivos."; return; }
+  try{ await dl.save({filename:nombre,data:datos}); m.textContent="Copia descargada"; }
+  catch(e){ m.textContent= e?.code==="declined"?"Descarga cancelada.":"No se pudo descargar."; } }
+const hoy=()=>new Date().toISOString().slice(0,10);
+$("#bkJson").onclick=()=>descargar(`coleccion-retro-${hoy()}.json`,JSON.stringify({exportado:new Date().toISOString(),ajustes:{fx:state.fx,envio:state.envio,iva:state.iva,arancel:state.arancel,gestion:state.gestion},juegos:state.games,tareas:state.tasks},null,2));
+$("#bkCsv").onclick=()=>{ const cols=["id","plataforma","estado","titulo","region","editora","anio","genero","fechaObtencion","pagado","valorManual","loose","cib","nuevo","valor_actual_eur","piezas_que_faltan","notas"];
+  const q=v=>{ const t=v==null?"":String(v); return /[";\n]/.test(t)?`"${t.replace(/"/g,'""')}"`:t; };
+  const rows=state.games.map(g=>[g.id,platOf(g),g.estado,g.titulo,g.region,g.editora,g.anio,g.genero,g.fechaObtencion,g.pagado,g.valorManual,g.loose,g.cib,g.nuevo,valor(g)==null?"":Math.round(valor(g)),(g.piezas||[]).filter(p=>p.s==="falta").map(p=>p.n).join(" | "),g.notas].map(q).join(";"));
+  descargar(`coleccion-retro-${hoy()}.csv`,"\ufeff"+[cols.join(";"),...rows].join("\n")); };
+fillSettings();
+try{ const p=localStorage.getItem("plat"); if(p&&PLAT[p]) setPlat(p); }catch{}
+})();
+</script>
+</body></html>
