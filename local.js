@@ -26,7 +26,8 @@ async function escribir(p,v){ await cargar(); if(!persistido){ persistido=true; 
   avisar(p); }
 function oir(o){ oyentes.add(o); cargar().then(()=>{ if(oyentes.has(o)) o.cb(o.doc?snapDoc(o.doc):snapCol(o.col)); },e=>o.ko&&o.ko(e)); return ()=>oyentes.delete(o); }
 const db={
-  collection:c=>({ onSnapshot:(cb,ko)=>oir({col:c,cb,ko}), doc:id=>db.doc(c+"/"+id), get:async()=>{ await cargar(); return snapCol(c); } }),
+  collection:c=>({ onSnapshot:(cb,ko)=>oir({col:c,cb,ko}), doc:id=>db.doc(c+"/"+id), get:async()=>{ await cargar(); return snapCol(c); },
+    where:(f,op,v)=>({ get:async()=>{ await cargar(); const s=snapCol(c); const ok=x=>{ const y=x&&x[f]; return op==="=="||op==="eq"?y===v:op==="!="?y!==v:false; }; return {...s,docs:s.docs.filter(d=>ok(d.data()))}; } }) }),
   doc:p=>({ get:async()=>{ await cargar(); return snapDoc(p); }, set:d=>escribir(p,clon(d)),
     update:async d=>{ await cargar(); if(!cache.has(p)) throw err("not_found"); return escribir(p,{...cache.get(p),...clon(d)}); },
     delete:()=>escribir(p,undefined), onSnapshot:(cb,ko)=>oir({doc:p,cb,ko}) }) };
@@ -99,6 +100,7 @@ function nombresZip(tipos){ const nombres=new Map(), usados=new Set();
   [...cache.keys()].filter(p=>colDe(p)==="juegos").sort().forEach(p=>{ const g=cache.get(p)||{}, base=limpio(g.plataforma||"SNES","Sin consola")+"_"+limpio(g.titulo,"sin título");
     [...new Set([g.foto,...(g.galeria||[])].map(idRuta).filter(Boolean))].forEach((id,i)=>pon(id,"fotos",i?`${base}_${i+1}`:base,EXT[tipos.get(id)]||"jpg"));
     (g.capturas||[]).map(idRuta).filter(Boolean).forEach((id,i)=>pon(id,"capturas",`${base}_captura ${i+1}`,EXT[tipos.get(id)]||"png"));
+    (g.videos||[]).filter(v=>v&&v.id).forEach((v,i)=>pon(v.id,"videos",`${base}_gameplay ${i+1}`,/mp4/.test(v.type||tipos.get(v.id)||"")?"mp4":"webm"));
     [g.rom,...(g.roms||[])].filter(r=>r&&r.id).forEach(r=>{ const m=/\.([a-z0-9]{1,5})$/i.exec(r.name||""); pon(r.id,"roms",r.reg?`${base} (${limpio(r.reg,"")})`:base,m?m[1].toLowerCase():"bin",true); }); });
   return nombres; }
 async function exportar(){ await cargar(); const JSZip=await cargarZip(), d=await abrir;
@@ -111,7 +113,7 @@ async function exportar(){ await cargar(); const JSZip=await cargarZip(), d=awai
     const archivo=n&&!n.rom?n.archivo:"otros/"+id+"."+(EXT[type]||"bin"); blobs.push({id,type,archivo});
     zip.file(archivo,blob,{binary:true,compression:/^image\//.test(type)?"STORE":"DEFLATE"}); }
   zip.file("retrolia.json",JSON.stringify({formato:"retrolia",v:3,exportado:new Date().toISOString(),docs,blobs},null,1));
-  zip.file("LEEME.txt","Copia de seguridad de Retrolia.\r\n\r\nPara recuperarla: en Retrolia, pulsa \"Restaurar una copia\" y elige este .zip tal cual, sin descomprimir.\r\n\r\nfotos/      las fotos de tus juegos, como Consola_Juego.jpg\r\ncapturas/   las capturas de pantalla guardadas en las fichas\r\nroms/       las ROM guardadas, en su formato original\r\nretrolia.json   las fichas y el índice que une cada archivo con su ficha\r\n\r\nNo cambies los nombres dentro del .zip si quieres poder restaurarlo.\r\n");
+  zip.file("LEEME.txt","Copia de seguridad de Retrolia.\r\n\r\nPara recuperarla: en Retrolia, pulsa \"Restaurar una copia\" y elige este .zip tal cual, sin descomprimir.\r\n\r\nfotos/      las fotos de tus juegos, como Consola_Juego.jpg\r\ncapturas/   las capturas de pantalla guardadas en las fichas\r\nvideos/     los vídeos de partidas guardados en las fichas\r\nroms/       las ROM guardadas, en su formato original\r\nretrolia.json   las fichas y el índice que une cada archivo con su ficha\r\n\r\nNo cambies los nombres dentro del .zip si quieres poder restaurarlo.\r\n");
   const blob=await zip.generateAsync({type:"blob",compression:"DEFLATE",compressionOptions:{level:6}});
   return {blob,fichas:Object.keys(docs).filter(k=>k.startsWith("juegos/")).length,archivos:ids.length}; }
 async function guardarTodo(h,leer){ if(!h||h.formato!=="retrolia"||!h.docs) throw err("formato");

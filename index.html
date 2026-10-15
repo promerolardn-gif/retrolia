@@ -178,6 +178,26 @@ a{color:var(--accent)}
 .cons .kv .v{font-family:var(--f-body)}
 .reg.eu{background:color-mix(in srgb,var(--green) 16%,transparent);color:var(--green)}
 /* Cartera */
+#topW{margin:22px auto 18px;max-width:1100px;width:100%;min-width:0;box-sizing:border-box;overflow:hidden;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 14px 8px}
+#topW .twc{background:var(--bg,var(--sunk))}
+.twhead{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.twhead h2{margin:0;font-size:18px}
+.twseg{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden}
+.twseg button{font:inherit;font-size:14px;padding:9px 16px;touch-action:manipulation;border:0;background:var(--surface);color:inherit;cursor:pointer}
+.twseg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
+.twgrp{margin-bottom:12px}.twgrp>h3{margin:0 0 6px;font-size:13px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+.twrow{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:8px;padding-bottom:6px}
+.twc{min-width:0;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:6px;cursor:pointer;text-align:left;font:inherit;color:inherit}
+.twc .ph{width:100%;aspect-ratio:3/4;border-radius:4px;background:var(--sunk);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--muted);overflow:hidden;text-align:center;padding:4px}
+.twc .ph img{width:100%;height:100%;object-fit:cover}
+.twc .tt{font-weight:700;font-size:12.5px;line-height:1.2;margin-top:6px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.twc .mm{font-size:11.5px;color:var(--muted);margin-top:2px}
+#port,#dPort{display:none!important}
+.card .ph .noimg{padding:14px;text-align:center;font-family:var(--f-display);font-weight:700;font-size:17px;color:var(--muted);line-height:1.2}
+.flag.pr1{background:var(--accent);color:var(--accent-ink)} .flag.pr2{background:var(--surface)} .flag.pr3{background:var(--sunk);color:var(--muted)}
+#dWish{border:1px solid var(--line);border-radius:10px;padding:12px 14px;display:grid;gap:10px}
+#dWish .ads{display:grid;gap:6px} #dWish .ad{display:flex;gap:10px;align-items:center;font-size:13px} #dWish .ad img{width:48px;height:48px;object-fit:cover;border-radius:4px}
+#dWish .ad .ok{color:var(--good);font-weight:700}
 .port{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px 10px;margin-bottom:18px}
 .port .ph{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:10px}
 .port .big{font-family:var(--f-mono);font-size:30px;font-weight:600;font-variant-numeric:tabular-nums;line-height:1.1}
@@ -215,6 +235,44 @@ html,body{overflow-x:hidden}
 @media (prefers-reduced-motion:reduce){.close,.close:hover{transition:none;transform:none}dialog[open] .close{animation:none}}
 .back.float{position:fixed;top:calc(env(safe-area-inset-top,0px) + 10px);left:16px;z-index:20;background:var(--surface);box-shadow:0 3px 12px rgb(0 0 0 / .3)}
 .card .ph img[src=""],.sheet .pic img[src=""]{visibility:hidden}
+.dock{position:sticky;bottom:calc(env(safe-area-inset-bottom,0px) + 14px);display:flex;justify-content:center;flex-wrap:wrap;gap:10px;pointer-events:none;z-index:7;height:44px;margin-top:-58px;margin-bottom:14px}
+.dock.fixed{position:fixed;left:0;right:0;margin:0;z-index:20}
+.dk{pointer-events:auto;display:inline-flex;align-items:center;gap:8px;height:44px;padding:0 20px;border-radius:999px;border:1px solid color-mix(in srgb,var(--surface) 25%,transparent);background:var(--ink);color:var(--surface);font-weight:700;cursor:pointer;box-shadow:0 6px 18px rgb(0 0 0 / .32);transition:transform .2s ease}
+.dk:hover{transform:translateY(-2px)}
+.dk.go{background:var(--accent);color:var(--accent-ink);border-color:transparent}
+.dk svg{width:16px;height:16px;flex:none;transition:transform .4s cubic-bezier(.2,.8,.2,1)}
+.dk:hover svg.x{transform:rotate(90deg)}
+dialog[open] .dk svg.x{animation:closeIn .55s cubic-bezier(.2,.8,.2,1)}
+@media (prefers-reduced-motion:reduce){.dk,.dk svg{transition:none}.dk:hover{transform:none}dialog[open] .dk svg.x{animation:none}}
+.sheet .info{padding-bottom:84px}
+.play select{padding:7px 9px;border:1px solid var(--line);border-radius:8px;background:var(--surface);max-width:100%}
+/* Visor */
+#viewDlg{width:100%;max-width:100%;height:100%;max-height:100%;margin:0;border-radius:0;padding:0;background:rgb(8 8 10 / .97);color:#eceae5;overflow:hidden}
+#vStage{position:absolute;inset:0;display:grid;place-items:center;padding:20px 16px 110px}
+#vStage img,#vStage video{max-width:100%;max-height:100%;min-height:0;object-fit:contain;border-radius:6px}
+#vStage img.px,#vStage video{image-rendering:pixelated;width:min(100%,calc((100vh - 130px)*8/7));height:auto}
+#vCap{position:fixed;left:0;right:0;bottom:calc(env(safe-area-inset-bottom,0px) + 68px);text-align:center;font-size:13px;color:#a29ea8;pointer-events:none}
+#viewDlg .dock .dk{background:rgb(34 33 39 / .92);color:#eceae5;border-color:rgb(255 255 255 / .16)}
+#viewDlg .dock .dk.go{background:var(--accent);color:var(--accent-ink)}
+.dk.grp{gap:10px;cursor:default;padding:0 14px}
+.dk.grp button{background:none;border:0;color:inherit;font:inherit;font-weight:700;cursor:pointer;padding:6px 4px;min-width:28px}
+.dk.grp input[type=range]{width:min(34vw,240px);accent-color:var(--accent)}
+.dk.grp .tm{font-family:var(--f-mono);font-size:12px;font-variant-numeric:tabular-nums}
+.sheet .pic img.main,.sheet .pic #dImg,.caps img{cursor:zoom-in}
+.sheet .pic .gal .main,#vStage{touch-action:pan-y}
+@keyframes slideL{from{transform:translateX(36%);opacity:0}to{transform:none;opacity:1}}
+@keyframes slideR{from{transform:translateX(-36%);opacity:0}to{transform:none;opacity:1}}
+.slideL{animation:slideL .26s cubic-bezier(.2,.7,.2,1)}
+.slideR{animation:slideR .26s cubic-bezier(.2,.7,.2,1)}
+.sheet .pic .gal,#vStage{overflow-x:clip}
+@media (prefers-reduced-motion:reduce){.slideL,.slideR{animation:none}}
+.vids{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.vid{position:relative;border:0;padding:0;background:#000;border-radius:6px;overflow:hidden;cursor:pointer;aspect-ratio:8/7;color:#fff}
+.vid video{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
+.vid .pl{position:absolute;inset:auto 0 0 0;padding:14px 8px 6px;background:linear-gradient(rgb(0 0 0 / 0),rgb(0 0 0 / .75));font-size:12px;text-align:left}
+.caps figure{position:relative}
+.vid .del,.caps .del{position:absolute;top:6px;right:6px;min-width:32px;height:32px;padding:0 9px;border-radius:16px;border:1px solid rgb(255 255 255 / .55);background:rgb(0 0 0 / .72);color:#fff;cursor:pointer;line-height:1;font-size:18px;font-weight:700}
+.vid .del.sure,.caps .del.sure{background:var(--bad);border-color:#fff;font-size:13px}
 /* Jugar */
 .play{display:flex;flex-wrap:wrap;gap:8px 10px;align-items:center;border:1px solid var(--line);border-radius:8px;padding:10px 12px;background:var(--bg)}
 .play .hint{flex:1 1 180px;min-width:0;overflow-wrap:anywhere}
@@ -225,7 +283,8 @@ html,body{overflow-x:hidden}
 .play .lock[aria-pressed="true"]{border-color:var(--good);color:var(--good)}
 .play .mini{background:none;border:0;padding:0;color:var(--accent);cursor:pointer;font-size:12px;text-decoration:underline}
 #emuDlg{width:100%;max-width:100%;height:100%;max-height:100%;margin:0;border-radius:0;background:#18181b;color:#eae8e3;overflow:auto}
-#emuDlg .ebar{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 16px;padding-top:calc(env(safe-area-inset-top,0px) + 10px);background:#0b0b0d;border-bottom:1px solid #3b3b41}
+#emuVid[hidden]{display:none!important}
+#emuDlg .ebar{position:sticky;top:0;z-index:5;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 12px;padding:10px 16px;padding-top:calc(env(safe-area-inset-top,0px) + 10px);background:#0b0b0d;border-bottom:1px solid #3b3b41}
 #emuDlg .et{font-family:var(--f-display);font-weight:700;font-size:17px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 #emuDlg .ex{border:1px solid #55555c;background:none;color:inherit;border-radius:8px;padding:7px 14px;font-weight:700;cursor:pointer;white-space:nowrap}
 #emuDlg .ehost{outline:none}
@@ -285,8 +344,11 @@ footer.pie{max-width:1240px;margin:0 auto;padding:0 16px 40px;color:var(--muted)
       <button class="console" data-plat="SNES"><div class="pad"><svg viewBox="0 0 160 90" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><path d="M46,20 Q80,27 114,20 A28,28 0 0 1 114,76 Q80,69 46,76 A28,28 0 0 1 46,20 Z" fill="#d2d2d8" stroke="#a2a2aa" stroke-width="1"/><circle cx="46" cy="48" r="16" fill="#c0c0c7"/><rect x="35.8" y="44.6" width="20.4" height="6.8" rx="1" fill="#2b2b30"/><rect x="42.6" y="37.8" width="6.8" height="20.4" rx="1" fill="#2b2b30"/><rect x="64" y="40" width="32" height="16" rx="8" fill="#b4b4bc" transform="rotate(-18 80 48)"/><rect x="67" y="46" width="9" height="4" rx="2" fill="#55555d" transform="rotate(-28 71 48)"/><rect x="84" y="46" width="9" height="4" rx="2" fill="#55555d" transform="rotate(-28 88 48)"/><g transform="rotate(-18 114 48)"><circle cx="114" cy="48" r="18" fill="#9c98b4"/><circle cx="114" cy="37" r="5.6" fill="#3b5dbf"/><circle cx="125" cy="48" r="5.6" fill="#d0312d"/><circle cx="114" cy="59" r="5.6" fill="#e8b923"/><circle cx="103" cy="48" r="5.6" fill="#2e9a4a"/></g></svg></div><div class="cn">SNES</div><div class="cs">Super Famicom · SNES NTSC-U</div><div class="cv" id="hSNES">—</div></button>
       <button class="console" data-plat="PS1"><div class="pad"><svg viewBox="0 0 160 90" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><path d="M44,20 H116 Q134,20 137,38 L143,70 Q145,84 134,85 Q125,86 120,74 L113,62 H47 L40,74 Q35,86 26,85 Q15,84 17,70 L23,38 Q26,20 44,20 Z" fill="#c4c4c4" stroke="#959595" stroke-width="1"/><circle cx="42" cy="40" r="12" fill="#b0b0b0"/><rect x="33.0" y="37.0" width="18" height="6" rx="1" fill="#7a7a7a"/><rect x="39.0" y="31.0" width="6" height="18" rx="1" fill="#7a7a7a"/><rect x="66" y="38" width="9" height="4" rx="1.5" fill="#6d6d6d"/><rect x="85" y="38" width="9" height="4" rx="1.5" fill="#6d6d6d"/><circle cx="118" cy="40" r="14" fill="#b0b0b0"/><circle cx="118" cy="31.5" r="4.2" fill="#6a6a6a"/><path d="M118,29.1 L120.3,33.1 L115.7,33.1 Z" fill="none" stroke="#3fbf8a" stroke-width="1.1" stroke-linejoin="round"/><circle cx="126.5" cy="40" r="4.2" fill="#6a6a6a"/><circle cx="126.5" cy="40" r="2.2" fill="none" stroke="#e8504f" stroke-width="1.1"/><circle cx="118" cy="48.5" r="4.2" fill="#6a6a6a"/><path d="M116,46.5 L120,50.5 M120,46.5 L116,50.5" stroke="#5b8fe0" stroke-width="1.1" stroke-linecap="round"/><circle cx="109.5" cy="40" r="4.2" fill="#6a6a6a"/><rect x="107.5" y="38" width="4" height="4" fill="none" stroke="#e58fc0" stroke-width="1.1"/></svg></div><div class="cn">PS1</div><div class="cs">PlayStation · PAL · NTSC-J</div><div class="cv" id="hPS1">—</div></button>
       <button class="console" data-plat="PS2"><div class="pad"><svg viewBox="0 0 160 90" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><path d="M44,20 H116 Q134,20 137,38 L143,70 Q145,84 134,85 Q125,86 120,74 L113,62 H47 L40,74 Q35,86 26,85 Q15,84 17,70 L23,38 Q26,20 44,20 Z" fill="#1a1a1a" stroke="#3a3a3a" stroke-width="1"/><rect x="33.0" y="37.0" width="18" height="6" rx="1" fill="#3d3d3d"/><rect x="39.0" y="31.0" width="6" height="18" rx="1" fill="#3d3d3d"/><rect x="66" y="36" width="9" height="4" rx="1.5" fill="#444"/><rect x="85" y="36" width="9" height="4" rx="1.5" fill="#444"/><circle cx="80" cy="46" r="2" fill="#c0392b"/><circle cx="118" cy="31.5" r="4.2" fill="#2c2c2c"/><path d="M118,29.1 L120.3,33.1 L115.7,33.1 Z" fill="none" stroke="#3fbf8a" stroke-width="1.1" stroke-linejoin="round"/><circle cx="126.5" cy="40" r="4.2" fill="#2c2c2c"/><circle cx="126.5" cy="40" r="2.2" fill="none" stroke="#e8504f" stroke-width="1.1"/><circle cx="118" cy="48.5" r="4.2" fill="#2c2c2c"/><path d="M116,46.5 L120,50.5 M120,46.5 L116,50.5" stroke="#5b8fe0" stroke-width="1.1" stroke-linecap="round"/><circle cx="109.5" cy="40" r="4.2" fill="#2c2c2c"/><rect x="107.5" y="38" width="4" height="4" fill="none" stroke="#e58fc0" stroke-width="1.1"/><circle cx="64" cy="62" r="7.5" fill="#3a3a3a"/><circle cx="64" cy="62" r="5.3" fill="#121212"/><circle cx="96" cy="62" r="7.5" fill="#3a3a3a"/><circle cx="96" cy="62" r="5.3" fill="#121212"/></svg></div><div class="cn">PS2</div><div class="cs">PlayStation 2 · PAL</div><div class="cv" id="hPS2">—</div></button>
+      <button class="console" data-plat="PS3"><div class="pad"><svg viewBox="0 0 160 90" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><path d="M44,20 H116 Q134,20 137,38 L143,70 Q145,84 134,85 Q125,86 120,74 L113,62 H47 L40,74 Q35,86 26,85 Q15,84 17,70 L23,38 Q26,20 44,20 Z" fill="#1a1a1d" stroke="#3a3a40" stroke-width="1"/><rect x="62" y="22" width="36" height="24" rx="4" fill="#26262a" stroke="#454c63" stroke-width="1"/><rect x="68" y="22" width="24" height="2" rx="1" fill="#4aa3ff"/><rect x="33.0" y="37.0" width="18" height="6" rx="1" fill="#3a3a40"/><rect x="39.0" y="31.0" width="6" height="18" rx="1" fill="#3a3a40"/><circle cx="118" cy="31.5" r="4.2" fill="#30364a"/><path d="M118,29.1 L120.3,33.1 L115.7,33.1 Z" fill="none" stroke="#7fd9b5" stroke-width="1.1" stroke-linejoin="round"/><circle cx="126.5" cy="40" r="4.2" fill="#30364a"/><circle cx="126.5" cy="40" r="2.2" fill="none" stroke="#f08a89" stroke-width="1.1"/><circle cx="118" cy="48.5" r="4.2" fill="#30364a"/><path d="M116,46.5 L120,50.5 M120,46.5 L116,50.5" stroke="#8fb5f0" stroke-width="1.1" stroke-linecap="round"/><circle cx="109.5" cy="40" r="4.2" fill="#30364a"/><rect x="107.5" y="38" width="4" height="4" fill="none" stroke="#f0b3d4" stroke-width="1.1"/><circle cx="64" cy="62" r="7.5" fill="#3a3a40"/><circle cx="64" cy="62" r="5.3" fill="#151925"/><circle cx="96" cy="62" r="7.5" fill="#3a3a40"/><circle cx="96" cy="62" r="5.3" fill="#151925"/></svg></div><div class="cn">PS3</div><div class="cs">PlayStation 3</div><div class="cv" id="hPS3">—</div></button>
       <button class="console" data-plat="PS4"><div class="pad"><svg viewBox="0 0 160 90" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><path d="M44,20 H116 Q134,20 137,38 L143,70 Q145,84 134,85 Q125,86 120,74 L113,62 H47 L40,74 Q35,86 26,85 Q15,84 17,70 L23,38 Q26,20 44,20 Z" fill="#232838" stroke="#3a4157" stroke-width="1"/><rect x="62" y="22" width="36" height="24" rx="4" fill="#2f3549" stroke="#454c63" stroke-width="1"/><rect x="68" y="22" width="24" height="2" rx="1" fill="#4aa3ff"/><rect x="33.0" y="37.0" width="18" height="6" rx="1" fill="#3a4157"/><rect x="39.0" y="31.0" width="6" height="18" rx="1" fill="#3a4157"/><circle cx="118" cy="31.5" r="4.2" fill="#30364a"/><path d="M118,29.1 L120.3,33.1 L115.7,33.1 Z" fill="none" stroke="#7fd9b5" stroke-width="1.1" stroke-linejoin="round"/><circle cx="126.5" cy="40" r="4.2" fill="#30364a"/><circle cx="126.5" cy="40" r="2.2" fill="none" stroke="#f08a89" stroke-width="1.1"/><circle cx="118" cy="48.5" r="4.2" fill="#30364a"/><path d="M116,46.5 L120,50.5 M120,46.5 L116,50.5" stroke="#8fb5f0" stroke-width="1.1" stroke-linecap="round"/><circle cx="109.5" cy="40" r="4.2" fill="#30364a"/><rect x="107.5" y="38" width="4" height="4" fill="none" stroke="#f0b3d4" stroke-width="1.1"/><circle cx="64" cy="62" r="7.5" fill="#3a4157"/><circle cx="64" cy="62" r="5.3" fill="#151925"/><circle cx="96" cy="62" r="7.5" fill="#3a4157"/><circle cx="96" cy="62" r="5.3" fill="#151925"/></svg></div><div class="cn">PS4</div><div class="cs">PlayStation 4</div><div class="cv" id="hPS4">—</div></button>
       <button class="console" data-plat="PS5"><div class="pad"><svg viewBox="0 0 160 90" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><path d="M44,20 H116 Q134,20 137,38 L143,70 Q145,84 134,85 Q125,86 120,74 L113,62 H47 L40,74 Q35,86 26,85 Q15,84 17,70 L23,38 Q26,20 44,20 Z" fill="#f4f4f6" stroke="#c9c9d0" stroke-width="1"/><path d="M50,44 H110 L106,62 H54 Z" fill="#17171c"/><rect x="60" y="20" width="40" height="24" rx="5" fill="#f4f4f6" stroke="#c9c9d0" stroke-width="1"/><path d="M63,44 Q80,48 97,44" stroke="#4aa3ff" stroke-width="1.6" fill="none"/><rect x="31.75" y="39.25" width="16.5" height="5.5" rx="1" fill="#2a2a30"/><rect x="37.25" y="33.75" width="5.5" height="16.5" rx="1" fill="#2a2a30"/><circle cx="120" cy="34" r="4" fill="#2a2a30"/><path d="M120,31.6 L122.3,35.6 L117.7,35.6 Z" fill="none" stroke="#b9bcc6" stroke-width="1.1" stroke-linejoin="round"/><circle cx="128" cy="42" r="4" fill="#2a2a30"/><circle cx="128" cy="42" r="2.2" fill="none" stroke="#b9bcc6" stroke-width="1.1"/><circle cx="120" cy="50" r="4" fill="#2a2a30"/><path d="M118,48 L122,52 M122,48 L118,52" stroke="#b9bcc6" stroke-width="1.1" stroke-linecap="round"/><circle cx="112" cy="42" r="4" fill="#2a2a30"/><rect x="110" y="40" width="4" height="4" fill="none" stroke="#b9bcc6" stroke-width="1.1"/><circle cx="66" cy="60" r="7" fill="#2a2a30"/><circle cx="66" cy="60" r="4.8" fill="#0c0c10"/><circle cx="94" cy="60" r="7" fill="#2a2a30"/><circle cx="94" cy="60" r="4.8" fill="#0c0c10"/></svg></div><div class="cn">PS5</div><div class="cs">PlayStation 5</div><div class="cv" id="hPS5">—</div></button>
+      <button class="console" data-plat="X360"><div class="pad"><svg viewBox="0 0 160 90" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><path d="M46,16 H114 Q134,16 140,38 L148,70 Q150,85 137,85 Q128,85 122,74 L114,62 H46 L38,74 Q32,85 23,85 Q10,85 12,70 L20,38 Q26,16 46,16 Z" fill="#f4f4f6" stroke="#c9c9d0" stroke-width="1"/><circle cx="80" cy="30" r="7" fill="#2a2a30"/><path d="M76.5,26.5 L83.5,33.5 M83.5,26.5 L76.5,33.5" stroke="#9bd23c" stroke-width="1.6" stroke-linecap="round"/><circle cx="46" cy="36" r="9" fill="#2a2a30"/><circle cx="46" cy="36" r="6" fill="#0c0c10"/><circle cx="100" cy="56" r="9" fill="#2a2a30"/><circle cx="100" cy="56" r="6" fill="#0c0c10"/><rect x="55" y="53.25" width="16.5" height="5.5" rx="1" fill="#2a2a30"/><rect x="60.5" y="47.75" width="5.5" height="16.5" rx="1" fill="#2a2a30"/><circle cx="118" cy="28" r="4" fill="#e8b923"/><circle cx="126" cy="36" r="4" fill="#d6362b"/><circle cx="118" cy="44" r="4" fill="#4fa83d"/><circle cx="110" cy="36" r="4" fill="#2f6fd0"/></svg></div><div class="cn">X360</div><div class="cs">Xbox 360</div><div class="cv" id="hX360">—</div></button>
+      <button class="console" data-plat="XONE"><div class="pad"><svg viewBox="0 0 160 90" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><path d="M46,16 H114 Q134,16 140,38 L148,70 Q150,85 137,85 Q128,85 122,74 L114,62 H46 L38,74 Q32,85 23,85 Q10,85 12,70 L20,38 Q26,16 46,16 Z" fill="#1c1d22" stroke="#3a3b44" stroke-width="1"/><circle cx="80" cy="30" r="7" fill="#3a3b44"/><path d="M76.5,26.5 L83.5,33.5 M83.5,26.5 L76.5,33.5" stroke="#9bd23c" stroke-width="1.6" stroke-linecap="round"/><circle cx="46" cy="36" r="9" fill="#3a3b44"/><circle cx="46" cy="36" r="6" fill="#0c0c10"/><circle cx="100" cy="56" r="9" fill="#3a3b44"/><circle cx="100" cy="56" r="6" fill="#0c0c10"/><rect x="55" y="53.25" width="16.5" height="5.5" rx="1" fill="#3a3b44"/><rect x="60.5" y="47.75" width="5.5" height="16.5" rx="1" fill="#3a3b44"/><circle cx="118" cy="28" r="4" fill="#e8b923"/><circle cx="126" cy="36" r="4" fill="#d6362b"/><circle cx="118" cy="44" r="4" fill="#4fa83d"/><circle cx="110" cy="36" r="4" fill="#2f6fd0"/></svg></div><div class="cn">XONE</div><div class="cs">Xbox One · Series</div><div class="cv" id="hXONE">—</div></button>
       <button class="console" data-plat="PSP"><div class="pad"><svg viewBox="0 0 160 90" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><rect x="18" y="22" width="124" height="50" rx="24" fill="#161616" stroke="#3a3a3a" stroke-width="1"/><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff"/><stop offset=".5" stop-color="#fff" stop-opacity="0"/></linearGradient></defs><rect x="50" y="28" width="60" height="36" rx="2" fill="#2c3e50"/><rect x="50" y="28" width="60" height="36" rx="2" fill="url(#g)" opacity=".35"/><rect x="26.25" y="37.75" width="13.5" height="4.5" rx="1" fill="#3a3a3a"/><rect x="30.75" y="33.25" width="4.5" height="13.5" rx="1" fill="#3a3a3a"/><circle cx="33" cy="57" r="4" fill="#2b2b2b" stroke="#555" stroke-width="1"/><circle cx="127" cy="37.5" r="3.2" fill="#2b2b2b"/><path d="M127,35.1 L129.3,39.1 L124.7,39.1 Z" fill="none" stroke="#3fbf8a" stroke-width="0.9" stroke-linejoin="round"/><circle cx="133.5" cy="44" r="3.2" fill="#2b2b2b"/><circle cx="133.5" cy="44" r="2.2" fill="none" stroke="#e8504f" stroke-width="0.9"/><circle cx="127" cy="50.5" r="3.2" fill="#2b2b2b"/><path d="M125,48.5 L129,52.5 M129,48.5 L125,52.5" stroke="#5b8fe0" stroke-width="0.9" stroke-linecap="round"/><circle cx="120.5" cy="44" r="3.2" fill="#2b2b2b"/><rect x="118.5" y="42" width="4" height="4" fill="none" stroke="#e58fc0" stroke-width="0.9"/></svg></div><div class="cn">PSP</div><div class="cs">PlayStation Portable</div><div class="cv" id="hPSP">—</div></button>
       <button class="console" data-plat="SWITCH"><div class="pad"><svg viewBox="0 0 160 90" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><path d="M34,14 H34 V76 H20 Q6,76 6,60 V30 Q6,14 20,14 Z" fill="#00b9de"/><circle cx="20" cy="32" r="6" fill="#222"/><circle cx="20" cy="32" r="3.8" fill="#0e0e0e"/><circle cx="20" cy="48" r="3" fill="#1d1d1d"/><circle cx="26" cy="54" r="3" fill="#1d1d1d"/><circle cx="20" cy="60" r="3" fill="#1d1d1d"/><circle cx="14" cy="54" r="3" fill="#1d1d1d"/><rect x="34" y="12" width="92" height="66" rx="3" fill="#2a2a2a"/><rect x="39" y="17" width="82" height="56" rx="2" fill="#3c4a57"/><path d="M126,14 H140 Q154,14 154,30 V60 Q154,76 140,76 H126 Z" fill="#ff4b56"/><circle cx="140" cy="30" r="3" fill="#1d1d1d"/><circle cx="146" cy="36" r="3" fill="#1d1d1d"/><circle cx="140" cy="42" r="3" fill="#1d1d1d"/><circle cx="134" cy="36" r="3" fill="#1d1d1d"/><circle cx="140" cy="58" r="6" fill="#222"/><circle cx="140" cy="58" r="3.8" fill="#0e0e0e"/></svg></div><div class="cn">Switch</div><div class="cs">Nintendo Switch</div><div class="cv" id="hSWITCH">—</div></button>
       <button class="console" data-plat="SW2"><div class="pad"><svg viewBox="0 0 160 90" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><path d="M34,14 H34 V76 H20 Q6,76 6,60 V30 Q6,14 20,14 Z" fill="#26262a"/><rect x="32" y="18" width="2" height="54" fill="#00b9de"/><circle cx="20" cy="32" r="6" fill="#3a3a3a"/><circle cx="20" cy="32" r="3.8" fill="#0e0e0e"/><circle cx="20" cy="48" r="3" fill="#111"/><circle cx="26" cy="54" r="3" fill="#111"/><circle cx="20" cy="60" r="3" fill="#111"/><circle cx="14" cy="54" r="3" fill="#111"/><rect x="34" y="12" width="92" height="66" rx="3" fill="#1b1b1e"/><rect x="39" y="17" width="82" height="56" rx="2" fill="#3c4a57"/><path d="M126,14 H140 Q154,14 154,30 V60 Q154,76 140,76 H126 Z" fill="#26262a"/><rect x="126" y="18" width="2" height="54" fill="#ff4b56"/><circle cx="140" cy="30" r="3" fill="#111"/><circle cx="146" cy="36" r="3" fill="#111"/><circle cx="140" cy="42" r="3" fill="#111"/><circle cx="134" cy="36" r="3" fill="#111"/><circle cx="140" cy="58" r="6" fill="#3a3a3a"/><circle cx="140" cy="58" r="3.8" fill="#0e0e0e"/></svg></div><div class="cn">Switch 2</div><div class="cs">Nintendo Switch 2</div><div class="cv" id="hSW2">—</div></button>
@@ -296,6 +358,7 @@ footer.pie{max-width:1240px;margin:0 auto;padding:0 16px 40px;color:var(--muted)
       <button class="console" data-plat="GBA"><div class="pad"><svg viewBox="0 0 160 90" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><path d="M48,12 H112 Q142,12 142,47 Q142,82 112,82 H48 Q18,82 18,47 Q18,12 48,12 Z" fill="#5c4aa8" stroke="#43357f" stroke-width="1"/><rect x="50" y="20" width="60" height="50" rx="3" fill="#2a2a30"/><rect x="55" y="25" width="50" height="38" fill="#9fb0a0"/><rect x="26.5" y="39.5" width="15" height="5" rx="1" fill="#2d2550"/><rect x="31.5" y="34.5" width="5" height="15" rx="1" fill="#2d2550"/><circle cx="122" cy="40" r="5.4" fill="#b9b2d6"/><circle cx="132" cy="50" r="5.4" fill="#b9b2d6"/><rect x="30" y="62" width="8" height="3.4" rx="1.7" fill="#2d2550"/><rect x="30" y="69" width="8" height="3.4" rx="1.7" fill="#2d2550"/></svg></div><div class="cn">GBA</div><div class="cs">Game Boy Advance</div><div class="cv" id="hGBA">—</div></button>
       <button class="console" data-plat="MD"><div class="pad"><svg viewBox="0 0 160 90" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><path d="M48,18 Q80,11 112,18 Q142,26 140,52 Q138,80 116,78 Q100,76 95,66 H65 Q60,76 44,78 Q22,80 20,52 Q18,26 48,18 Z" fill="#1c1c1e" stroke="#3a3a3e" stroke-width="1"/><circle cx="46" cy="46" r="14" fill="#2e2e33"/><rect x="37.0" y="43.0" width="18" height="6" rx="1" fill="#141416"/><rect x="43.0" y="37.0" width="6" height="18" rx="1" fill="#141416"/><rect x="73" y="42" width="14" height="5" rx="2.5" fill="#3a3a3f"/><circle cx="102" cy="54" r="5.6" fill="#2e2e33" stroke="#4a4a50" stroke-width="1"/><circle cx="115" cy="46" r="5.6" fill="#2e2e33" stroke="#4a4a50" stroke-width="1"/><circle cx="128" cy="38" r="5.6" fill="#2e2e33" stroke="#4a4a50" stroke-width="1"/></svg></div><div class="cn">Mega Drive</div><div class="cs">Sega Mega Drive · PAL</div><div class="cv" id="hMD">—</div></button>
     </div>
+    <section id="topW" class="twpanel" hidden aria-label="Los más deseados"><div class="twhead"><h2>Los más deseados</h2><div class="twseg" role="group" aria-label="Vista"><button type="button" data-tw="plat">Por consola</button><button type="button" data-tw="mix">Todo junto</button></div></div><div id="twBody"></div></section>
     <div class="aviso" id="bkAviso" hidden><span id="bkAvisoT"></span><span class="row"><button type="button" class="btn" id="bkAvisoSi">Hacer copia ahora</button><button type="button" class="btn ghost" id="bkAvisoNo">Más tarde</button></span></div>
     <div class="tray" id="tray" aria-label="Bandeja de fotos">
       <div class="drop" id="trayDrop" role="button" tabindex="0"><b>Bandeja de fotos</b><span>Arrastra aquí las fotos de tus juegos, o toca para elegirlas. Cada foto crea su ficha: la IA reconoce el juego, la consola y la región, y luego decides si completas la ficha con IA o a mano.</span></div>
@@ -407,8 +470,8 @@ footer.pie{max-width:1240px;margin:0 auto;padding:0 16px 40px;color:var(--muted)
   </div>
 </div>
 
-<footer class="pie"><div>© 2026 Retrolia · Beta 0.4 · Tu colección se guarda solo en este navegador.</div>
-<div>Retrolia no incluye ni distribuye juegos: cada usuario carga sus propias copias. Emulación con JSNES (Apache 2.0) y Snes9x (uso no comercial). <a href="https://github.com/promerolardn-gif/retrolia/blob/main/LICENCIAS.md" target="_blank" rel="noopener">Licencias y avisos</a></div></footer>
+<footer class="pie"><div>© 2026 Retrolia · Beta 0.5 · Tu colección se guarda solo en este navegador.</div>
+<div>Retrolia no incluye ni distribuye juegos: cada usuario carga sus propias copias. Emulación con JSNES (Apache 2.0), Snes9x y Genesis Plus GX (uso no comercial). <a href="https://github.com/promerolardn-gif/retrolia/blob/main/LICENCIAS.md" target="_blank" rel="noopener">Licencias y avisos</a></div></footer>
 
 <div id="gate" hidden><form id="gateForm"><div class="brand"><div class="dots" aria-hidden="true"><i></i><i></i><i></i><i></i></div><h1>Retrolia</h1></div>
   <div class="sub">Beta privada. Escribe el código de acceso que te han pasado.</div>
@@ -430,7 +493,6 @@ footer.pie{max-width:1240px;margin:0 auto;padding:0 16px 40px;color:var(--muted)
 </dialog>
 
 <dialog id="dlg" aria-label="Ficha del juego">
-  <button class="close" id="dlgClose" aria-label="Cerrar">×</button>
   <div class="sheet">
     <div class="pic" id="dPic"><img id="dImg" alt=""></div>
     <div class="info">
@@ -472,12 +534,15 @@ footer.pie{max-width:1240px;margin:0 auto;padding:0 16px 40px;color:var(--muted)
         <label class="full">Notas<textarea id="fNotas" rows="2"></textarea></label>
         <div class="row full"><button class="btn" type="submit">Guardar</button><span class="status" id="dMsg"></span></div>
       </form>
+      <div id="dWish" hidden></div>
       <div id="dCaps"></div>
       <div id="dInfo"></div>
       <div class="hint" id="dSrc"></div>
     </div>
   </div>
+  <div class="dock" id="fDock"><button type="button" class="dk go" id="dockPlay" hidden>▶ Jugar</button><button type="button" class="dk" id="dlgClose" aria-label="Cerrar la ficha"><svg class="x" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M3.5 3.5l9 9M12.5 3.5l-9 9"/></svg>Cerrar</button></div>
 </dialog>
+<div class="dock fixed" id="listDock" hidden><button type="button" class="dk" id="dockHome">← Consolas</button><button type="button" class="dk" id="dockTop">↑ Arriba</button></div>
 
 <dialog id="addDlg" aria-label="Añadir juego" style="width:min(560px,calc(100% - 24px))">
   <form class="edit" id="addForm" style="padding:22px">
@@ -495,12 +560,22 @@ footer.pie{max-width:1240px;margin:0 auto;padding:0 16px 40px;color:var(--muted)
     <div class="row full"><button class="btn" type="submit">Crear ficha</button><button class="btn ghost" type="button" id="addCancel">Cancelar</button><span class="status" id="addMsg"></span></div>
   </form>
 </dialog>
+<dialog id="viewDlg" aria-label="Visor">
+  <div id="vStage"></div>
+  <div id="vCap"></div>
+  <div class="dock fixed">
+    <div class="dk grp" id="vNav"><button type="button" id="vPrev" aria-label="Anterior">‹</button><span class="tm" id="vCount"></span><button type="button" id="vNext" aria-label="Siguiente">›</button></div>
+    <div class="dk grp" id="vCtl" hidden><button type="button" id="vPlay" aria-label="Reproducir o pausar">❚❚</button><input type="range" id="vSeek" min="0" max="1000" value="0" aria-label="Posición del vídeo"><span class="tm" id="vTime">0:00</span><button type="button" id="vMute" aria-label="Silenciar">Sonido</button><button type="button" id="vFull" aria-label="Pantalla completa">Ampliar</button></div>
+    <button type="button" class="dk" id="vClose" aria-label="Cerrar el visor"><svg class="x" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M3.5 3.5l9 9M12.5 3.5l-9 9"/></svg>Cerrar</button>
+  </div>
+</dialog>
 <dialog id="emuDlg" aria-label="Emulador">
-  <div class="ebar"><div class="et" id="emuTitle"></div><span class="status" id="emuMsg" style="flex:1;text-align:right;color:#a3a2a9"></span><button class="ex" id="emuShot" title="Guarda la imagen actual del juego en la ficha">Captura a la ficha</button><button class="ex" id="emuClose">Cerrar ✕</button></div>
+  <div class="ebar"><div class="et" id="emuTitle"></div><span class="status" id="emuMsg" style="flex:1;text-align:right;color:#a3a2a9"></span><span id="emuVid" hidden style="display:contents"><button class="ex" id="emuVidSave" style="border-color:var(--accent);color:var(--accent)">Guardar vídeo en la ficha</button><button class="ex" id="emuVidDl">Descargar vídeo</button></span><button class="ex" id="emuShot" title="Guarda la imagen actual del juego en la ficha">Captura a la ficha</button><button class="ex" id="emuClose">Cerrar ✕</button></div>
   <div class="ehost" id="emuHost-nes" tabindex="-1" hidden></div>
   <div class="ehost" id="emuHost-snes" tabindex="-1" hidden></div>
+  <div class="ehost" id="emuHost-md" tabindex="-1" hidden></div>
 </dialog>
-<input type="file" id="romPick" hidden accept=".nes,.sfc,.smc,.swc,.fig,.zip,application/zip,application/octet-stream">
+<input type="file" id="romPick" hidden accept=".nes,.sfc,.smc,.swc,.fig,.md,.bin,.gen,.smd,.zip,application/zip,application/octet-stream">
 
 
 <script>
@@ -526,8 +601,11 @@ const PLAT={SNES:{title:"Colección Super Nintendo",sub:"Super Famicom · SNES N
   NES:{title:"Colección NES",sub:"NES PAL España · PAL-B · NTSC-U · Famicom · a precio de mercado en España",chips:[["","Todas"],["NES PAL España","PAL España"],["NES PAL-B","PAL-B"],["NES NTSC-U","NTSC-U"],["Famicom","Famicom"]]},
   PS1:{title:"Colección PlayStation",sys:"PS1",sub:"PAL · PAL España · NTSC-J · a precio de mercado",chips:[["","Todas"],["PS1 PAL","PAL"],["PS1 PAL España","PAL España"],["PS1 NTSC-J","NTSC-J"]]},
   PS2:{title:"Colección PlayStation 2",sys:"PS2",sub:"PAL · PAL España · a precio de mercado",chips:[["","Todas"],["PS2 PAL","PAL"],["PS2 PAL España","PAL España"]]},
+  PS3:{title:"Colección PlayStation 3",sys:"PS3",sub:"PAL · PAL España · a precio de mercado",chips:[["","Todas"],["PS3 PAL","PAL"],["PS3 PAL España","PAL España"]]},
   PS4:{title:"Colección PlayStation 4",sys:"PS4",sub:"A precio de mercado",chips:[["","Todas"]]},
   PS5:{title:"Colección PlayStation 5",sys:"PS5",sub:"A precio de mercado",chips:[["","Todas"]]},
+  X360:{title:"Colección Xbox 360",sys:"Xbox 360",sub:"PAL · PAL España · a precio de mercado",chips:[["","Todas"],["Xbox 360 PAL","PAL"],["Xbox 360 PAL España","PAL España"]]},
+  XONE:{title:"Colección Xbox One · Series",sys:"Xbox One",sub:"PAL · PAL España · a precio de mercado",chips:[["","Todas"]]},
   PSP:{title:"Colección PSP",sys:"PSP",sub:"PAL · PAL España · a precio de mercado",chips:[["","Todas"],["PSP PAL","PAL"],["PSP PAL España","PAL España"]]},
   SWITCH:{title:"Colección Nintendo Switch",sys:"Switch",sub:"PAL · PAL España · a precio de mercado",chips:[["","Todas"],["Switch PAL","PAL"],["Switch PAL España","PAL España"]]},
   DS:{title:"Colección Nintendo DS",sys:"Nintendo DS",sub:"PAL · PAL España · a precio de mercado",chips:[["","Todas"],["DS PAL","PAL"],["DS PAL España","PAL España"]]},
@@ -535,9 +613,9 @@ const PLAT={SNES:{title:"Colección Super Nintendo",sub:"Super Famicom · SNES N
   GBA:{title:"Colección Game Boy Advance",sys:"Game Boy Advance",sub:"A precio de mercado",chips:[["","Todas"]]},
   SW2:{title:"Colección Nintendo Switch 2",sys:"Switch 2",sub:"PAL España · a precio de mercado",chips:[["","Todas"]]},
   GC:{title:"Colección GameCube",sys:"GameCube",sub:"PAL España · a precio de mercado",chips:[["","Todas"]]},
-  MD:{title:"Colección Mega Drive",sys:"Mega Drive",sub:"PAL · a precio de mercado",chips:[["","Todas"]]}};
+  MD:{title:"Colección Mega Drive",sys:"Mega Drive",sub:"PAL · Japón · a precio de mercado",chips:[["","Todas"],["Mega Drive PAL","PAL"],["Mega Drive Japón","Japón"]]}};
 const PLATS=Object.keys(PLAT);
-const REGI={"SNES NTSC-U":["NTSC-U","us"],"Super Famicom":["SFC","jp"],"SNES PAL":["PAL","eu"],"NES PAL España":["PAL ESP","eu"],"NES PAL-B":["PAL-B","eu"],"NES PAL-A":["PAL-A","eu"],"NES NTSC-U":["NTSC-U","us"],"Famicom":["FC","jp"],"PS1 PAL":["PAL","eu"],"PS1 NTSC-J":["NTSC-J","jp"],"PS2 PAL":["PAL","eu"],"PS4 Japón":["JP","jp"],"PS5 PAL":["PAL","eu"],"PSP PAL":["PAL","eu"],"Switch PAL":["PAL","eu"],"DS PAL":["PAL","eu"],"GBA PAL":["PAL","eu"],"Mega Drive PAL":["PAL","eu"],"PS1 PAL España":["PAL ESP","eu"],"PS2 PAL España":["PAL ESP","eu"],"PSP PAL España":["PAL ESP","eu"],"DS PAL España":["PAL ESP","eu"],"GBA PAL España":["PAL ESP","eu"],"Switch PAL España":["PAL ESP","eu"],"Mega Drive PAL España":["PAL ESP","eu"],"Switch 2 PAL España":["PAL ESP","eu"],"GameCube PAL España":["PAL ESP","eu"],"GameCube PAL":["PAL","eu"],"3DS PAL":["PAL","eu"],"3DS PAL España":["PAL ESP","eu"],"Switch 2 PAL":["PAL","eu"]};
+const REGI={"SNES NTSC-U":["NTSC-U","us"],"Super Famicom":["SFC","jp"],"SNES PAL":["PAL","eu"],"NES PAL España":["PAL ESP","eu"],"NES PAL-B":["PAL-B","eu"],"NES PAL-A":["PAL-A","eu"],"NES NTSC-U":["NTSC-U","us"],"Famicom":["FC","jp"],"PS1 PAL":["PAL","eu"],"PS1 NTSC-J":["NTSC-J","jp"],"PS2 PAL":["PAL","eu"],"PS4 Japón":["JP","jp"],"PS5 PAL":["PAL","eu"],"PSP PAL":["PAL","eu"],"Switch PAL":["PAL","eu"],"DS PAL":["PAL","eu"],"GBA PAL":["PAL","eu"],"Mega Drive PAL":["PAL","eu"],"PS1 PAL España":["PAL ESP","eu"],"PS2 PAL España":["PAL ESP","eu"],"PSP PAL España":["PAL ESP","eu"],"DS PAL España":["PAL ESP","eu"],"GBA PAL España":["PAL ESP","eu"],"Switch PAL España":["PAL ESP","eu"],"Mega Drive PAL España":["PAL ESP","eu"],"Switch 2 PAL España":["PAL ESP","eu"],"GameCube PAL España":["PAL ESP","eu"],"GameCube PAL":["PAL","eu"],"3DS PAL":["PAL","eu"],"3DS PAL España":["PAL ESP","eu"],"Switch 2 PAL":["PAL","eu"],"PS4 PAL":["PAL","eu"],"PS4 PAL España":["PAL ESP","eu"],"PS5 PAL España":["PAL ESP","eu"],"Xbox 360 PAL":["PAL","eu"],"Xbox 360 PAL España":["PAL ESP","eu"],"Xbox One PAL":["PAL","eu"],"Xbox One PAL España":["PAL ESP","eu"],"Switch NTSC-U":["NTSC-U","us"],"Switch NTSC-J":["NTSC-J","jp"],"DS NTSC-U":["NTSC-U","us"],"DS NTSC-J":["NTSC-J","jp"],"PSP NTSC-J":["NTSC-J","jp"],"PS3 PAL":["PAL","eu"],"PS3 PAL España":["PAL ESP","eu"],"PS2 NTSC-J":["NTSC-J","jp"],"PS2 PAL Italia":["PAL ITA","eu"],"PS2 PAL Australia":["PAL AUS","eu"],"Mega Drive Japón":["JP","jp"],"PSP PAL":["PAL","eu"],"GBA PAL":["PAL","eu"]};
 const regI=r=>REGI[r]||[r||"?","jp"];
 const pg=()=>state.games.filter(g=>platOf(g)===state.plat);
 function mercado(g){ return g.cib==null?null:(g.eur?g.cib:g.cib*state.fx); }
@@ -582,7 +660,16 @@ function renderStats(){
   $("#cTengo").textContent=own.length; $("#cDeseo").textContent=wish.length||"";
   const openT=state.tasks.filter(t=>!t.hecho).length; $("#cPend").textContent=openT||"";
 }
-function renderHome(){ PLATS.forEach(p=>{const own=state.games.filter(g=>platOf(g)===p&&g.estado!=="deseo"); const el=$("#h"+p); if(el) el.textContent=own.length?`${own.length} juegos · ${eur(own.reduce((a,g)=>a+(valor(g)||0),0))}`:"Sin juegos todavía";}); renderTray(); bkPinta(); }
+function twCard(g,lab){ const v=valor(g), mx=g.deseo&&g.deseo.precioMax;
+  return `<button type="button" class="twc" data-twopen="${esc(g.id)}"><div class="ph">${g.foto?`<img loading="lazy" src="${esc(g.foto)}" alt="">`:"Sin foto todavía"}</div><div class="tt">${esc(g.titulo)}</div><div class="mm">${lab?esc(lab)+" · ":""}${v==null?"sin valor":eur(v)}${mx?` · máx ${eur(+mx)}`:""}</div></button>`; }
+function renderTopW(){ const box=$("#topW"); if(!box) return; const W=(state.games||[]).filter(g=>g.estado==="deseo"&&g.deseo&&+g.deseo.prioridad===1);
+  box.hidden=!W.length; if(!W.length) return; if(!state.twMode){ state.twMode="plat"; try{ state.twMode=localStorage.getItem("twMode")||"plat"; }catch{} } const mode=state.twMode;
+  box.querySelectorAll("[data-tw]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.tw===mode)));
+  const byV=(a,b)=>(valor(b)||0)-(valor(a)||0);
+  if(mode==="mix") $("#twBody").innerHTML=`<div class="twrow">${W.slice().sort(byV).map(g=>twCard(g,PNAME[platOf(g)]||platOf(g))).join("")}</div>`;
+  else $("#twBody").innerHTML=PLATS.filter(p=>W.some(g=>platOf(g)===p)).map(p=>`<div class="twgrp"><h3>${esc(PNAME[p]||p)}</h3><div class="twrow">${W.filter(g=>platOf(g)===p).sort(byV).map(g=>twCard(g)).join("")}</div></div>`).join(""); }
+$("#topW").onclick=e=>{ e.stopPropagation(); const t=e.target.closest("[data-tw]"); if(t){ state.twMode=t.dataset.tw; try{ localStorage.setItem("twMode",t.dataset.tw); }catch{} renderTopW(); return; } const o=e.target.closest("[data-twopen]"); if(o) openG(o.dataset.twopen); };
+function renderHome(){ renderTopW(); PLATS.forEach(p=>{const own=state.games.filter(g=>platOf(g)===p&&g.estado!=="deseo"); const el=$("#h"+p); if(el) el.textContent=own.length?`${own.length} juegos · ${eur(own.reduce((a,g)=>a+(valor(g)||0),0))}`:"Sin juegos todavía";}); renderTray(); bkPinta(); }
 function fillFilters(){
   const gens=[...new Set(pg().map(g=>g.genero))].sort(), eds=[...new Set(pg().map(g=>g.editora))].sort();
   const fill=(sel,arr,first)=>{const cur=sel.value; sel.innerHTML=`<option value="">${first}</option>`+arr.map(x=>`<option>${esc(x)}</option>`).join(""); sel.value=arr.includes(cur)?cur:"";};
@@ -603,8 +690,8 @@ function renderGrid(){
   em.hidden=true;
   grid.innerHTML=list.map(g=>{const v=valor(g),t=tier(v),p=pend(g),vr=variacion(g);
     return `<button class="card" data-id="${g.id}">
-      <div class="ph"><img loading="lazy" src="${esc(g.foto)}" alt="Portada de ${esc(g.titulo)}">
-        <div class="badge">${p.miss.length?`<span class="flag miss">Falta ${p.miss.length}</span>`:""}${g.fotoDe==="Vendedor"?`<span class="flag q">Foto del vendedor</span>`:""}</div></div>
+      <div class="ph">${g.foto?`<img loading="lazy" src="${esc(g.foto)}" alt="Portada de ${esc(g.titulo)}">`:`<div class="noimg">${esc(g.titulo)}<div class="hint" style="font-weight:400;margin-top:6px">Sin foto todavía</div></div>`}
+        <div class="badge">${g.estado==="deseo"&&g.deseo?.prioridad?`<span class="flag pr${g.deseo.prioridad}">${["","A por él","Si sale bien","Algún día"][g.deseo.prioridad]||""}</span>`:""}${p.miss.length?`<span class="flag miss">Falta ${p.miss.length}</span>`:""}${g.fotoDe==="Vendedor"?`<span class="flag q">Foto del vendedor</span>`:""}</div></div>
       <div class="body"><div class="t">${esc(g.titulo)}</div>
         <div class="meta"><span class="reg ${regI(g.region)[1]}">${esc(regI(g.region)[0])}</span><span class="tier ${t}">${t}</span></div>
         <div class="meta"><span class="val">${eur(v)}</span>${regalo(g)?`<span class="pos" style="font-family:var(--f-mono);font-size:13px" title="Regalo: todo su valor es ganancia">${eurS(ganancia(g))} 🎁</span>`:vr!=null?`<span class="${vr>=0?"pos":"neg"}" style="font-family:var(--f-mono);font-size:13px" title="${eurS(ganancia(g))}">${pct(vr)}</span>`:""}</div>
@@ -718,6 +805,7 @@ function showTab(t){ state.tab=t;
   if(t==="pend") renderPend(); else if(t==="excel") renderExcel(); else if(t!=="ajustes") renderGrid();
 }
 document.querySelectorAll("nav.tabs button").forEach(b=>b.onclick=()=>showTab(b.dataset.tab));
+const PNAME={SNES:"SNES",NES:"NES",PS1:"PS1",PS2:"PS2",PS3:"PS3",PS4:"PS4",PS5:"PS5",X360:"Xbox 360",XONE:"Xbox One",PSP:"PSP",SWITCH:"Switch",SW2:"Switch 2",DS:"DS","3DS":"3DS",GBA:"GBA",GC:"GameCube",MD:"Mega Drive"};
 function setPlat(p){ state.plat=p; state.reg=""; state.gen=""; state.ed=""; state.q=""; $("#q").value="";
   $("#home").hidden=!!p; $("#platView").hidden=!p;
   if(p){ const C=PLAT[p]; $("#pTitle").textContent=C.title; $("#pSub").textContent=C.sub; document.title=C.title;
@@ -728,7 +816,11 @@ function setPlat(p){ state.plat=p; state.reg=""; state.gen=""; state.ed=""; stat
   window.scrollTo(0,0); }
 document.querySelectorAll(".console").forEach(b=>b.onclick=()=>setPlat(b.dataset.plat));
 $("#goHome").onclick=()=>setPlat(null);
-window.addEventListener("scroll",()=>$("#goHome").classList.toggle("float",!!state.plat&&window.scrollY>150),{passive:true});
+const syncDock=()=>{ $("#listDock").hidden=!(state.plat&&window.scrollY>150); };
+window.addEventListener("scroll",syncDock,{passive:true});
+$("#dockHome").onclick=()=>{ setPlat(null); syncDock(); };
+$("#dockTop").onclick=()=>window.scrollTo({top:0,behavior:"smooth"});
+$("#dockPlay").onclick=()=>$("#bPlay")?.click();
 $("#q").oninput=e=>{state.q=e.target.value;renderGrid()};
 $("#gen").onchange=e=>{state.gen=e.target.value;renderGrid()};
 $("#ed").onchange=e=>{state.ed=e.target.value;renderGrid()};
@@ -742,14 +834,14 @@ function openG(id){ state.cur=id; pieceDraft=null; fillDialog(id,false); $("#dMs
 $("#dlgClose").onclick=()=>dlg.close(); dlg.addEventListener("close",()=>{state.cur=null});
 dlg.addEventListener("click",e=>{ if(e.target===dlg) dlg.close(); });
 function fillDialog(id,live){
-  const g=state.games.find(x=>x.id===id); if(!g) return;
+  const g=(state.all||state.games).find(x=>x.id===id); if(!g) return;
   const v=valor(g), vr=variacion(g);
   const gal=g.galeria||[];
   if(gal.length>1){ if(!live) state.gi=0; state.gi=Math.min(state.gi,gal.length-1);
     $("#dPic").innerHTML=`<div class="gal"><img class="main" src="${esc(gal[state.gi])}" alt="Foto ${state.gi+1} de ${gal.length} de ${esc(g.titulo)}">
       <div class="gnav"><button type="button" data-gs="-1" aria-label="Foto anterior">‹</button><span>${state.gi+1} / ${gal.length}</span><button type="button" data-gs="1" aria-label="Foto siguiente">›</button></div>
       <div class="thumbs">${gal.map((u,i)=>`<button type="button" data-gi="${i}" aria-current="${i===state.gi}" aria-label="Ver foto ${i+1}"><img loading="lazy" src="${esc(u)}" alt=""></button>`).join("")}</div></div>`; }
-  else $("#dPic").innerHTML=`<img id="dImg" src="${esc(g.foto)}" alt="Portada de ${esc(g.titulo)}">`;
+  else $("#dPic").innerHTML=g.foto?`<img id="dImg" src="${esc(g.foto)}" alt="Portada de ${esc(g.titulo)}">`:`<div class="empty" style="width:100%">Sin foto todavía</div>`;
   $("#dTitle").textContent=g.titulo; $("#dOrig").textContent=g.original||"";
   $("#dTags").innerHTML=`<span class="reg ${regI(g.region)[1]}">${esc(g.region)}</span><span class="tier ${tier(v)}">Nivel ${tier(v)}</span>${g.bandeja?`<span class="flag q">En la bandeja</span>`:""}${g.fotoDe==="Vendedor"?`<span class="flag q">Foto del vendedor</span>`:""}`;
   $("#dKv").innerHTML=[["Editora",g.editora],["Año",g.anio],["Género",g.genero],["Valor actual",eur(v)+(g.valorManual!=null&&g.valorManual!==""?" (manual)":"")],
@@ -757,6 +849,22 @@ function fillDialog(id,live){
     ...(platOf(g)==="SNES"?[[g.estado==="deseo"?"Mercado EE. UU. (CIB)":"Traerlo a casa",eur(g.estado==="deseo"?mercado(g):puesto(mercado(g)))]]:[]),...(g.eur&&g.estado==="deseo"&&g.importa?[["Coste puesto en casa",eur(puesto(mercado(g)))]]:[]),...(g.eur?[[g.importa?"Completo (precio en origen)":"Completo (mercado EU)",eur(g.cib)],["Cartucho suelto",eur(g.loose)]]:[["Suelto",usd(g.loose)],["Completo (CIB)",usd(g.cib)],["Precintado",usd(g.nuevo)]]),
     ["Obtenido",g.fechaObtencion?new Date(g.fechaObtencion).toLocaleDateString("es-ES"):"—"],...(g.estado==="deseo"?[["Captura del anuncio",g.fechaFoto||"—"]]:[]),["Archivo",g.archivo||"—"]]
     .map(([k,x])=>`<div><div class="k">${k}</div><div class="v">${typeof x==="string"&&x.includes("<span")?x:esc(x)}</div></div>`).join("");
+  const W=g.deseo||{}, isW=g.estado==="deseo"; $("#dWish").hidden=!isW;
+  if(isW&&(!live||!document.activeElement?.closest("#dWish"))){ const ads=(W.anuncios||[]).slice().sort((a,b)=>String(b.fecha).localeCompare(String(a.fecha)));
+    $("#dWish").innerHTML=`<div class="lbl">Lista de deseos</div>
+    <form class="edit" id="wForm">
+      <label>Prioridad<select id="wPr"><option value="">—</option><option value="1">A por él</option><option value="2">Si sale bien de precio</option><option value="3">Algún día</option></select></label>
+      <label>Edición que buscas<input id="wEd" placeholder="PAL España, japonesa…"></label>
+      <label>Precio máximo (€)<input id="wMax" type="number" min="0" step="1"></label>
+      <label>Estado mínimo<input id="wEst" placeholder="Completo, sin hagaki…"></label>
+      <label class="full">Idioma<select id="wIdi"><option value="">—</option><option value="es">En español</option><option value="en">En inglés</option><option value="libre">Se juega sin saber japonés</option><option value="parche">Japonés, con parche de traducción</option><option value="jp">Solo japonés</option></select></label>
+      <div class="row full"><button class="btn" type="submit">Guardar deseo</button><span class="status" id="wMsg"></span></div>
+    </form>
+    ${ads.length?`<div class="lbl">Anuncios vistos</div><div class="ads">${ads.map(a=>`<div class="ad">${a.foto?`<a href="${esc(a.foto)}" target="_blank" rel="noopener"><img src="${esc(a.foto)}" alt=""></a>`:""}<div><b>${a.precio!=null?eur(+a.precio):"—"}</b>${W.precioMax&&a.precio!=null&&+a.precio<=+W.precioMax?` <span class="ok">· por debajo de tu máximo</span>`:""}<div class="hint">${esc(a.fecha||"")}${a.fuente?` · ${esc(a.fuente)}`:""}${a.nota?` · ${esc(a.nota)}`:""}</div></div></div>`).join("")}</div>`:`<p class="hint" style="margin:0">Cuando veas un anuncio, pásale las capturas a Claude y quedará aquí con su precio y fecha.</p>`}`;
+    $("#wPr").value=W.prioridad||""; $("#wEd").value=W.edicion||""; $("#wMax").value=W.precioMax??""; $("#wEst").value=W.estadoMin||""; $("#wIdi").value=W.idioma||"";
+    $("#wForm").onsubmit=async e=>{ e.preventDefault(); if(!state.db) return; $("#wMsg").textContent="Guardando…";
+      const n={...W,prioridad:$("#wPr").value?+$("#wPr").value:null,edicion:$("#wEd").value,precioMax:$("#wMax").value===""?null:+$("#wMax").value,estadoMin:$("#wEst").value,idioma:$("#wIdi").value};
+      try{ await state.db.doc("juegos/"+g.id).update({deseo:n}); $("#wMsg").textContent="Guardado"; }catch{ $("#wMsg").textContent="No se pudo guardar."; } }; }
   renderPlay(g);
   if(!live||!document.activeElement?.closest("#dEdit")){ $("#eTitulo").value=g.titulo||""; $("#eOriginal").value=g.original||""; $("#eRegion").value=g.region||""; $("#eEditora").value=g.editora||""; $("#eGenero").value=g.genero||""; $("#eAnio").value=g.anio||"";
     $("#ePlat").innerHTML=(PLAT[platOf(g)]?"":`<option value="?">Sin identificar</option>`)+PLATS.map(p=>`<option value="${p}">${esc(PLAT[p].sys||p)}</option>`).join(""); $("#ePlat").value=PLAT[platOf(g)]?platOf(g):"?";
@@ -772,8 +880,9 @@ function fillDialog(id,live){
   $("#dPiecesHint").innerHTML=own&&hasMan&&fv>0?`<span style="color:var(--warn)">Tienes un valor manual (${eur(+g.valorManual)}): las piezas que faltan no restan. Para que resten, borra el valor manual.</span>`:own&&fv>0?`Completo valdría <b>${eur(mercado(g))}</b>; le restan <b>${eur(fv)}</b> por las piezas que faltan.`:"Verde: lo tienes · Rojo: falta (su valor se resta) · Amarillo: sin comprobar";
   if(!live||!document.activeElement?.closest("#dPv")) $("#dPv").innerHTML=pcs.map((p,i)=>`<label>${esc(p.n)}<input type="number" min="0" step="1" data-pv="${i}" value="${p.v!=null&&p.v!==""?p.v:""}" placeholder="${Math.round(piezaValor(g,{n:p.n}))}"></label>`).join("");
   const C=g.capturas||[]; const sys=platOf(g)==="NES"?(g.region==="Famicom"?"Famicom":"NES"):platOf(g)==="SNES"?(g.region==="Super Famicom"?"Super Famicom":"SNES"):(PLAT[platOf(g)]?.sys||platOf(g)); const qi=encodeURIComponent(`${g.titulo} ${sys} screenshots`);
-  $("#dCaps").innerHTML=`<div class="about"><div class="lbl">Capturas</div>${C.length?`<div class="caps">${C.map((c,i)=>{const lb=(g.capLabels||[])[i]||(i===0?"Pantalla de título":"En juego"); return `<figure><img loading="lazy" src="${esc(c)}" alt="${esc(lb)} de ${esc(g.titulo)}"><figcaption>${esc(lb)}</figcaption></figure>`;}).join("")}</div>`:""}
-    <div class="links"><a class="btn ghost" href="https://www.google.com/search?tbm=isch&q=${qi}" target="_blank" rel="noopener">Ver más capturas</a></div></div>`;
+  $("#dCaps").innerHTML=`<div class="about"><div class="lbl">Capturas</div>${C.length?`<div class="caps">${C.map((c,i)=>{const lb=(g.capLabels||[])[i]||(i===0?"Pantalla de título":"En juego"); return `<figure><img loading="lazy" src="${esc(c)}" alt="${esc(lb)} de ${esc(g.titulo)}"><figcaption>${esc(lb)}</figcaption><button type="button" class="del" data-cdel="${i}" aria-label="Borrar esta captura">×</button></figure>`;}).join("")}</div>`:""}
+    <div class="links"><a class="btn ghost" href="https://www.google.com/search?tbm=isch&q=${qi}" target="_blank" rel="noopener">Ver más capturas</a></div>
+    ${(g.videos||[]).length?`<div class="lbl" style="margin:6px 0 0">Vídeos de gameplay</div><div class="vids">${g.videos.map((v,i)=>`<div class="vid" role="button" tabindex="0" data-v="${i}" aria-label="Ver ${esc(v.label||"vídeo")}"><video muted playsinline preload="metadata" src="blob/${esc(v.id)}#t=0.5"></video><span class="pl">▶ ${esc(v.label||"Gameplay")} · ${v.secs||"?"} s</span><button type="button" class="del" data-vdel="${i}" aria-label="Borrar este vídeo">×</button></div>`).join("")}</div>`:""}</div>`;
   const I=g.info; const dash=x=>(x&&x!=="-")?x:null;
   $("#dInfo").innerHTML=I?`<div class="about"><div class="lbl">Sobre el juego</div>
     <p>${esc(I.resumen)}</p>
@@ -800,6 +909,66 @@ function fillDialog(id,live){
 $("#dPic").onclick=e=>{const g=state.games.find(x=>x.id===state.cur); if(!g||!g.galeria) return; const n=g.galeria.length;
   const t=e.target.closest("[data-gi]"), s=e.target.closest("[data-gs]");
   if(t) state.gi=+t.dataset.gi; else if(s) state.gi=(state.gi+ +s.dataset.gs+n)%n; else return; fillDialog(g.id,true);};
+// Visor: fotos, capturas y vídeos a pantalla completa
+const view={items:[],i:0};
+const mmss=t=>{ t=Math.max(0,Math.floor(t||0)); return Math.floor(t/60)+":"+String(t%60).padStart(2,"0"); };
+function openView(items,i){ if(!items.length) return; view.items=items; view.i=Math.max(0,Math.min(i||0,items.length-1)); drawView(); const D=$("#viewDlg"); if(!D.open) D.showModal(); }
+function drawView(){ const it=view.items[view.i], st=$("#vStage"), n=view.items.length;
+  $("#vNav").hidden=n<2; $("#vCount").textContent=(view.i+1)+" / "+n; $("#vCtl").hidden=!it.video; $("#vCap").textContent=it.label||"";
+  if(!it.video){ st.innerHTML=`<img class="${it.px?"px":""}" src="${esc(it.src)}" alt="${esc(it.label||"")}">`; return; }
+  st.innerHTML=`<video id="vVid" playsinline src="${esc(it.src)}"></video>`; const v=$("#vVid"); let fixing=false;
+  const dur=()=>isFinite(v.duration)&&v.duration>0?v.duration:(it.secs||0);
+  const sync=()=>{ if(fixing) return; const d=dur(); if(document.activeElement!==$("#vSeek")) $("#vSeek").value=d?Math.round(v.currentTime/d*1000):0; $("#vTime").textContent=mmss(v.currentTime)+" / "+mmss(d); $("#vPlay").textContent=v.paused?"▶":"❚❚"; };
+  v.addEventListener("loadedmetadata",()=>{ if(!isFinite(v.duration)){ fixing=true; const back=()=>{ v.removeEventListener("timeupdate",back); v.currentTime=0; fixing=false; v.play().catch(()=>{}); }; v.addEventListener("timeupdate",back); v.currentTime=1e7; } else v.play().catch(()=>{}); });
+  ["timeupdate","play","pause","ended","durationchange"].forEach(ev=>v.addEventListener(ev,sync)); v.onclick=()=>v.paused?v.play():v.pause(); sync(); }
+$("#vPrev").onclick=()=>{ view.i=(view.i-1+view.items.length)%view.items.length; drawView(); };
+$("#vNext").onclick=()=>{ view.i=(view.i+1)%view.items.length; drawView(); };
+$("#vPlay").onclick=()=>{ const v=$("#vVid"); if(v) v.paused?v.play():v.pause(); };
+$("#vSeek").oninput=e=>{ const v=$("#vVid"), it=view.items[view.i]; if(!v) return; const d=isFinite(v.duration)&&v.duration>0?v.duration:(it.secs||0); if(d) v.currentTime=e.target.value/1000*d; };
+$("#vMute").onclick=()=>{ const v=$("#vVid"); if(!v) return; v.muted=!v.muted; $("#vMute").textContent=v.muted?"Sin sonido":"Sonido"; };
+$("#vFull").onclick=()=>{ const v=$("#vVid"); if(v&&v.requestFullscreen) v.requestFullscreen().catch(()=>{}); };
+$("#vClose").onclick=()=>$("#viewDlg").close();
+$("#viewDlg").addEventListener("close",()=>{ $("#vStage").innerHTML=""; });
+// Pasar fotos con el dedo: en la galería de la ficha y en el visor (fotos, capturas y vídeos)
+let swipeAt=0;
+function swipe(el,go){ let x0=null,y0=0,t0=0;
+  el.addEventListener("touchstart",e=>{ if(e.touches.length!==1||e.target.closest("input,button,.thumbs")){ x0=null; return; } x0=e.touches[0].clientX; y0=e.touches[0].clientY; t0=Date.now(); },{passive:true});
+  el.addEventListener("touchend",e=>{ if(x0==null) return; const c=e.changedTouches[0], dx=c.clientX-x0, dy=c.clientY-y0; x0=null;
+    if(Math.abs(dx)<45||Math.abs(dx)<Math.abs(dy)*1.5||Date.now()-t0>800) return; go(dx<0?1:-1); swipeAt=Date.now(); },{passive:true});
+  el.addEventListener("touchcancel",()=>{ x0=null; },{passive:true});
+  el.addEventListener("click",e=>{ if(Date.now()-swipeAt<450){ e.stopPropagation(); e.preventDefault(); } },true); }
+// Animación al pasar de foto: la nueva entra deslizándose desde el lado hacia el que se avanza
+let slide={d:0,at:0};
+document.addEventListener("click",e=>{ const b=e.target.closest?.("#vNext,#vPrev,#dPic [data-gs]"); if(!b) return;
+  slide={d:b.id==="vNext"?1:b.id==="vPrev"?-1:+b.dataset.gs,at:Date.now()}; },true);
+document.addEventListener("keydown",e=>{ if(e.key==="ArrowRight"||e.key==="ArrowLeft") slide={d:e.key==="ArrowRight"?1:-1,at:Date.now()}; },true);
+["#vStage","#dPic"].forEach(s=>new MutationObserver(()=>{ if(!slide.d||Date.now()-slide.at>400) return;
+  const el=document.querySelector(s==="#vStage"?"#vStage > img, #vStage > video":"#dPic .gal .main"); if(!el||el.dataset.sl) return;
+  el.dataset.sl=1; el.classList.add(slide.d>0?"slideL":"slideR"); }).observe($(s),{childList:true,subtree:true}));
+swipe($("#viewDlg"),d=>{ if(view.items.length>1) $(d>0?"#vNext":"#vPrev").click(); });
+swipe($("#dPic"),d=>{ const b=document.querySelector(`#dPic [data-gs="${d}"]`); if(b) b.click(); });
+$("#viewDlg").addEventListener("click",e=>{ if(e.target.id==="vStage") $("#viewDlg").close(); });
+$("#viewDlg").addEventListener("keydown",e=>{ if(view.items.length<2||e.target.closest("input")) return; if(e.key==="ArrowRight") $("#vNext").click(); else if(e.key==="ArrowLeft") $("#vPrev").click(); else return; e.stopPropagation(); });
+$("#dPic").addEventListener("click",e=>{ if(!e.target.matches("img.main,#dImg")) return; const g=state.games.find(x=>x.id===state.cur); if(!g) return;
+  const gal=(g.galeria&&g.galeria.length?g.galeria:[g.foto]).filter(Boolean); openView(gal.map((u,i)=>({src:u,label:g.titulo+(gal.length>1?" · foto "+(i+1):"")})),g.galeria&&g.galeria.length>1?state.gi:0); });
+$("#dCaps").addEventListener("click",async e=>{ const g=state.games.find(x=>x.id===state.cur); if(!g) return;
+  const del=e.target.closest("[data-vdel],[data-cdel]");
+  if(del){ e.stopPropagation(); if(!state.db) return;
+    if(!del.classList.contains("sure")){ document.querySelectorAll("#dCaps .del.sure").forEach(b=>{ b.classList.remove("sure"); b.textContent="×"; });
+      del.classList.add("sure"); del.textContent="¿Borrar?"; setTimeout(()=>{ if(del.isConnected){ del.classList.remove("sure"); del.textContent="×"; } },4000); return; }
+    del.disabled=true; del.textContent="…";
+    try{ const assets=await window.claude?.use?.("assets"); let id=null;
+      if(del.dataset.vdel!=null){ const i=+del.dataset.vdel, V=(g.videos||[]).slice(), old=V[i]; if(!old) return; V.splice(i,1); id=old.id;
+        await state.db.doc("juegos/"+g.id).update({videos:V}); }
+      else{ const i=+del.dataset.cdel, C=(g.capturas||[]).slice(), old=C[i]; if(old==null) return; const L=C.map((_,k)=>(g.capLabels||[])[k]||""); C.splice(i,1); L.splice(i,1);
+        const m=/^blob\/([0-9a-f]{32})$/.exec(old); id=m?m[1]:null;
+        await state.db.doc("juegos/"+g.id).update({capturas:C,capLabels:L}); }
+      if(assets&&id) try{ await assets.delete(id); }catch{}
+    }catch{ del.disabled=false; del.classList.remove("sure"); del.textContent="×"; } return; }
+  const vd=e.target.closest("[data-v]");
+  if(vd){ const v=(g.videos||[])[+vd.dataset.v]; if(v) openView([{video:true,src:"blob/"+v.id,secs:v.secs,label:g.titulo+" · "+(v.label||"gameplay")}],0); return; }
+  const im=e.target.closest(".caps img"); if(!im) return; const C=g.capturas||[];
+  openView(C.map((c,i)=>({src:c,px:true,label:g.titulo+" · "+((g.capLabels||[])[i]||(i===0?"Pantalla de título":"En juego"))})),[...document.querySelectorAll("#dCaps .caps img")].indexOf(im)); });
 dlg.addEventListener("keydown",e=>{ if(!["ArrowLeft","ArrowRight"].includes(e.key)||e.target.closest("input,textarea,select")) return; const g=state.games.find(x=>x.id===state.cur); if(!g?.galeria||g.galeria.length<2) return; const n=g.galeria.length; state.gi=(state.gi+(e.key==="ArrowRight"?1:-1)+n)%n; fillDialog(g.id,true); });
 $("#dPieces").onclick=async e=>{const b=e.target.closest(".pc"); if(!b) return;
   const g=state.games.find(x=>x.id===state.cur); const cyc={"tengo":"falta","falta":"?","?":"tengo"};
@@ -913,49 +1082,68 @@ $("#xlDl").onclick=async()=>{ const m=$("#xlMsg"); const XL=window.XLSX;
   catch(e){ m.textContent= e?.code==="declined"?"Descarga cancelada.":"No se pudo generar el Excel."; } };
 
 window.EMU_SNES_CORE="snes-core.js";
+window.EMU_MD_CORE="md-core.js";
 // Jugar: emulador dentro de la web, con la ROM guardada en el repositorio privado de la colección
-const emuSys=g=>platOf(g)==="NES"?"nes":platOf(g)==="SNES"?"snes":null;
-const emu={js:null,api:{},msg:"",busy:false,game:null,sramT:null,lock:true};
-try{ if(localStorage.getItem("romLock")==="0") emu.lock=false; }catch{}
+const emuSys=g=>platOf(g)==="NES"?"nes":platOf(g)==="SNES"?"snes":platOf(g)==="MD"?"md":null;
+const emu={js:null,api:{},msg:"",busy:false,game:null,sramT:null,lock:true,cur:null,sel:{}};
+try{ if(localStorage.getItem("romLock")==="0") emu.lock=false; emu.sel=JSON.parse(localStorage.getItem("romSel")||"{}")||{}; }catch{}
 const LOCK_SVG=c=>`<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="10" height="7" rx="1.5"/><path d="${c?"M5.5 7V4.8a2.5 2.5 0 0 1 5 0V7":"M5.5 7V4.8a2.5 2.5 0 0 1 4.9-.7"}"/></svg>`;
 const b64e=u8=>{let t="";for(let i=0;i<u8.length;i+=0x8000)t+=String.fromCharCode.apply(null,u8.subarray(i,i+0x8000));return btoa(t)};
 const b64d=t=>{const b=atob(t),u=new Uint8Array(b.length);for(let i=0;i<b.length;i++)u[i]=b.charCodeAt(i);return u};
 const kb=n=>n>=1048576?(n/1048576).toLocaleString("es-ES",{maximumFractionDigits:1})+" MB":Math.round(n/1024)+" KB";
+// Hasta 3 ROM por ficha, una por región
+const REG_LBL={JP:"Japón",US:"EE. UU.",EU:"Europa",XX:"Otra"};
+function romReg(name,meta){ const tags=[...String(name||"").matchAll(/\(([^)]*)\)/g)].map(m=>m[1]).join(",");
+  const hit=[["JP",/\b(Japan|J|Jpn)\b/i],["US",/\b(USA|U|US)\b/i],["EU",/\b(Europe|E|EUR|PAL|Spain|France|Germany|Italy|UK)\b/i]].map(([k,re])=>[k,tags.search(re)]).filter(x=>x[1]>=0).sort((p,q)=>p[1]-q[1]);
+  if(hit.length) return hit[0][0];
+  const t=String(meta&&meta.region||""); return t.startsWith("Japón")?"JP":/^(EE\. UU\.|Canadá)/.test(t)?"US":/PAL/.test(t)?"EU":"XX"; }
+function romsOf(g){ if(Array.isArray(g.roms)&&g.roms.length) return g.roms.filter(x=>x&&x.id).slice(0,3);
+  return g.rom&&g.rom.id?[{...g.rom,reg:g.rom.reg||romReg(g.rom.name)}]:[]; }
+function romSel(g){ const R=romsOf(g); return R.find(x=>x.reg===emu.sel[g.id])||R[0]||null; }
 function playMsg(t){ emu.msg=t||""; const m=$("#playMsg"); if(m) m.textContent=emu.msg; }
 function renderPlay(g){ const box=$("#dPlay"), sys=emuSys(g); if(!box) return;
+  $("#dockPlay").hidden=!sys;
   if(!sys){ box.innerHTML=""; return; }
-  const R=g.rom&&g.rom.id?g.rom:null;
-  const ext=sys==="nes"?".nes":".sfc, .smc";
+  const R=romsOf(g), S=romSel(g), ext=sys==="nes"?".nes":sys==="md"?".md, .bin, .gen":".sfc, .smc";
   box.innerHTML=`<div class="play" id="playBox"><button type="button" class="btn" id="bPlay">▶ Jugar</button>
-    <span class="hint">${R?`ROM guardada: ${esc(R.name||"")} · ${kb(R.bytes||0)}${R.crc?` · CRC ${esc(R.crc)}`:""}. Arrastra aquí otra para jugar con ella.`:`Arrastra aquí la ROM de tu copia (${ext} o .zip) o pulsa Jugar para elegirla.`}</span>
+    ${R.length>1?`<select id="romPickSel" aria-label="Versión de la ROM">${R.map(x=>`<option value="${esc(x.reg)}" ${x===S?"selected":""}>${esc(REG_LBL[x.reg]||x.reg)}</option>`).join("")}</select>`:""}
+    <span class="hint">${S?`ROM ${R.length>1?"elegida":"guardada"} (${esc(REG_LBL[S.reg]||"")}): ${esc(S.name||"")} · ${kb(S.bytes||0)}${S.crc?` · CRC ${esc(S.crc)}`:""}. Arrastra aquí otra para jugar con ella.`:`Arrastra aquí la ROM de tu copia (${ext} o .zip) o pulsa Jugar para elegirla.`}</span>
     <button type="button" class="lock" id="bLock" aria-pressed="${emu.lock}" title="${emu.lock?"Candado cerrado: la ROM que cargues se guarda en este navegador":"Candado abierto: la ROM que cargues no se guarda"}">${LOCK_SVG(emu.lock)}${emu.lock?"Se guarda en este navegador":"No se guarda"}</button>
-    ${R?`<button type="button" class="mini" id="bRomChg">Cambiar ROM</button><button type="button" class="mini" id="bRomDel">Quitar ROM</button>`:""}
+    ${S?`<button type="button" class="mini" id="bRomChg">Añadir otra región</button><button type="button" class="mini" id="bRomDel">Quitar esta ROM</button>`:""}
     <span class="status" id="playMsg" style="flex-basis:100%">${esc(emu.msg)}</span></div>`; }
 $("#dPlay").onclick=e=>{ const g=state.games.find(x=>x.id===state.cur); if(!g||emu.busy) return;
-  if(e.target.closest("#bPlay")){ if(g.rom&&g.rom.id) play(g,null); else { emu.game=g.id; $("#romPick").click(); } }
+  if(e.target.closest("#bPlay")){ const S=romSel(g); if(S) play(g,null,S); else { emu.game=g.id; $("#romPick").click(); } }
   else if(e.target.closest("#bRomChg")){ emu.game=g.id; $("#romPick").click(); }
-  else if(e.target.closest("#bRomDel")) quitarRom(g);
+  else if(e.target.closest("#bRomDel")){ const S=romSel(g); if(S) quitarRom(g,S); }
   else if(e.target.closest("#bLock")){ emu.lock=!emu.lock; try{ localStorage.setItem("romLock",emu.lock?"1":"0"); }catch{} renderPlay(g); } };
+$("#dPlay").onchange=e=>{ const g=state.games.find(x=>x.id===state.cur); if(!g||e.target.id!=="romPickSel") return;
+  emu.sel[g.id]=e.target.value; try{ localStorage.setItem("romSel",JSON.stringify(emu.sel)); }catch{} renderPlay(g); };
 ["dragenter","dragover"].forEach(ev=>$("#dPlay").addEventListener(ev,e=>{ if(!$("#playBox")) return; e.preventDefault(); $("#playBox").classList.add("drag"); }));
 $("#dPlay").addEventListener("dragleave",e=>{ if(!e.relatedTarget||!$("#dPlay").contains(e.relatedTarget)) $("#playBox")?.classList.remove("drag"); });
 $("#dPlay").addEventListener("drop",e=>{ if(!$("#playBox")) return; e.preventDefault(); $("#playBox").classList.remove("drag");
-  const f=e.dataTransfer?.files?.[0], g=state.games.find(x=>x.id===state.cur); if(f&&g&&!emu.busy) play(g,f); });
+  const f=e.dataTransfer?.files?.[0], g=state.games.find(x=>x.id===state.cur); if(f&&g&&!emu.busy) play(g,f,null); });
 dlg.addEventListener("dragover",e=>e.preventDefault()); dlg.addEventListener("drop",e=>e.preventDefault());
-$("#romPick").onchange=e=>{ const f=e.target.files[0]; e.target.value=""; const g=state.games.find(x=>x.id===emu.game); if(f&&g) play(g,f); };
+$("#romPick").onchange=e=>{ const f=e.target.files[0]; e.target.value=""; const g=state.games.find(x=>x.id===emu.game); if(f&&g) play(g,f,null); };
 function loadScript(src){ return new Promise((ok,ko)=>{ const t=document.createElement("script"); t.src=src; t.onload=()=>ok(); t.onerror=()=>ko(new Error("carga")); document.head.append(t); }); }
-async function play(g,file){ const sys=emuSys(g); if(!sys||emu.busy) return; emu.busy=true; playMsg("Preparando el emulador…");
+async function play(g,file,R){ const sys=emuSys(g); if(!sys||emu.busy) return; emu.busy=true; playMsg("Preparando el emulador…");
   try{
     if(!window.EMU){ try{ await (emu.js||(emu.js=loadScript("emu.js"))); }catch{ emu.js=null; playMsg("No se ha podido cargar el emulador. Recarga la página e inténtalo de nuevo."); return; } }
     let data,name;
     if(file){ data=await file.arrayBuffer(); name=file.name; }
-    else{ try{ const res=await fetch("blob/"+g.rom.id); if(!res.ok) throw 0; const j=await res.json(); data=b64d(j.b64).buffer; name=j.name||g.rom.name||"rom"; }
-      catch{ playMsg("No se ha podido leer la ROM guardada. Pulsa «Cambiar ROM» y elige el archivo otra vez."); return; } }
-    let sram=null; if(state.db){ try{ const d=await state.db.doc("partidas/"+g.id).get(); if(d.exists) sram=d.data().sram||null; }catch{} }
-    ["nes","snes"].forEach(k=>{ $("#emuHost-"+k).hidden=k!==sys; if(emu.api[k]) emu.api[k].visible=false; });
+    else{ try{ const res=await fetch("blob/"+R.id); if(!res.ok) throw 0; const j=await res.json(); data=b64d(j.b64).buffer; name=j.name||R.name||"rom"; }
+      catch{ playMsg("No se ha podido leer la ROM guardada. Quítala y vuelve a añadirla."); return; } }
+    // Partidas guardadas: una por juego y por volcado (CRC), para no mezclar regiones
+    const srams={};
+    if(state.db){ try{ const leg=await state.db.doc("partidas/"+g.id).get(); if(leg.exists&&leg.data().sram) srams._=leg.data().sram; }catch{}
+      try{ const q=await state.db.collection("partidas").where("juego","==",g.id).get(); q.docs.forEach(d=>{ const x=d.data(); if(x&&x.crc&&x.sram) srams[x.crc]=x.sram; }); }catch{} }
+    ["nes","snes","md"].forEach(k=>{ $("#emuHost-"+k).hidden=k!==sys; if(emu.api[k]) emu.api[k].visible=false; });
     const host=$("#emuHost-"+sys), api=emu.api[sys]||(emu.api[sys]=window.EMU.mount(sys,host));
     emu.cur={id:g.id,sys}; $("#emuMsg").textContent="";
-    api.sram=sram; api.onSram=enc=>guardarPartida(g.id,enc);
+    api.sram=null; api.sramFor=crc=>srams[crc]||srams._||null; api.onSram=(enc,crc)=>guardarPartida(g.id,crc,enc);
     api.onLoaded=file&&emu.lock?(u8,meta)=>guardarRom(g.id,u8,meta):null;
+    api.onShot=()=>$("#emuShot").click();
+    api.videoBps=2.5e6; emu.video=null; $("#emuVid").hidden=true;
+    api.onVideo=(blob,type,secs)=>{ emu.video={blob,type,secs,id:g.id}; $("#emuVid").hidden=false; $("#emuMsg").textContent="Vídeo listo: "+secs+" s · "+kb(blob.size); };
     $("#emuTitle").textContent=g.titulo; const D=$("#emuDlg"); if(!D.open) D.showModal(); api.visible=true; host.focus(); api.layout&&api.layout();
     playMsg(file&&!emu.lock?"Candado abierto: esta ROM no se ha guardado.":"");
     await api.openFile(data,name);
@@ -972,25 +1160,42 @@ $("#emuShot").onclick=async()=>{ const m=$("#emuMsg"), c=emu.cur, api=c&&emu.api
     caps.push("blob/"+up.id); labels.push("Captura del "+new Date().toLocaleDateString("es-ES"));
     await state.db.doc("juegos/"+g.id).update({capturas:caps,capLabels:labels});
     m.textContent="Captura guardada en la ficha ("+caps.length+")"; }
-  catch{ m.textContent="No se ha podido guardar la captura."; } };
-function guardarPartida(id,enc){ if(!state.db) return; clearTimeout(emu.sramT);
-  emu.sramT=setTimeout(async()=>{ try{ await state.db.doc("partidas/"+id).set({sram:enc,fecha:new Date().toISOString()}); }catch{} },800); }
-async function guardarRom(id,u8,meta){ const g=state.games.find(x=>x.id===id); if(!g) return;
-  if(g.rom&&g.rom.crc===meta.crc&&g.rom.bytes===u8.length) return;
+  catch{ m.textContent="No se ha podido guardar la captura."; }
+  try{ api.say&&api.say(m.textContent); }catch{} };
+$("#emuVidSave").onclick=async()=>{ const m=$("#emuMsg"), V=emu.video, g=V&&state.games.find(x=>x.id===V.id); if(!V||!g) return;
+  if(V.blob.size>19.5*1048576){ m.textContent="El vídeo pesa "+kb(V.blob.size)+" y la ficha admite hasta 20 MB (más o menos un minuto). Descárgalo o graba un clip más corto."; return; }
   const assets=await window.claude?.use?.("assets");
-  if(!assets||!state.db){ playMsg("La ROM funciona, pero esta vista no permite guardarla en el repositorio."); return; }
-  playMsg("Guardando la ROM en tu repositorio…");
+  if(!assets||!state.db){ m.textContent="Esta vista no permite guardar vídeos en la ficha."; return; }
+  m.textContent="Guardando el vídeo en la ficha…";
+  try{ const ct=V.type.includes("mp4")?"video/mp4":"video/webm"; const up=await assets.upload(V.blob,{type:ct});
+    await state.db.doc("juegos/"+g.id).update({videos:[...(g.videos||[]),{id:up.id,type:ct,secs:V.secs,bytes:V.blob.size,label:"Gameplay del "+new Date().toLocaleDateString("es-ES")}]});
+    emu.video=null; $("#emuVid").hidden=true; m.textContent="Vídeo guardado en la ficha."; }
+  catch(err){ m.textContent=err?.code==="too_large"?"El vídeo es demasiado grande para la ficha.":"No se ha podido guardar el vídeo. Puedes descargarlo."; } };
+$("#emuVidDl").onclick=async()=>{ const m=$("#emuMsg"), V=emu.video, g=V&&state.games.find(x=>x.id===V.id); if(!V) return;
+  const dl=await window.claude?.use?.("downloads"); if(!dl){ m.textContent="Esta vista no permite descargar archivos."; return; }
+  try{ await dl.save({filename:((g&&g.titulo)||"partida").replace(/[^\w\- ]+/g,"").trim()+" - gameplay."+(V.type.includes("mp4")?"mp4":"webm"),data:V.blob}); m.textContent="Vídeo descargado."; }
+  catch(e){ if(e?.code!=="declined") m.textContent="No se ha podido descargar el vídeo."; } };
+function guardarPartida(id,crc,enc){ if(!state.db||!crc) return; clearTimeout(emu.sramT);
+  emu.sramT=setTimeout(async()=>{ try{ await state.db.doc("partidas/"+id+"_"+crc).set({juego:id,crc,sram:enc,fecha:new Date().toISOString()}); }catch{} },800); }
+async function guardarRom(id,u8,meta){ const g=state.games.find(x=>x.id===id); if(!g) return;
+  const R=romsOf(g); if(R.some(x=>x.crc===meta.crc&&x.bytes===u8.length)) return;
+  const reg=romReg(meta.name,meta), i=R.findIndex(x=>x.reg===reg);
+  if(i<0&&R.length>=3){ playMsg("Esta ficha ya tiene 3 ROM. Quita una para guardar otra."); return; }
+  const assets=await window.claude?.use?.("assets");
+  if(!assets||!state.db){ playMsg("La ROM funciona, pero esta vista no permite guardarla."); return; }
+  playMsg("Guardando la ROM en este navegador…");
   try{ const up=await assets.upload(new Blob([JSON.stringify({name:meta.name,crc:meta.crc,b64:b64e(u8)})],{type:"application/json"}),{type:"application/json"});
-    const old=g.rom&&g.rom.id;
-    await state.db.doc("juegos/"+id).update({rom:{id:up.id,name:meta.name,crc:meta.crc,bytes:u8.length}});
+    const nu={id:up.id,name:meta.name,crc:meta.crc,bytes:u8.length,reg}, old=i>=0?R[i].id:null, next=R.slice(); if(i>=0) next[i]=nu; else next.push(nu);
+    await state.db.doc("juegos/"+id).update({roms:next,rom:null});
+    emu.sel[id]=reg; try{ localStorage.setItem("romSel",JSON.stringify(emu.sel)); }catch{}
     if(old&&old!==up.id){ try{ await assets.delete(old); }catch{} }
-    playMsg("ROM guardada en tu repositorio."); }
+    playMsg(i>=0?"ROM de "+REG_LBL[reg]+" sustituida.":"ROM guardada en este navegador ("+REG_LBL[reg]+")."); }
   catch(err){ playMsg(err?.code==="too_large"?"La ROM es demasiado grande para el repositorio (máximo unos 14 MB).":"No se ha podido guardar la ROM en el repositorio. Puedes jugar igualmente."); } }
-async function quitarRom(g){ if(!state.db||!g.rom) return; emu.busy=true; playMsg("Quitando la ROM…");
-  try{ const assets=await window.claude?.use?.("assets"); const old=g.rom.id;
-    await state.db.doc("juegos/"+g.id).update({rom:null});
-    if(assets&&old){ try{ await assets.delete(old); }catch{} }
-    playMsg("ROM quitada del repositorio."); }
+async function quitarRom(g,S){ if(!state.db||!S) return; emu.busy=true; playMsg("Quitando la ROM…");
+  try{ const assets=await window.claude?.use?.("assets");
+    await state.db.doc("juegos/"+g.id).update({roms:romsOf(g).filter(x=>x.id!==S.id),rom:null});
+    if(assets&&S.id){ try{ await assets.delete(S.id); }catch{} }
+    playMsg("ROM quitada."); }
   catch{ playMsg("No se ha podido quitar la ROM."); }
   finally{ emu.busy=false; } }
 
@@ -1000,7 +1205,7 @@ $("#addBtn").onclick=()=>{ if(!state.plat) return; $("#addForm").reset(); $("#ad
 $("#addCancel").onclick=()=>$("#addDlg").close();
 $("#addForm").onsubmit=async e=>{ e.preventDefault(); const m=$("#addMsg");
   if(!state.db){ m.textContent="Esta vista no tiene acceso a los datos."; return; }
-  const num=x=>x.value===""?null:+x.value, p=state.plat, disco=["PS1","PS2","PS4","PS5","GC","PSP"].includes(p);
+  const num=x=>x.value===""?null:+x.value, p=state.plat, disco=["PS1","PS2","PS3","PS4","PS5","X360","XONE","GC","PSP"].includes(p);
   m.textContent="Creando la ficha…";
   try{ let foto=""; const f=$("#aFoto").files[0];
     if(f){ const assets=await window.claude?.use?.("assets"); if(!assets){ m.textContent="Esta vista no permite subir fotos. Crea la ficha sin foto."; return; }
@@ -1017,7 +1222,7 @@ $("#addForm").onsubmit=async e=>{ e.preventDefault(); const m=$("#addMsg");
 
 // Bandeja de fotos: cada foto crea una ficha; la IA la identifica y después se completa con IA o a mano
 const tray={q:[],busy:new Set(),run:false,sure:null};
-const PLAT_IA="NES (NES o Famicom), SNES (Super Nintendo o Super Famicom), PS1, PS2, PS4, PS5, PSP, SWITCH, SW2 (Switch 2), GC (GameCube), DS, 3DS, GBA, MD (Mega Drive)";
+const PLAT_IA="NES (NES o Famicom), SNES (Super Nintendo o Super Famicom), PS1, PS2, PS3, PS4, PS5, X360 (Xbox 360), XONE (Xbox One o Series), PSP, SWITCH, SW2 (Switch 2), GC (GameCube), DS, 3DS, GBA, MD (Mega Drive)";
 const iaErr=c=>c==="no_key"?"Falta la clave de IA. Pulsa «Configurar la IA» en la portada.":c==="bad_key"?"El proveedor de IA ha rechazado la clave o el modelo. Revísalos en «Configurar la IA».":c==="not_granted"?"No has dado permiso para usar la IA en esta página.":c==="rate_limited"||c==="queue_overflow"?"Demasiadas consultas seguidas. Espera un momento y vuelve a intentarlo.":c==="refused"?"La IA no ha querido responder a esta consulta.":c==="image_rejected"?"La IA no ha podido leer la foto.":"La IA no ha respondido. Inténtalo de nuevo.";
 const txt=(x,n)=>String(x??"").trim().slice(0,n||120);
 async function fotoBlob(f){ const im=await createImageBitmap(f), k=Math.min(1,1400/Math.max(im.width,im.height)), c=document.createElement("canvas"); c.width=Math.round(im.width*k); c.height=Math.round(im.height*k);
@@ -1051,7 +1256,7 @@ async function trayAdd(files){ const fs=[...files].filter(f=>/^image\//.test(f.t
 "piezas": lista de lo que se ve en la foto, usando solo estas palabras: "Caja", "Manual", "Cartucho", "Disco".
 "seguro": true si estás seguro del juego y de la región, false si dudas.`,{images:[blob],cache:false})||{}; }
         catch(e){ if(["no_key","bad_key","not_granted","images_unavailable"].includes(e?.code)) sinIA=true; d={}; } }
-      const p=PLAT[d.plataforma]?d.plataforma:"?", disco=["PS1","PS2","PS4","PS5","GC","PSP"].includes(p), ve=Array.isArray(d.piezas)?d.piezas:[];
+      const p=PLAT[d.plataforma]?d.plataforma:"?", disco=["PS1","PS2","PS3","PS4","PS5","X360","XONE","GC","PSP"].includes(p), ve=Array.isArray(d.piezas)?d.piezas:[];
       const id=(p==="?"?"foto":p.toLowerCase().replace(/[^a-z0-9]/g,""))+"_"+Date.now().toString(36);
       await state.db.doc("juegos/"+id).set({plataforma:p,titulo:txt(d.titulo)||x.name.replace(/\.[^.]+$/,""),original:txt(d.original),region:txt(d.region,40)||(p==="?"?"":p),estado:"tengo",
         editora:txt(d.editora,60),genero:txt(d.genero,40),anio:+d.anio||0,pagado:null,valorManual:null,fechaObtencion:"",foto,eur:true,cib:null,loose:null,notas:"",

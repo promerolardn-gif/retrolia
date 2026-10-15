@@ -1,0 +1,17 @@
+Genesis Plus GX (emulación de Mega Drive) — aviso de licencia
+
+Retrolia incluye en md-core.js una compilación a WebAssembly de Genesis Plus GX procedente del paquete npm romdev-core-gpgx 0.15.0.
+Su licencia es propia de Genesis Plus GX y solo permite el uso no comercial: no se puede redistribuir con ánimo de lucro.
+
+Texto de la licencia original: https://github.com/ekeeke/Genesis-Plus-GX/blob/master/LICENSE.txt
+
+Sección de licencia del paquete romdev-core-gpgx (README.md):
+
+## Upstream & license
+
+Bundles: **Genesis Plus GX**.
+
+**License:** NON-COMMERCIAL (Genesis Plus GX custom license) — free for non-commercial use; redistribution for profit is not permitted.
+
+This package redistributes the upstream binary built to WebAssembly; the source
+is fetched from a pinned upstream commit at build time (see the romdev repo's
